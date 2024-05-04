@@ -22,15 +22,20 @@ class MyApp extends StatelessWidget {
           systemNavigationBarDividerColor: Colors.transparent // Set the desired background color              
         ),
       );
-
+      
       services.SystemChrome.setEnabledSystemUIMode(
         services.SystemUiMode.edgeToEdge,
           overlays: [services.SystemUiOverlay.top]
         );
-      return const MaterialApp(
+      return MaterialApp(
         title: 'Coffee Application',
+        theme: ThemeData(
+          appBarTheme: const AppBarTheme(
+            color: NexusColors.backgroundColorLight
+          )
+        ),
         debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+      home: const HomeScreen(),
     );
   }
 }

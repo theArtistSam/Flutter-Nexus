@@ -13,6 +13,7 @@ class NexusColors{
   static const borderColor = Color(0XFFCBD5E4);
   static const confirmColor = Color(0XFF2B9F03);
   static const warningColor = Color(0XFFB50202);
+  static const dividerColor = Color(0xFFEBEEF4);
   
   static const primaryColorDark = Color(0XFF1D385C);
   static const backgroundColorDark = Color(0XFF151515);
