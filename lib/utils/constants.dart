@@ -8,16 +8,17 @@ class NexusColors{
   static const backgroundColorLight = Color(0XFFFFFFFF);
   static const accentColorLight = Color(0XFFF4F6F9);
   static const textColorLight = Colors.white;
+  static const secondaryTextColorLight = Colors.white54;
 
   static const borderColor = Color(0XFFCBD5E4);
   static const confirmColor = Color(0XFF2B9F03);
   static const warningColor = Color(0XFFB50202);
-  static const secondaryTextColor = Colors.black45;
   
   static const primaryColorDark = Color(0XFF1D385C);
   static const backgroundColorDark = Color(0XFF151515);
   static const accentColorDark = Color(0XFF0A0A0A);
   static const textColorDark = Colors.black;
+  static const secondaryTextColorDark = Colors.black45;
 
 }
 

@@ -1,13 +1,25 @@
+import 'dart:ffi';
+
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:nexus/utils/constants.dart';
 import 'package:nexus/utils/styledText.dart';
 
 // ignore: must_be_immutable
-class GuideTile extends StatelessWidget {
-  GuideTile({super.key, required this.image, required this.title, required this.onTap});
+class ContentTile extends StatelessWidget {
+  ContentTile(
+      {super.key,
+      required this.title,
+      required this.image,
+      required this.date,
+      required this.icon,
+      required this.onTap});
 
-  String image;
   String title;
+  String date;
+  String icon;
+  String image;
   VoidCallback onTap;
   @override
   Widget build(BuildContext context) {
@@ -16,14 +28,14 @@ class GuideTile extends StatelessWidget {
       child: Stack(
         children: [
           SizedBox(
-            height: 170,
+            height: 200,
             child: ClipSmoothRect(
               radius: SmoothBorderRadius(
                 cornerRadius: 15,
                 cornerSmoothing: 0.8,
               ),
               child: Image.asset(
-                'assets/images/guide.png',
+                'assets/images/$image.png',
                 fit: BoxFit.cover,
                 width: double.infinity,
               ),
@@ -45,26 +57,32 @@ class GuideTile extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: 170,
+            height: 200,
             child: Padding(
               padding: const EdgeInsets.all(15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  StyledText(
-                    text: 'Guide',
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
-                  ),
                   const Spacer(),
-                  SizedBox(
-                    width: 220,
-                    child: StyledText(
-                      text: 'Learn to Translate',
-                      fontSize: 24,
-                      color: Colors.white,
-                    ),
+                  StyledText(
+                    text: title,
+                    fontSize: 18,
+                    color: NexusColors.textColorLight,
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      StyledText(
+                        text: date,
+                        fontSize: 14,
+                        color: NexusColors.secondaryTextColorLight,
+                      ),
+                      const Spacer(),
+                      SvgPicture.asset(
+                        'assets/icons/$icon.svg',
+                        color: NexusColors.secondaryTextColorLight,
+                      )
+                    ],
                   )
                 ],
               ),
