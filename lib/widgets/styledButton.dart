@@ -46,8 +46,8 @@ class StyledButton extends StatelessWidget {
                 : const SizedBox(),
             SizedBox(width: icon != null ? 10 : 0),
             StyledText(
-                text: 'Upload via Drive',
-                fontSize: 14,
+                text: text,
+                // fontSize: 14,
                 color: isBordered
                     ? NexusColors.textColorDark
                     : NexusColors.textColorLight)

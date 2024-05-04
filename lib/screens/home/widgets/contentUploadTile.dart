@@ -5,8 +5,9 @@ import 'package:nexus/utils/constants.dart';
 import 'package:nexus/utils/styledText.dart';
 
 // ignore: must_be_immutable
-class ContentSheetTile extends StatelessWidget {
-  ContentSheetTile({super.key, required this.icon, required this.text, required this.onTap});
+class ContentUploadTile extends StatelessWidget {
+  ContentUploadTile(
+      {super.key, required this.icon, required this.text, required this.onTap});
 
   String icon;
   String text;
