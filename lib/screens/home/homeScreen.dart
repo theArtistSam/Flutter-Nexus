@@ -12,39 +12,13 @@ import 'package:nexus/utils/constants.dart';
 import 'package:nexus/utils/styledText.dart';
 import 'package:nexus/widgets/styledIconButton.dart';
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
-import 'package:awesome_bottom_bar/widgets/inspired/inspired.dart';
 
 class HomeScreen extends StatelessWidget {
   // ignore: use_key_in_widget_constructors
   const HomeScreen({Key? key});
 
   @override
-  Widget build(BuildContext context) {
-    List<TabItem> items = [
-      TabItem(
-        icon: SizedBox(
-          height: 24,
-          width: 24,
-        ),
-        title: 'Home',
-      ),
-      // TabItem(
-      //   icon: Icons.search_sharp,
-      //   title: 'Shop',
-      // ),
-      // TabItem(
-      //   icon: Icons.favorite_border,
-      //   title: 'Wishlist',
-      // ),
-      // TabItem(
-      //   icon: Icons.shopping_cart_outlined,
-      //   title: 'Cart',
-      // ),
-      // TabItem(
-      //   icon: Icons.account_box,
-      //   title: 'profile',
-      // ),
-    ];
+  Widget build(BuildContext context) {    
     // final screenHeight = MediaQuery.of(context).size.height;
     // final screenWidth = MediaQuery.of(context).size.width;
 
@@ -105,13 +79,13 @@ class HomeScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Container(
-          decoration: ShapeDecoration(
+          decoration: const ShapeDecoration(
             color: Colors.white,
             shape: SmoothRectangleBorder(
-              borderRadius: SmoothBorderRadius(
-                cornerRadius: 35,
-                cornerSmoothing: 0.8,
-              ),
+              borderRadius: SmoothBorderRadius.only(
+                  topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
+                  topRight:
+                      SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8)),
             ),
           ),
           child: Padding(
@@ -174,9 +148,74 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
-      
+      bottomNavigationBar: BottomBarCreative(
+        items: navbarItems(index: 2),
+        backgroundColor: Colors.white,
+        color: Colors.black,
+        colorSelected: NexusColors.primaryColorLight,
+        titleStyle:
+            GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w600),
+        indexSelected: 2,
+        // onTap: (int index) => setState(() {
+        //   visit = index;
+        // }),
+      ),
     );
   }
+
+  navbarItems({int? index}) => [
+        TabItem(
+            icon: SvgPicture.asset(
+              index == 0
+                  ? 'assets/icons/home-filled.svg'
+                  : 'assets/icons/home.svg',
+              color: index == 0 ? NexusColors.primaryColorLight : Colors.black,
+              height: 24,
+            ),
+            title: 'Home'),
+        TabItem(
+            icon: SvgPicture.asset(
+              index == 1
+                  ? 'assets/icons/library-filled.svg'
+                  : 'assets/icons/library.svg',
+              color: index == 1 ? NexusColors.primaryColorLight : Colors.black,
+              height: 24,
+            ),
+            title: 'Library'),
+        TabItem(
+            icon: SvgPicture.asset(
+              'assets/icons/sparkle.svg',
+              height: 24,
+            ),
+            title: 'AI'),
+        TabItem(
+            icon: SvgPicture.asset(
+              index == 3
+                  ? 'assets/icons/community-filled.svg'
+                  : 'assets/icons/community.svg',
+              color: index == 3 ? NexusColors.primaryColorLight : Colors.black,
+              height: 24,
+            ),
+            title: 'Community'),
+        TabItem(
+            icon: Container(
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: index == 4
+                      ? Border.all(
+                          color: NexusColors.primaryColorLight, width: 2)
+                      : null),
+              child: ClipOval(
+                child: Image.asset(
+                  'assets/images/profile-picture.png',
+                  fit: BoxFit.cover,
+                  width: 24,
+                  height: 24,
+                ),
+              ),
+            ),
+            title: 'Profile')
+      ];
 
   Widget quickAccessTile({String? icon, String? text, VoidCallback? onTap}) =>
       Expanded(

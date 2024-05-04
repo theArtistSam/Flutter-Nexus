@@ -28,7 +28,7 @@ class ContentTile extends StatelessWidget {
       child: Stack(
         children: [
           SizedBox(
-            height: 200,
+            height: 210,
             child: ClipSmoothRect(
               radius: SmoothBorderRadius(
                 cornerRadius: 15,
@@ -57,7 +57,7 @@ class ContentTile extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: 200,
+            height: 210,
             child: Padding(
               padding: const EdgeInsets.all(15),
               child: Column(
@@ -75,6 +75,7 @@ class ContentTile extends StatelessWidget {
                       StyledText(
                         text: date,
                         fontSize: 14,
+                        fontWeight: FontWeight.w500,
                         color: NexusColors.secondaryTextColorLight,
                       ),
                       const Spacer(),
