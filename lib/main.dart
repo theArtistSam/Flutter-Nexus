@@ -2,6 +2,8 @@ import 'package:flutter/services.dart' as services;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nexus/screens/home/homeScreen.dart';
+import 'package:nexus/screens/library/libraryScreen.dart';
+import 'package:nexus/utils/bottomNavbar.dart';
 import 'package:nexus/utils/constants.dart';
 
 void main() {
@@ -13,29 +15,27 @@ class MyApp extends StatelessWidget {
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {      
-     services.SystemChrome.setSystemUIOverlayStyle(
+  Widget build(BuildContext context) {
+    services.SystemChrome.setSystemUIOverlayStyle(
       const services.SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: Brightness.dark,
           systemNavigationBarColor: Colors.transparent,
-          systemNavigationBarDividerColor: Colors.transparent // Set the desired background color              
-        ),
-      );
-      
-      services.SystemChrome.setEnabledSystemUIMode(
+          systemNavigationBarDividerColor:
+              Colors.transparent // Set the desired background color
+          ),
+    );
+
+    services.SystemChrome.setEnabledSystemUIMode(
         services.SystemUiMode.edgeToEdge,
-          overlays: [services.SystemUiOverlay.top]
-        );
-      return MaterialApp(
-        title: 'Coffee Application',
-        theme: ThemeData(
-          appBarTheme: const AppBarTheme(
-            color: NexusColors.backgroundColorLight
-          )
-        ),
-        debugShowCheckedModeBanner: false,
-      home: const HomeScreen(),
+        overlays: [services.SystemUiOverlay.top]);
+    return MaterialApp(
+      title: 'Coffee Application',
+      theme: ThemeData(
+          appBarTheme:
+              const AppBarTheme(color: NexusColors.backgroundColorLight)),
+      debugShowCheckedModeBanner: false,
+      home: const BottomNavBar(),
     );
   }
 }

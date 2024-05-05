@@ -14,6 +14,7 @@ import 'package:nexus/utils/styledText.dart';
 import 'package:nexus/widgets/styledButton.dart';
 import 'package:nexus/widgets/styledIconButton.dart';
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
+import 'package:nexus/widgets/styledIconTile.dart';
 import 'package:nexus/widgets/styledTabs.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -46,20 +47,23 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: NexusColors.accentColorLight,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight + 20),
+        preferredSize: const Size.fromHeight(kToolbarHeight + 15),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: AppBar(
             surfaceTintColor: Colors.transparent,
             backgroundColor: NexusColors.accentColorLight,
-            centerTitle: true,
+            automaticallyImplyLeading: false,
             leading: InkWell(
               borderRadius: BorderRadius.circular(5),
               onTap: () {}, // Handle tap on leading widget
-              child: ClipOval(
-                child: Image.asset(
-                  'assets/images/profile-picture.png',
-                  fit: BoxFit.cover,
+              child: Transform.scale(
+                scale: .9,
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/images/profile-picture.png',
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
@@ -132,15 +136,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 15),
                 Row(
                   children: [
-                    quickAccessTile(
-                        icon: 'translate-filled',
-                        text: 'Translate',
-                        onTap: () => {}),
+                    Expanded(
+                      child: StyledIconTile(
+                          icon: 'translate-filled',
+                          text: 'Translate',
+                          onTap: () => {}),
+                    ),
                     const SizedBox(width: 10),
-                    quickAccessTile(
-                        icon: 'book-filled',
-                        text: 'Summarize',
-                        onTap: () => {}),
+                    Expanded(
+                      child: StyledIconTile(
+                          icon: 'book-filled',
+                          text: 'Summarize',
+                          onTap: () => {}),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 15),
@@ -169,327 +177,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomBarCreative(
-        items: navbarItems(index: selectedIndex),
-        backgroundColor: Colors.white,
-        color: Colors.black,
-        colorSelected: NexusColors.primaryColorLight,
-        titleStyle:
-            GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w500),
-        indexSelected: selectedIndex,
-        onTap: (int index) => setState(() {
-          selectedIndex = index;
-          if (selectedIndex == 2) {
-            showModalBottomSheet(
-                isScrollControlled: true,
-                context: context,
-                builder: (context) => contentBottomSheet() // Add actual content
-                );
-            selectedIndex = 0;
-          }
-        }),
-      ),
     );
   }
-
-  navbarItems({int? index}) => [
-        TabItem(
-            icon: SvgPicture.asset(
-              index == 0
-                  ? 'assets/icons/home-filled.svg'
-                  : 'assets/icons/home.svg',
-              color: index == 0 ? NexusColors.primaryColorLight : Colors.black,
-              height: 24,
-            ),
-            title: 'Home'),
-        TabItem(
-            icon: SvgPicture.asset(
-              index == 1
-                  ? 'assets/icons/library-filled.svg'
-                  : 'assets/icons/library.svg',
-              color: index == 1 ? NexusColors.primaryColorLight : Colors.black,
-              height: 24,
-            ),
-            title: 'Library'),
-        TabItem(
-            icon: SvgPicture.asset(
-              'assets/icons/sparkle.svg',
-              height: 24,
-            ),
-            title: 'AI'),
-        TabItem(
-            icon: SvgPicture.asset(
-              index == 3
-                  ? 'assets/icons/community-filled.svg'
-                  : 'assets/icons/community.svg',
-              color: index == 3 ? NexusColors.primaryColorLight : Colors.black,
-              height: 24,
-            ),
-            title: 'Forum'),
-        TabItem(
-            icon: SizedBox(
-              width: 24,
-              height: 24,
-              child: Container(
-                padding: const EdgeInsets.all(1.0), // Adjust padding as needed
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: index == 4
-                      ? Border.all(
-                          color: NexusColors.primaryColorLight,
-                          width: 2,
-                        )
-                      : null,
-                ),
-                child: ClipOval(
-                  child: Image.asset(
-                    'assets/images/profile-picture.png',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
-            title: 'Profile')
-      ];
-
-  Widget uploadBottomSheet() => Wrap(
-        children: [
-          Container(
-            decoration: const ShapeDecoration(
-              color: Colors.white,
-              shape: SmoothRectangleBorder(
-                borderRadius: SmoothBorderRadius.only(
-                    topLeft:
-                        SmoothRadius(cornerRadius: 20, cornerSmoothing: 0.8),
-                    topRight:
-                        SmoothRadius(cornerRadius: 20, cornerSmoothing: 0.8)),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-              child: Column(children: [
-                Container(
-                  width: 60,
-                  height: 5,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: NexusColors.borderColor),
-                ),
-                const SizedBox(height: 15),
-                ListView.separated(
-                  padding: const EdgeInsets.all(0),
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: 3, // Number of items
-                  separatorBuilder: (BuildContext context, int index) {
-                    return const SizedBox(
-                        height: 15); // Separator between items
-                  },
-                  itemBuilder: (BuildContext context, int index) {
-                    // Build each item
-                    return uploadingTile(
-                        text: '1 Video Uploading',
-                        onTap: () => {},
-                        image: 'content');
-                  },
-                ),
-                const Divider(
-                  color: NexusColors.dividerColor,
-                  height: 30,
-                ),
-                Row(
-                  children: [
-                    ContentUploadTile(
-                        icon: 'video', text: 'Video', onTap: () => {}),
-                    const Spacer(),
-                    ContentUploadTile(
-                        icon: 'audio', text: 'Audio', onTap: () => {}),
-                    const Spacer(),
-                    ContentUploadTile(
-                        icon: 'image', text: 'Image', onTap: () => {}),
-                    const Spacer(),
-                    ContentUploadTile(
-                        icon: 'document', text: 'Document', onTap: () => {}),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                StyledButton(
-                  text: 'Summarize All',
-                  onTap: () => {},
-                ),
-                const SizedBox(height: 20),
-              ]),
-            ),
-          )
-        ],
-      );
-
-  Widget uploadingTile(
-          {required String image,
-          required String text,
-          required VoidCallback onTap}) =>
-      Row(
-        children: [
-          Stack(
-            children: [
-              SizedBox(
-                  width: 50,
-                  height: 50,
-                  child: ClipSmoothRect(
-                    radius: SmoothBorderRadius(
-                      cornerRadius: 12,
-                      cornerSmoothing: 0.8,
-                    ),
-                    child: Image.asset(
-                      'assets/images/$image.png',
-                      fit: BoxFit.cover,
-                    ),
-                  )),
-              Positioned.fill(
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.black.withOpacity(0), // Start color (0% black)
-                        Colors.black.withOpacity(0.5), // End color (90% black)
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Center(
-                    child: SvgPicture.asset(
-                      'assets/icons/spinner.svg',
-                      color: Colors.white,
-                      height: 24,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(width: 10),
-          StyledText(
-            text: text,
-          ),
-          const Spacer(),
-          GestureDetector(
-            onTap: onTap,
-            child: SvgPicture.asset(
-              'assets/icons/trash-filled.svg',
-              color: NexusColors.primaryColorLight,
-            ),
-          )
-        ],
-      );
-
-  Widget contentBottomSheet() => Wrap(
-        children: [
-          Container(
-            decoration: const ShapeDecoration(
-              color: Colors.white,
-              shape: SmoothRectangleBorder(
-                borderRadius: SmoothBorderRadius.only(
-                    topLeft:
-                        SmoothRadius(cornerRadius: 20, cornerSmoothing: 0.8),
-                    topRight:
-                        SmoothRadius(cornerRadius: 20, cornerSmoothing: 0.8)),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-              child: Column(children: [
-                Container(
-                  width: 60,
-                  height: 5,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: NexusColors.borderColor),
-                ),
-                const SizedBox(height: 15),
-                const StyledTabs(),
-                const Divider(color: NexusColors.dividerColor, height: 30),
-                Row(
-                  children: [
-                    ContentUploadTile(
-                        icon: 'video',
-                        text: 'Video',
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          showModalBottomSheet(
-                              isScrollControlled: true,
-                              context: context,
-                              builder: (context) =>
-                                  uploadBottomSheet() // Add actual content
-                              );
-                        }),
-                    const Spacer(),
-                    ContentUploadTile(
-                        icon: 'audio', text: 'Audio', onTap: () => {}),
-                    const Spacer(),
-                    ContentUploadTile(
-                        icon: 'image', text: 'Image', onTap: () => {}),
-                    const Spacer(),
-                    ContentUploadTile(
-                        icon: 'document', text: 'Document', onTap: () => {}),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                StyledButton(
-                  text: 'Upload via Drive',
-                  onTap: () => {},
-                  icon: 'google-drive',
-                  isBordered: true,
-                ),
-                const SizedBox(height: 20),
-                StyledButton(
-                  text: 'Live chat with AI',
-                  onTap: () => {},
-                  icon: 'message-filled',
-                ),
-                const SizedBox(height: 20),
-              ]),
-            ),
-          )
-        ],
-      );
-
-  Widget quickAccessTile({String? icon, String? text, VoidCallback? onTap}) =>
-      Expanded(
-        child: GestureDetector(
-          onTap: onTap,
-          child: Container(
-            decoration: ShapeDecoration(
-              color: NexusColors.primaryColorLight,
-              shape: SmoothRectangleBorder(
-                borderRadius: SmoothBorderRadius(
-                  cornerRadius: 15,
-                  cornerSmoothing: 0.8,
-                ),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SvgPicture.asset(
-                    'assets/icons/$icon.svg',
-                    height: 37,
-                    color: Colors.white,
-                  ),
-                  const SizedBox(height: 10),
-                  StyledText(
-                    text: text ?? '',
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                  )
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
 }

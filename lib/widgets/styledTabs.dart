@@ -3,15 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/utils/styledText.dart';
 
+// ignore: must_be_immutable
 class StyledTabs extends StatefulWidget {
-  const StyledTabs({super.key});
+  StyledTabs(
+      {super.key,
+      required this.leftTabText,
+      required this.rightTabText,
+      required this.isLeftSelected,
+      this.changeState});
+
+  String leftTabText;
+  String rightTabText;
+  bool isLeftSelected;
+  void Function()? changeState;
 
   @override
   State<StyledTabs> createState() => _StyledTabsState();
 }
 
 class _StyledTabsState extends State<StyledTabs> {
-  bool isTranslateSelected = false;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -29,12 +39,13 @@ class _StyledTabsState extends State<StyledTabs> {
               child: GestureDetector(
                 onTap: () {
                   setState(() {
-                    isTranslateSelected = !isTranslateSelected;
+                    widget.isLeftSelected = !widget.isLeftSelected;
+                    widget.changeState?.call();
                   });
                 },
                 child: Container(
                   decoration: ShapeDecoration(
-                    color: isTranslateSelected
+                    color: widget.isLeftSelected
                         ? NexusColors.primaryColorLight
                         : NexusColors.accentColorLight,
                     shape: SmoothRectangleBorder(
@@ -45,11 +56,11 @@ class _StyledTabsState extends State<StyledTabs> {
                       padding: const EdgeInsets.all(10.0),
                       child: Center(
                         child: StyledText(
-                          text: 'Translate',
-                          color: isTranslateSelected
+                          text: widget.leftTabText,
+                          color: widget.isLeftSelected
                               ? NexusColors.textColorLight
                               : NexusColors.textColorDark,
-                          fontWeight: isTranslateSelected
+                          fontWeight: widget.isLeftSelected
                               ? FontWeight.w600
                               : FontWeight.w500,
                         ),
@@ -61,13 +72,13 @@ class _StyledTabsState extends State<StyledTabs> {
               child: GestureDetector(
                 onTap: () {
                   setState(() {
-                    print(isTranslateSelected);
-                    isTranslateSelected = !isTranslateSelected;
+                    widget.isLeftSelected = !widget.isLeftSelected;
+                    widget.changeState?.call();
                   });
                 },
                 child: Container(
                   decoration: ShapeDecoration(
-                    color: !isTranslateSelected
+                    color: !widget.isLeftSelected
                         ? NexusColors.primaryColorLight
                         : NexusColors.accentColorLight,
                     shape: SmoothRectangleBorder(
@@ -78,11 +89,11 @@ class _StyledTabsState extends State<StyledTabs> {
                       padding: const EdgeInsets.all(10.0),
                       child: Center(
                         child: StyledText(
-                          text: 'Summarize',
-                          color: !isTranslateSelected
+                          text: widget.rightTabText,
+                          color: !widget.isLeftSelected
                               ? NexusColors.textColorLight
                               : NexusColors.textColorDark,
-                          fontWeight: !isTranslateSelected
+                          fontWeight: !widget.isLeftSelected
                               ? FontWeight.w600
                               : FontWeight.w500,
                         ),
