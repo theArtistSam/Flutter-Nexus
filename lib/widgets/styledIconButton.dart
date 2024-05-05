@@ -6,11 +6,11 @@ import 'package:nexus/utils/constants.dart';
 
 // ignore: must_be_immutable
 class StyledIconButton extends StatelessWidget {
-    StyledIconButton({
+  StyledIconButton({
     super.key,
     this.backgroundColor = NexusColors.primaryColorLight,
     this.iconColor = Colors.white,
-    this.padding = 9, 
+    this.padding = 9,
     required this.icon,
     required this.onTap,
   });
@@ -20,15 +20,16 @@ class StyledIconButton extends StatelessWidget {
   Color iconColor;
   double padding;
   VoidCallback onTap;
+  // void Function(int index)? setSelectedIndex;
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(30),
+    return GestureDetector(
+      // borderRadius: BorderRadius.circular(30),
       onTap: onTap,
-      child: Ink(
-        decoration: BoxDecoration(
-            shape: BoxShape.circle, color: backgroundColor),
+      child: Container(
+        decoration:
+            BoxDecoration(shape: BoxShape.circle, color: backgroundColor),
         child: Padding(
           padding: EdgeInsets.all(padding),
           child: SvgPicture.asset(

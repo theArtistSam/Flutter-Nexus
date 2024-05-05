@@ -2,6 +2,7 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:nexus/screens/folder/folderScreen.dart';
 import 'package:nexus/screens/home/widgets/contentTile.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/utils/styledText.dart';
@@ -101,7 +102,13 @@ class _LibraryScreenState extends State<LibraryScreen> {
                                   icon: 'folder-minus',
                                   text: 'School Work',
                                   isPrimary: false,
-                                  onTap: () => {});
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (builder) => FolderScreen(
+                                                folderName: 'School Work')));
+                                  });
                             }),
                       )
                     : Expanded(

@@ -11,22 +11,40 @@ class StyledButton extends StatelessWidget {
       required this.text,
       required this.onTap,
       this.isBordered = false,
+      this.isDeleteable = false,
       this.icon});
 
   String text;
   VoidCallback onTap;
   String? icon;
   bool isBordered;
+  bool isDeleteable;
+
+  BorderSide borderSide() {
+    if (isBordered) {
+      return const BorderSide(color: NexusColors.borderColor, width: 2);
+    } else if (isDeleteable) {
+      return const BorderSide(color: NexusColors.warningColor, width: 2);
+    }
+    return const BorderSide(color: NexusColors.primaryColorLight, width: 2);
+  }
+
+  Color color() {
+    if (isBordered) {
+      return Colors.transparent;
+    } else if (isDeleteable) {
+      return NexusColors.warningColor;
+    }
+    return NexusColors.primaryColorLight;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: ShapeDecoration(
-        color: isBordered ? Colors.transparent : NexusColors.primaryColorLight,
+        color: color(),
         shape: SmoothRectangleBorder(
-            side: isBordered
-                ? const BorderSide(color: NexusColors.borderColor, width: 2)
-                : const BorderSide(color: NexusColors.primaryColorLight, width: 2),
+            side: borderSide(),
             borderRadius:
                 SmoothBorderRadius(cornerRadius: 15, cornerSmoothing: 0.8)),
       ),
