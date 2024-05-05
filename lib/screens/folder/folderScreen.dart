@@ -86,13 +86,13 @@ class _FolderScreenState extends State<FolderScreen> {
             child: Padding(
                 padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
                 child: Column(children: [
-                  StyledTextfield(
-                      icon: 'search',
-                      hintText: 'Search ${widget.folderName}...'),
-                  const Divider(
-                    color: NexusColors.dividerColor,
-                    height: 30,
-                  ),
+                  // StyledTextfield(
+                  //     icon: 'search',
+                  //     hintText: 'Search ${widget.folderName}...'),
+                  // const Divider(
+                  //   color: NexusColors.dividerColor,
+                  //   height: 30,
+                  // ),
                   Expanded(
                     child: ListView.separated(
                       itemCount: 5, // Number of items

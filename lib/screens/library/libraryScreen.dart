@@ -4,6 +4,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nexus/screens/folder/folderScreen.dart';
 import 'package:nexus/screens/home/widgets/contentTile.dart';
+import 'package:nexus/screens/search/searchScreen.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/utils/styledText.dart';
 import 'package:nexus/widgets/styledIconButton.dart';
@@ -55,7 +56,14 @@ class _LibraryScreenState extends State<LibraryScreen> {
               ),
               title: StyledText(text: 'Library', fontSize: 24),
               actions: [
-                StyledIconButton(icon: 'search', onTap: () {}),
+                StyledIconButton(
+                    icon: 'search',
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (builder) => const SearchScreenn()));
+                    }),
               ],
             ),
           ),
