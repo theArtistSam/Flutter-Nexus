@@ -161,7 +161,10 @@ class _FolderScreenState extends State<FolderScreen> {
                   ),
                   const SizedBox(height: 15),
                   StyledTextfield(
-                      icon: 'folder-minus', hintText: 'New Folder name'),
+                    icon: 'folder-minus',
+                    hintText: 'New Folder name',
+                    controller: TextEditingController(),
+                  ),
                   const SizedBox(height: 15),
                   MasonryGridView.count(
                       shrinkWrap: true,

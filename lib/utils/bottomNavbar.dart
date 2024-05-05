@@ -4,6 +4,7 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:nexus/screens/chat/chatScreen.dart';
 import 'package:nexus/screens/home/homeScreen.dart';
 import 'package:nexus/screens/home/widgets/contentUploadTile.dart';
 import 'package:nexus/screens/library/libraryScreen.dart';
@@ -317,7 +318,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 const SizedBox(height: 20),
                 StyledButton(
                   text: 'Live chat with AI',
-                  onTap: () => {},
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (builder) => ChatScreen()));
+                  },
                   icon: 'message-filled',
                 ),
                 const SizedBox(height: 20),

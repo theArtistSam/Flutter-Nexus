@@ -5,11 +5,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:nexus/utils/constants.dart';
 
 class StyledTextfield extends StatelessWidget {
-  StyledTextfield({super.key, required this.icon, required this.hintText});
+  StyledTextfield(
+      {super.key,
+      required this.icon,
+      required this.hintText,
+      required this.controller});
 
-  String icon;
+  String? icon;
   String hintText;
-
+  TextEditingController controller;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -22,18 +26,21 @@ class StyledTextfield extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
         child: Row(
           children: [
-            SvgPicture.asset(
-              'assets/icons/$icon.svg',
-              color: NexusColors.primaryColorLight,
-            ),
+            icon != null
+                ? SvgPicture.asset(
+                    'assets/icons/$icon.svg',
+                    color: NexusColors.primaryColorLight,
+                  )
+                : const SizedBox(),
             Expanded(
               child: TextField(
-                // controller: _textEditingController,
+                controller: controller,
                 //autofocus: false,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: hintText,
-                  contentPadding: const EdgeInsets.only(left: 10),
+                  contentPadding:
+                      icon != null ? const EdgeInsets.only(left: 10) : null,
                   hintStyle: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,

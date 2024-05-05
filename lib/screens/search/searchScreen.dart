@@ -66,7 +66,10 @@ class _SearchScreennState extends State<SearchScreenn> {
                 padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
                 child: Column(children: [
                   StyledTextfield(
-                      icon: 'search', hintText: 'Search content...'),
+                    icon: 'search',
+                    hintText: 'Search content...',
+                    controller: TextEditingController(),
+                  ),
                   const SizedBox(
                     height: 15,
                   ),
