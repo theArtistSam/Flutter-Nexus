@@ -18,40 +18,44 @@ class StyledIconTile extends StatelessWidget {
   bool isPrimary;
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: ShapeDecoration(
-          color: isPrimary
-              ? NexusColors.primaryColorLight
-              : NexusColors.accentColorLight,
-          shape: SmoothRectangleBorder(
-            borderRadius: SmoothBorderRadius(
-              cornerRadius: 15,
-              cornerSmoothing: 0.8,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(15),
+        onTap: onTap,
+        child: Ink(
+          decoration: ShapeDecoration(
+            color: isPrimary
+                ? NexusColors.primaryColorLight
+                : NexusColors.accentColorLight,
+            shape: SmoothRectangleBorder(
+              borderRadius: SmoothBorderRadius(
+                cornerRadius: 15,
+                cornerSmoothing: 0.8,
+              ),
             ),
           ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SvgPicture.asset(
-                'assets/icons/$icon.svg',
-                height: 35,
-                color: isPrimary ? Colors.white : Colors.black,
-              ),
-              const SizedBox(height: 10),
-              StyledText(
-                text: text,
-                color: isPrimary
-                    ? NexusColors.textColorLight
-                    : NexusColors.textColorDark,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              )
-            ],
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SvgPicture.asset(
+                  'assets/icons/$icon.svg',
+                  height: 35,
+                  color: isPrimary ? Colors.white : Colors.black,
+                ),
+                const SizedBox(height: 10),
+                StyledText(
+                  text: text,
+                  color: isPrimary
+                      ? NexusColors.textColorLight
+                      : NexusColors.textColorDark,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                )
+              ],
+            ),
           ),
         ),
       ),

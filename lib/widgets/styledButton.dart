@@ -22,7 +22,10 @@ class StyledButton extends StatelessWidget {
 
   BorderSide borderSide() {
     if (isBordered) {
-      return const BorderSide(color: NexusColors.borderColor, width: 2);
+      return const BorderSide(
+        color: NexusColors.borderColor,
+        width: 2,
+      );
     } else if (isDeleteable) {
       return const BorderSide(color: NexusColors.warningColor, width: 2);
     }
@@ -40,41 +43,44 @@ class StyledButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(15),
-        onTap: onTap,
-        child: Ink(
-          decoration: ShapeDecoration(
-            color: color(),
-            shape: SmoothRectangleBorder(
-                side: borderSide(),
-                borderRadius:
-                    SmoothBorderRadius(cornerRadius: 15, cornerSmoothing: 0.8)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                icon != null
-                    ? SvgPicture.asset(
-                        'assets/icons/$icon.svg',
-                        height: 24,
-                        color: isBordered
-                            ? NexusColors.primaryColorLight
-                            : NexusColors.textColorLight,
-                      )
-                    : const SizedBox(),
-                SizedBox(width: icon != null ? 10 : 0),
-                StyledText(
-                    text: text,
-                    // fontSize: 14,
-                    color: isBordered
-                        ? NexusColors.textColorDark
-                        : NexusColors.textColorLight)
-              ],
+    return Container(
+      decoration: ShapeDecoration(
+        color: color(),
+        shape: SmoothRectangleBorder(
+            side: borderSide(),
+            borderRadius:
+                SmoothBorderRadius(cornerRadius: 13, cornerSmoothing: 0.8)),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius:
+              SmoothBorderRadius(cornerRadius: 11, cornerSmoothing: 0.8),
+          onTap: onTap,
+          child: SizedBox(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  icon != null
+                      ? SvgPicture.asset(
+                          'assets/icons/$icon.svg',
+                          height: 24,
+                          color: isBordered
+                              ? NexusColors.primaryColorLight
+                              : NexusColors.textColorLight,
+                        )
+                      : const SizedBox(),
+                  SizedBox(width: icon != null ? 10 : 0),
+                  StyledText(
+                      text: text,
+                      // fontSize: 14,
+                      color: isBordered
+                          ? NexusColors.textColorDark
+                          : NexusColors.textColorLight)
+                ],
+              ),
             ),
           ),
         ),

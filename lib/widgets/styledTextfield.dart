@@ -9,10 +9,12 @@ class StyledTextfield extends StatelessWidget {
       {super.key,
       required this.icon,
       required this.hintText,
-      required this.controller});
+      required this.controller,
+      this.maxlines = 1});
 
   String? icon;
   String hintText;
+  int maxlines;
   TextEditingController controller;
   @override
   Widget build(BuildContext context) {
@@ -35,6 +37,8 @@ class StyledTextfield extends StatelessWidget {
             Expanded(
               child: TextField(
                 controller: controller,
+                minLines: 1,
+                maxLines: maxlines,
                 // autofocus: false,
                 decoration: InputDecoration(
                   border: InputBorder.none,

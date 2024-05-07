@@ -87,14 +87,26 @@ class ChatScreen extends StatelessWidget {
                   )
                 ]))),
         bottomSheet: Container(
-          color: Colors.white,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                offset: const Offset(0, 0), // x, y values
+                blurRadius: 25,
+                spreadRadius: 10,
+              ),
+            ],
+          ),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Expanded(
                   child: StyledTextfield(
                     icon: null,
+                    maxlines: 3,
                     hintText: 'Write text to translate',
                     controller: controller,
                   ),
