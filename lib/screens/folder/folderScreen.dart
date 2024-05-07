@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:nexus/screens/home/widgets/contentTile.dart';
+import 'package:nexus/screens/content/contentScreen.dart';
+import 'package:nexus/widgets/contentTile.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/utils/styledText.dart';
+import 'package:nexus/widgets/styledText.dart';
 import 'package:nexus/widgets/styledButton.dart';
 import 'package:nexus/widgets/styledIconButton.dart';
 import 'package:nexus/widgets/styledTextfield.dart';
@@ -108,7 +109,18 @@ class _FolderScreenState extends State<FolderScreen> {
                             image: 'content',
                             date: 'December 10, 2024',
                             icon: 'video',
-                            onTap: () => {});
+                            onTap: () => {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (builder) => ContentScreen(
+                                                image: 'content',
+                                                title:
+                                                    'Learn how to make vids on YouTube from home',
+                                                summary:
+                                                    "What were they eating? It didn't taste like anything she had ever eaten before and although she was famished, she didn't dare ask. She knew the answer would be one she didn't want to hear. What were they eating? It didn't taste like anything she had ever eaten before and although she was famished, she didn't dare ask. She knew the answer would be one she didn't want to hear. What were they eating? It didn't taste like anything she had ever eaten before and although she was famished, she didn't dare ask. She knew the answer would be one she didn't want to hear, she didn't dare ask.",
+                                              )))
+                                });
                       },
                     ),
                   ),

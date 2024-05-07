@@ -2,7 +2,7 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/utils/styledText.dart';
+import 'package:nexus/widgets/styledText.dart';
 import 'package:nexus/widgets/styledIconButton.dart';
 import 'package:nexus/widgets/styledTabs.dart';
 import 'package:nexus/widgets/styledTextfield.dart';

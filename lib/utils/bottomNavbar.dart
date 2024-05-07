@@ -9,7 +9,7 @@ import 'package:nexus/screens/home/homeScreen.dart';
 import 'package:nexus/screens/home/widgets/contentUploadTile.dart';
 import 'package:nexus/screens/library/libraryScreen.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/utils/styledText.dart';
+import 'package:nexus/widgets/styledText.dart';
 import 'package:nexus/widgets/styledButton.dart';
 import 'package:nexus/widgets/styledTabs.dart';
 

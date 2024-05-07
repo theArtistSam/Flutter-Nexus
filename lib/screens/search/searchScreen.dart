@@ -1,9 +1,9 @@
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
-import 'package:nexus/screens/home/widgets/contentTile.dart';
+import 'package:nexus/widgets/contentTile.dart';
 import 'package:nexus/screens/search/widgets/filterTile.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/utils/styledText.dart';
+import 'package:nexus/widgets/styledText.dart';
 import 'package:nexus/widgets/styledIconButton.dart';
 import 'package:nexus/widgets/styledTextfield.dart';
 

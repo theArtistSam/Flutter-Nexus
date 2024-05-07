@@ -24,17 +24,20 @@ class StyledIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      // borderRadius: BorderRadius.circular(30),
-      onTap: onTap,
-      child: Container(
-        decoration:
-            BoxDecoration(shape: BoxShape.circle, color: backgroundColor),
-        child: Padding(
-          padding: EdgeInsets.all(padding),
-          child: SvgPicture.asset(
-            'assets/icons/$icon.svg',
-            color: iconColor,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(30),
+        onTap: onTap,
+        child: Ink(
+          decoration:
+              BoxDecoration(shape: BoxShape.circle, color: backgroundColor),
+          child: Padding(
+            padding: EdgeInsets.all(padding),
+            child: SvgPicture.asset(
+              'assets/icons/$icon.svg',
+              color: iconColor,
+            ),
           ),
         ),
       ),

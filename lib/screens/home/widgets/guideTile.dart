@@ -1,10 +1,14 @@
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
-import 'package:nexus/utils/styledText.dart';
+import 'package:nexus/widgets/styledText.dart';
 
 // ignore: must_be_immutable
 class GuideTile extends StatelessWidget {
-  GuideTile({super.key, required this.image, required this.title, required this.onTap});
+  GuideTile(
+      {super.key,
+      required this.image,
+      required this.title,
+      required this.onTap});
 
   String image;
   String title;

@@ -23,7 +23,7 @@ class StyledTextfield extends StatelessWidget {
               borderRadius:
                   SmoothBorderRadius(cornerRadius: 15, cornerSmoothing: .8))),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
         child: Row(
           children: [
             icon != null
@@ -35,12 +35,13 @@ class StyledTextfield extends StatelessWidget {
             Expanded(
               child: TextField(
                 controller: controller,
-                //autofocus: false,
+                // autofocus: false,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: hintText,
-                  contentPadding:
-                      icon != null ? const EdgeInsets.only(left: 10) : null,
+                  contentPadding: icon != null
+                      ? const EdgeInsets.only(left: 10, top: 0, bottom: 0)
+                      : null,
                   hintStyle: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,

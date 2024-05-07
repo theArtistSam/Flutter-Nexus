@@ -3,16 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nexus/screens/folder/folderScreen.dart';
-import 'package:nexus/screens/home/widgets/contentTile.dart';
+import 'package:nexus/widgets/contentTile.dart';
 import 'package:nexus/screens/search/searchScreen.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/utils/styledText.dart';
+import 'package:nexus/widgets/styledText.dart';
 import 'package:nexus/widgets/styledIconButton.dart';
 import 'package:nexus/widgets/styledIconTile.dart';
 import 'package:nexus/widgets/styledTabs.dart';
 
+// ignore: must_be_immutable
 class LibraryScreen extends StatefulWidget {
-  const LibraryScreen({super.key});
+  const LibraryScreen({
+    super.key,
+  });
 
   @override
   State<LibraryScreen> createState() => _LibraryScreenState();
@@ -134,6 +137,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                                 image: 'content',
                                 date: 'December 10, 2024',
                                 icon: 'video',
+                                // isSmall: true,
                                 onTap: () => {});
                           },
                         ),

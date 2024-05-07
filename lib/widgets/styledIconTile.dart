@@ -2,7 +2,7 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/utils/styledText.dart';
+import 'package:nexus/widgets/styledText.dart';
 
 // ignore: must_be_immutable
 class StyledIconTile extends StatelessWidget {
@@ -39,7 +39,7 @@ class StyledIconTile extends StatelessWidget {
             children: [
               SvgPicture.asset(
                 'assets/icons/$icon.svg',
-                height: 37,
+                height: 35,
                 color: isPrimary ? Colors.white : Colors.black,
               ),
               const SizedBox(height: 10),
@@ -48,7 +48,7 @@ class StyledIconTile extends StatelessWidget {
                 color: isPrimary
                     ? NexusColors.textColorLight
                     : NexusColors.textColorDark,
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.w600,
               )
             ],
