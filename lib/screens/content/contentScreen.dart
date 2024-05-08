@@ -30,7 +30,7 @@ class ContentScreen extends StatefulWidget {
 
 class _ContentScreenState extends State<ContentScreen> {
   String dropdownValue = "School Work";
-
+  bool isOriginalDisplayed = false;
   List<String> dropDownItems = ["ABC", "DEF", "GHI", "JKL"];
 
   @override
@@ -118,6 +118,42 @@ class _ContentScreenState extends State<ContentScreen> {
                       ),
                     ),
                     const Spacer(),
+
+                    // contentTyle: isAudio
+                    // Container(
+                    //   decoration: ShapeDecoration(
+                    //       color: Colors.black26,
+                    //       shape: SmoothRectangleBorder(
+                    //           borderRadius: SmoothBorderRadius(
+                    //               cornerRadius: 15, cornerSmoothing: .8))),
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.all(2),
+                    //     child: Slider(
+                    //       thumbColor: Colors.white,
+                    //       activeColor: Colors.white,
+                    //       inactiveColor: Colors.white54,
+                    //       min: 0,
+                    //       max: 100,
+                    //       value: 50,
+                    //       onChanged: (value) {
+                    //         // setState(() {
+                    //         //   _value = value;
+                    //         // });
+                    //       },
+                    //     ),
+                    //   ),
+                    // ),
+
+                    // contentType: isImage
+                    // contentIconButton('View complete image', 'maximize', () {}),
+
+                    // contentType: isDocument
+                    // contentIconButton(
+                    //     'View complete document', 'sticky-note', () {}),
+
+                    const SizedBox(
+                      height: 10,
+                    ),
                     StyledText(
                       text: widget.title,
                       color: NexusColors.textColorLight,
@@ -131,126 +167,207 @@ class _ContentScreenState extends State<ContentScreen> {
                 initialChildSize: (screenHeight - 410 + 40) / screenHeight,
                 minChildSize: (screenHeight - 410 + 40) / screenHeight,
                 maxChildSize: .9,
-                builder: (context, controller) => Container(
-                      decoration: const ShapeDecoration(
-                          color: Colors.white,
-                          shape: SmoothRectangleBorder(
-                              borderRadius: SmoothBorderRadius.only(
-                                  topLeft: SmoothRadius(
-                                      cornerRadius: 25, cornerSmoothing: .8),
-                                  topRight: SmoothRadius(
-                                      cornerRadius: 25, cornerSmoothing: .8)))),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
-                        child: ListView(
-                          padding: EdgeInsets.zero,
-                          controller: controller,
-                          children: [
-                            Center(
-                              child: Container(
-                                width: 60,
-                                height: 5,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: NexusColors.borderColor),
-                              ),
-                            ),
-                            const SizedBox(height: 15),
-                            StyledTabs(
-                                leftTabText: 'Translate',
-                                rightTabText: 'Summarize',
-                                isLeftSelected: false),
-                            const Divider(
-                              height: 30,
-                              color: NexusColors.dividerColor,
-                            ),
-                            Column(
-                              children: [
-                                // StyledText(
-                                //     fontSize: 18,
-                                //     text:
-                                //         "What were they eating? It didn't taste like anything she had ever eaten before and although she was famished, she didn't dare ask. She knew the answer would be one she didn't want to hear. What were they eating? It didn't taste like anything she had ever eaten before and although she was famished, she didn't dare ask. She knew the answer would be one she didn't want to hear. What were they eating? It didn't taste like anything she had ever eaten before and although she was famished, she didn't dare ask. She knew the answer would be one she didn't want to hear, she didn't dare ask."),
-                                Container(
-                                  decoration: ShapeDecoration(
-                                      color: NexusColors.accentColorLight,
-                                      shape: SmoothRectangleBorder(
-                                          borderRadius: SmoothBorderRadius(
-                                              cornerRadius: 15,
-                                              cornerSmoothing: 0.8))),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: StyledText(
-                                      fontSize: 18,
-                                      text: widget.summary ?? '',
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-
-                                const SizedBox(height: 10),
-                                Row(
-                                  children: [
-                                    StyledIconButton(
-                                      icon: 'rotate-left',
-                                      onTap: () {},
-                                      backgroundColor:
-                                          NexusColors.accentColorLight,
-                                      iconColor: NexusColors.primaryColorLight,
-                                    ),
-                                    const SizedBox(width: 5),
-                                    StyledIconButton(
-                                      icon: 'arrow-down',
-                                      onTap: () {},
-                                      backgroundColor:
-                                          NexusColors.accentColorLight,
-                                      iconColor: NexusColors.primaryColorLight,
-                                    ),
-                                    const SizedBox(width: 5),
-                                    StyledIconButton(
-                                      icon: 'share',
-                                      onTap: () {},
-                                      backgroundColor:
-                                          NexusColors.accentColorLight,
-                                      iconColor: NexusColors.primaryColorLight,
-                                    ),
-                                    const SizedBox(width: 5),
-                                    StyledIconButton(
-                                      icon: 'pencil',
-                                      onTap: () {},
-                                      backgroundColor:
-                                          NexusColors.accentColorLight,
-                                      iconColor: NexusColors.primaryColorLight,
-                                    ),
-                                    const Spacer(),
-                                    StyledIconButton(
-                                      icon: 'like-filled',
-                                      onTap: () {},
-                                      backgroundColor:
-                                          NexusColors.accentColorLight,
-                                      iconColor: NexusColors.primaryColorLight,
-                                    ),
-                                    const SizedBox(width: 5),
-                                    StyledIconButton(
-                                      icon: 'dislike',
-                                      onTap: () {},
-                                      backgroundColor:
-                                          NexusColors.accentColorLight,
-                                      iconColor: NexusColors.primaryColorLight,
-                                    ),
-                                    const SizedBox(width: 5),
-                                  ],
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    )),
+                builder: (context, controller) =>
+                    contentBottomSheet(controller))
           ],
         ),
       ),
     );
   }
+
+  contentIconButton(title, icon, onTap) => Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: SmoothBorderRadius(cornerRadius: 15),
+          onTap: onTap,
+          child: Ink(
+              decoration: ShapeDecoration(
+                  color: Colors.black26,
+                  shape: SmoothRectangleBorder(
+                      borderRadius: SmoothBorderRadius(
+                          cornerRadius: 15, cornerSmoothing: .8))),
+              child: Padding(
+                padding: const EdgeInsets.all(15),
+                child: Row(
+                  children: [
+                    StyledText(
+                      text: title,
+                      color: NexusColors.textColorLight,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                    ),
+                    const Spacer(),
+                    SvgPicture.asset(
+                      'assets/icons/$icon.svg',
+                      color: Colors.white,
+                    )
+                  ],
+                ),
+              )),
+        ),
+      );
+  contentTile({isOpen, openText, closeText, onTap}) => Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius:
+              SmoothBorderRadius(cornerRadius: 15, cornerSmoothing: .8),
+          onTap: onTap,
+          child: Ink(
+            decoration: ShapeDecoration(
+                color: NexusColors.accentColorLight,
+                shape: SmoothRectangleBorder(
+                    borderRadius: SmoothBorderRadius(
+                        cornerRadius: 15, cornerSmoothing: 0.8))),
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      StyledText(
+                        fontSize: 14,
+                        text: isOpen ? openText : closeText,
+                        color: NexusColors.primaryColorLight,
+                      ),
+                      const Spacer(),
+                      !isOpen
+                          ? SvgPicture.asset(
+                              'assets/icons/small-arrow-down.svg',
+                              color: NexusColors.primaryColorLight,
+                            )
+                          : const SizedBox()
+                    ],
+                  ),
+                  SizedBox(height: isOpen ? 10 : 0),
+                  isOpen
+                      ? StyledText(
+                          fontSize: 18,
+                          text: widget.summary ?? '',
+                          fontWeight: FontWeight.w500,
+                        )
+                      : const SizedBox(),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+  contentBottomSheet(controller) => Container(
+        decoration: const ShapeDecoration(
+            color: Colors.white,
+            shape: SmoothRectangleBorder(
+                borderRadius: SmoothBorderRadius.only(
+                    topLeft:
+                        SmoothRadius(cornerRadius: 25, cornerSmoothing: .8),
+                    topRight:
+                        SmoothRadius(cornerRadius: 25, cornerSmoothing: .8)))),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
+          child: ListView(
+            padding: EdgeInsets.zero,
+            controller: controller,
+            children: [
+              Center(
+                child: Container(
+                  width: 60,
+                  height: 5,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: NexusColors.borderColor),
+                ),
+              ),
+              const SizedBox(height: 15),
+              StyledTabs(
+                  leftTabText: 'Translate',
+                  rightTabText: 'Summarize',
+                  isLeftSelected: false),
+              const Divider(
+                height: 30,
+                color: NexusColors.dividerColor,
+              ),
+              Column(
+                children: [
+                  // StyledText(
+                  //     fontSize: 18,
+                  //     text:
+                  //         "What were they eating? It didn't taste like anything she had ever eaten before and although she was famished, she didn't dare ask. She knew the answer would be one she didn't want to hear. What were they eating? It didn't taste like anything she had ever eaten before and although she was famished, she didn't dare ask. She knew the answer would be one she didn't want to hear. What were they eating? It didn't taste like anything she had ever eaten before and although she was famished, she didn't dare ask. She knew the answer would be one she didn't want to hear, she didn't dare ask."),
+                  //  Content Tile here
+                  contentTile(
+                      onTap: () {
+                        setState(() {
+                          isOriginalDisplayed = true;
+                        });
+                      },
+                      isOpen: isOriginalDisplayed ? true : false,
+                      openText: 'Original',
+                      closeText: 'View original text'),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  contentTile(
+                      onTap: () {
+                        setState(() {
+                          isOriginalDisplayed = false;
+                        });
+                      },
+                      isOpen: isOriginalDisplayed ? false : true,
+                      openText: 'Summary',
+                      closeText: 'View summary'),
+
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      StyledIconButton(
+                        icon: 'rotate-left',
+                        onTap: () {},
+                        backgroundColor: NexusColors.accentColorLight,
+                        iconColor: NexusColors.primaryColorLight,
+                      ),
+                      const SizedBox(width: 5),
+                      StyledIconButton(
+                        icon: 'arrow-down',
+                        onTap: () {},
+                        backgroundColor: NexusColors.accentColorLight,
+                        iconColor: NexusColors.primaryColorLight,
+                      ),
+                      const SizedBox(width: 5),
+                      StyledIconButton(
+                        icon: 'share',
+                        onTap: () {},
+                        backgroundColor: NexusColors.accentColorLight,
+                        iconColor: NexusColors.primaryColorLight,
+                      ),
+                      const SizedBox(width: 5),
+                      StyledIconButton(
+                        icon: 'pencil',
+                        onTap: () {},
+                        backgroundColor: NexusColors.accentColorLight,
+                        iconColor: NexusColors.primaryColorLight,
+                      ),
+                      const Spacer(),
+                      StyledIconButton(
+                        icon: 'like-filled',
+                        onTap: () {},
+                        backgroundColor: NexusColors.accentColorLight,
+                        iconColor: NexusColors.primaryColorLight,
+                      ),
+                      const SizedBox(width: 5),
+                      StyledIconButton(
+                        icon: 'dislike',
+                        onTap: () {},
+                        backgroundColor: NexusColors.accentColorLight,
+                        iconColor: NexusColors.primaryColorLight,
+                      ),
+                    ],
+                  )
+                ],
+              )
+            ],
+          ),
+        ),
+      );
 
   contentEditBottomSheet() => SingleChildScrollView(
         child: Padding(

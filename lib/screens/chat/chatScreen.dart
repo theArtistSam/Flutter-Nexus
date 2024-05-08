@@ -7,6 +7,7 @@ import 'package:nexus/widgets/styledIconButton.dart';
 import 'package:nexus/widgets/styledTabs.dart';
 import 'package:nexus/widgets/styledTextfield.dart';
 
+// ignore: must_be_immutable
 class ChatScreen extends StatelessWidget {
   ChatScreen({super.key});
 
