@@ -1,6 +1,7 @@
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:nexus/screens/content/widgets/contentConfigureTabs.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/contentTile.dart';
 import 'package:nexus/widgets/styledButton.dart';
@@ -104,7 +105,14 @@ class _ContentScreenState extends State<ContentScreen> {
                         ),
                         StyledIconButton(
                           icon: 'setting-filled',
-                          onTap: () => {},
+                          onTap: () => {
+                            showModalBottomSheet(
+                                isScrollControlled: true,
+                                context: context,
+                                builder: (context) =>
+                                    contentConfigureBottomSheet() // Add actual content
+                                )
+                          },
                           backgroundColor: Colors.black26,
                         )
                       ],
@@ -407,14 +415,16 @@ class _ContentScreenState extends State<ContentScreen> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                   child: Column(
-                      // crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          width: 60,
-                          height: 5,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: NexusColors.borderColor),
+                        Center(
+                          child: Container(
+                            width: 60,
+                            height: 5,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: NexusColors.borderColor),
+                          ),
                         ),
                         const SizedBox(height: 15),
                         StyledTabs(
@@ -473,16 +483,7 @@ class _ContentScreenState extends State<ContentScreen> {
                           ],
                         ),
                         const SizedBox(height: 20),
-                        Row(
-                          children: [
-                            SvgPicture.asset('assets/icons/video.svg',
-                                color: NexusColors.primaryColorLight),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            StyledText(text: 'Video Title', fontSize: 18),
-                          ],
-                        ),
+                        StyledText(text: 'Video Title', fontSize: 18),
                         const SizedBox(height: 10),
                         StyledTextfield(
                           icon: null,
@@ -491,16 +492,7 @@ class _ContentScreenState extends State<ContentScreen> {
                           maxlines: 5,
                         ),
                         const SizedBox(height: 20),
-                        Row(
-                          children: [
-                            SvgPicture.asset('assets/icons/folder-filled.svg',
-                                color: NexusColors.primaryColorLight),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            StyledText(text: 'Select Folder', fontSize: 18),
-                          ],
-                        ),
+                        StyledText(text: 'Select Folder', fontSize: 18),
                         const SizedBox(height: 10),
                         Container(
                           width: double.infinity,
@@ -564,5 +556,93 @@ class _ContentScreenState extends State<ContentScreen> {
             ],
           ),
         ),
+      );
+
+  contentConfigureBottomSheet() => Wrap(
+        children: [
+          Container(
+            decoration: const ShapeDecoration(
+              color: Colors.white,
+              shape: SmoothRectangleBorder(
+                borderRadius: SmoothBorderRadius.only(
+                    topLeft:
+                        SmoothRadius(cornerRadius: 20, cornerSmoothing: 0.8),
+                    topRight:
+                        SmoothRadius(cornerRadius: 20, cornerSmoothing: 0.8)),
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 60,
+                        height: 5,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: NexusColors.borderColor),
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        borderRadius: SmoothBorderRadius(
+                            cornerRadius: 15, cornerSmoothing: .8),
+                        icon: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: SvgPicture.asset(
+                            'assets/icons/small-arrow-down.svg',
+                            color: Colors.black,
+                          ),
+                        ),
+                        // value: dropdownValue,
+                        hint: StyledText(text: 'Summarization Length'),
+                        items: <String>['Standard Length', 'Custom Length']
+                            .map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: StyledText(
+                              text: value,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          // setState(() {
+                          //   dropdownValue = newValue!;
+                          // });
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ContentConfigureTabs(
+                      tabsText: const ['Small', 'Medium', 'Large'],
+                      index: 1,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    StyledText(text: 'Summarization Style'),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ContentConfigureTabs(
+                        tabsText: const ['Creative', 'Balanaced', 'Precise'],
+                        index: 1),
+                    const Divider(
+                      height: 50,
+                      color: NexusColors.dividerColor,
+                    ),
+                    StyledButton(text: 'Confirm changes', onTap: () {}),
+                    const SizedBox(height: 20),
+                  ]),
+            ),
+          )
+        ],
       );
 }
