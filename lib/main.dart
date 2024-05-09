@@ -21,8 +21,8 @@ class MyApp extends StatelessWidget {
     services.SystemChrome.setSystemUIOverlayStyle(
       const services.SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.dark,
-          // systemNavigationBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          systemNavigationBarColor: Colors.transparent,
           systemNavigationBarDividerColor:
               Colors.transparent // Set the desired background color
           ),
@@ -31,13 +31,13 @@ class MyApp extends StatelessWidget {
     services.SystemChrome.setEnabledSystemUIMode(
         services.SystemUiMode.edgeToEdge,
         overlays: [services.SystemUiOverlay.top]);
-    return MaterialApp(
+    return const MaterialApp(
       title: 'Coffee Application',
-      theme: ThemeData(
-          appBarTheme:
-              const AppBarTheme(color: NexusColors.backgroundColorLight)),
+      // theme: ThemeData(
+      //     appBarTheme:
+      //         const AppBarTheme(color: NexusColors.backgroundColorLight)),
       debugShowCheckedModeBanner: false,
-      home: const BottomNavBar(),
+      home: BottomNavBar(),
     );
   }
 }

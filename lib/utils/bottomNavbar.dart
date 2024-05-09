@@ -27,13 +27,13 @@ class _BottomNavBarState extends State<BottomNavBar> {
   final List _pages = [
     const HomeScreen(),
     const LibraryScreen(),
-    const SizedBox(),
     Center(child: StyledText(text: 'Forum')),
-    Center(child: StyledText(text: 'Library'))
+    Center(child: StyledText(text: 'Profile'))
   ];
 
   _changeTab(int index) {
     setState(() {
+      final temp = _selectedIndex;
       _selectedIndex = index;
       if (index == 2) {
         showModalBottomSheet(
@@ -41,6 +41,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           context: context,
           builder: (context) => contentBottomSheet(),
         );
+        _selectedIndex = temp;
       }
     });
   }

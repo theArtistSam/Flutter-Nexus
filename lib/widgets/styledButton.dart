@@ -59,7 +59,7 @@ class StyledButton extends StatelessWidget {
           onTap: onTap,
           child: SizedBox(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12.0),
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

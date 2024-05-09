@@ -39,10 +39,20 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
+  // ThemeMode _themeMode = ThemeMode.system;
+
+  // void _toggleTheme(ThemeMode themeMode) {
+  //   setState(() {
+  //     _themeMode = themeMode;
+  //   });
+  // }
+
   @override
   Widget build(BuildContext context) {
     // final screenHeight = MediaQuery.of(context).size.height;
     // final screenWidth = MediaQuery.of(context).size.width;
+
+    // bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: NexusColors.accentColorLight,
@@ -97,7 +107,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 iconColor: Colors.black,
               ),
               const SizedBox(width: 10),
-              StyledIconButton(icon: 'menu', onTap: () {}),
+              StyledIconButton(
+                  icon: 'menu',
+                  onTap: () {
+                    // _toggleTheme(isDarkMode ? ThemeMode.dark : ThemeMode.light);
+                  }),
             ],
           ),
         ),

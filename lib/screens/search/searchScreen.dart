@@ -70,33 +70,33 @@ class _SearchScreennState extends State<SearchScreenn> {
                     hintText: 'Search content...',
                     controller: TextEditingController(),
                   ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  SizedBox(
-                    height: 44,
-                    child: ListView.separated(
-                      padding: const EdgeInsets.all(1),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: filters.length, // Number of items
-                      separatorBuilder: (BuildContext context, int index) {
-                        return const SizedBox(
-                            width: 7); // Separator between items
-                      },
-                      itemBuilder: (BuildContext context, int index) {
-                        // Build each item
-                        return FilterTile(
-                          filter: filters[index],
-                          isTapped: selectedIndex == index,
-                          onTap: () {
-                            setState(() {
-                              selectedIndex = index;
-                            });
-                          },
-                        );
-                      },
-                    ),
-                  ),
+                  // const SizedBox(
+                  //   height: 15,
+                  // ),
+                  // SizedBox(
+                  //   height: 44,
+                  //   child: ListView.separated(
+                  //     padding: const EdgeInsets.all(1),
+                  //     scrollDirection: Axis.horizontal,
+                  //     itemCount: filters.length, // Number of items
+                  //     separatorBuilder: (BuildContext context, int index) {
+                  //       return const SizedBox(
+                  //           width: 7); // Separator between items
+                  //     },
+                  //     itemBuilder: (BuildContext context, int index) {
+                  //       // Build each item
+                  //       return FilterTile(
+                  //         filter: filters[index],
+                  //         isTapped: selectedIndex == index,
+                  //         onTap: () {
+                  //           setState(() {
+                  //             selectedIndex = index;
+                  //           });
+                  //         },
+                  //       );
+                  //     },
+                  //   ),
+                  // ),
                   const Divider(
                     color: NexusColors.dividerColor,
                     height: 30,
