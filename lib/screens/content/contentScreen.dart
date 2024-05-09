@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -33,6 +34,51 @@ class _ContentScreenState extends State<ContentScreen> {
   String dropdownValue = "School Work";
   bool isOriginalDisplayed = false;
   List<String> dropDownItems = ["ABC", "DEF", "GHI", "JKL"];
+
+  late AudioPlayer player = AudioPlayer();
+  bool isPlaying = false;
+  Duration position = Duration.zero;
+  Duration duration = Duration.zero;
+
+  @override
+  void initState() {
+    // Create the audio player.
+    player = AudioPlayer();
+
+    // Set the release mode to keep the source after playback has completed.
+    player.setReleaseMode(ReleaseMode.stop);
+
+    // Start the player as soon as the app is displayed.
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await player.setSource(AssetSource('audio/sample-audio.mp3'));
+    });
+
+    // Listen to states of audio player
+    player.onPlayerStateChanged.listen((state) {
+      isPlaying = state == PlayerState.playing;
+    });
+
+    // Listen to duration and position changes
+    player.onDurationChanged.listen((newDuration) {
+      setState(() {
+        duration = newDuration;
+      });
+    });
+
+    player.onPositionChanged.listen((newPosition) {
+      setState(() {
+        position = newPosition;
+      });
+    });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    player.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,39 +164,52 @@ class _ContentScreenState extends State<ContentScreen> {
                       ],
                     ),
                     const Spacer(),
-                    Center(
-                      child: SvgPicture.asset(
-                        'assets/icons/play.svg',
-                        height: 45,
-                        color: Colors.white,
+                    GestureDetector(
+                      onTap: () async {
+                        isPlaying
+                            ? await player.pause()
+                            : await player.resume();
+
+                        setState(() {
+                          isPlaying = !isPlaying;
+                        });
+                      },
+                      child: Center(
+                        child: SvgPicture.asset(
+                          isPlaying
+                              ? 'assets/icons/pause.svg'
+                              : 'assets/icons/play.svg',
+                          height: 45,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                     const Spacer(),
-
                     // contentTyle: isAudio
-                    // Container(
-                    //   decoration: ShapeDecoration(
-                    //       color: Colors.black26,
-                    //       shape: SmoothRectangleBorder(
-                    //           borderRadius: SmoothBorderRadius(
-                    //               cornerRadius: 15, cornerSmoothing: .8))),
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.all(2),
-                    //     child: Slider(
-                    //       thumbColor: Colors.white,
-                    //       activeColor: Colors.white,
-                    //       inactiveColor: Colors.white54,
-                    //       min: 0,
-                    //       max: 100,
-                    //       value: 50,
-                    //       onChanged: (value) {
-                    //         // setState(() {
-                    //         //   _value = value;
-                    //         // });
-                    //       },
-                    //     ),
-                    //   ),
-                    // ),
+                    Container(
+                      decoration: ShapeDecoration(
+                          color: Colors.black26,
+                          shape: SmoothRectangleBorder(
+                              borderRadius: SmoothBorderRadius(
+                                  cornerRadius: 15, cornerSmoothing: .8))),
+                      child: Padding(
+                        padding: const EdgeInsets.all(2),
+                        child: Slider(
+                          thumbColor: Colors.white,
+                          activeColor: Colors.white,
+                          inactiveColor: Colors.white54,
+                          min: 0,
+                          max: duration.inSeconds.toDouble(),
+                          value: position.inSeconds.toDouble(),
+                          onChanged: (value) async {
+                            final newPosition =
+                                Duration(seconds: value.toInt());
+                            await player.seek(newPosition);
+                            // Resume playback if necessary
+                          },
+                        ),
+                      ),
+                    ),
 
                     // contentType: isImage
                     // contentIconButton('View complete image', 'maximize', () {}),

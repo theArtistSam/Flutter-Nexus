@@ -27,6 +27,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   final List _pages = [
     const HomeScreen(),
     const LibraryScreen(),
+    const SizedBox(), // Empty screen
     Center(child: StyledText(text: 'Forum')),
     Center(child: StyledText(text: 'Profile'))
   ];
