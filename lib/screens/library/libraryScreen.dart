@@ -51,7 +51,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
       return 1;
     }
 
-    void changeState(bool isLeftSelected) {
+    void toggleView(bool isLeftSelected) {
       libraryScreenBloc.add(ToggleView(isLeftSelected: isLeftSelected));
     }
 
@@ -103,7 +103,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                   StyledTabs(
                       leftTabText: 'Folders',
                       rightTabText: 'Content',
-                      changeState: changeState),
+                      changeState: toggleView),
                   const Divider(
                     color: NexusColors.dividerColor,
                     height: 30,
