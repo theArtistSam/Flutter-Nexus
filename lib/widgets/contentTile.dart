@@ -25,6 +25,7 @@ class ContentTile extends StatelessWidget {
   String image;
   VoidCallback onTap;
   bool isSmall;
+
   @override
   Widget build(BuildContext context) {
     return isSmall ? contentTileSmall() : contentTileLarge();

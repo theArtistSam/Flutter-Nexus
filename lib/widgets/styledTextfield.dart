@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nexus/utils/constants.dart';
 
+// ignore: must_be_immutable
 class StyledTextfield extends StatelessWidget {
   StyledTextfield(
       {super.key,

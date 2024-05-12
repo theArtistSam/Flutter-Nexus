@@ -1,5 +1,7 @@
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nexus/blocs/styledTabs_bloc/bloc/styled_tabs_bloc.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/styledText.dart';
 
@@ -9,100 +11,120 @@ class StyledTabs extends StatefulWidget {
       {super.key,
       required this.leftTabText,
       required this.rightTabText,
-      required this.isLeftSelected,
       this.changeState});
 
   String leftTabText;
   String rightTabText;
-  bool isLeftSelected;
-  void Function()? changeState;
+  void Function(bool isLeftSelected)? changeState;
 
   @override
   State<StyledTabs> createState() => _StyledTabsState();
 }
 
 class _StyledTabsState extends State<StyledTabs> {
+  late StyledTabsBloc styledTabsBloc;
+
+  @override
+  void initState() {
+    styledTabsBloc = StyledTabsBloc();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    styledTabsBloc.close();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: ShapeDecoration(
-        color: NexusColors.accentColorLight,
-        shape: SmoothRectangleBorder(
-            borderRadius:
-                SmoothBorderRadius(cornerRadius: 15, cornerSmoothing: 0.8)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: Row(
-          children: [
-            Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    widget.isLeftSelected = !widget.isLeftSelected;
-                    widget.changeState?.call();
-                  });
-                },
-                child: Container(
-                  decoration: ShapeDecoration(
-                    color: widget.isLeftSelected
-                        ? NexusColors.primaryColorLight
-                        : NexusColors.accentColorLight,
-                    shape: SmoothRectangleBorder(
-                        borderRadius: SmoothBorderRadius(
-                            cornerRadius: 10, cornerSmoothing: 0.8)),
-                  ),
-                  child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Center(
-                        child: StyledText(
-                          text: widget.leftTabText,
-                          color: widget.isLeftSelected
-                              ? NexusColors.textColorLight
-                              : NexusColors.textColorDark,
-                          fontWeight: widget.isLeftSelected
-                              ? FontWeight.w600
-                              : FontWeight.w500,
+    return BlocProvider(
+      create: (context) => styledTabsBloc,
+      child: BlocBuilder<StyledTabsBloc, StyledTabsState>(
+        builder: (context, state) {
+          if (state is StyledTabsInitial) {
+            bool isLeftSelected = state.isLeftSelected;
+            return Container(
+              decoration: ShapeDecoration(
+                color: NexusColors.accentColorLight,
+                shape: SmoothRectangleBorder(
+                    borderRadius: SmoothBorderRadius(
+                        cornerRadius: 15, cornerSmoothing: 0.8)),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          styledTabsBloc.add(ToggleTabs());
+                          widget.changeState?.call(isLeftSelected);                          
+                        },
+                        child: Container(
+                          decoration: ShapeDecoration(
+                            color: isLeftSelected
+                                ? NexusColors.primaryColorLight
+                                : NexusColors.accentColorLight,
+                            shape: SmoothRectangleBorder(
+                                borderRadius: SmoothBorderRadius(
+                                    cornerRadius: 10, cornerSmoothing: 0.8)),
+                          ),
+                          child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Center(
+                                child: StyledText(
+                                  text: widget.leftTabText,
+                                  color: isLeftSelected
+                                      ? NexusColors.textColorLight
+                                      : NexusColors.textColorDark,
+                                  fontWeight: isLeftSelected
+                                      ? FontWeight.w600
+                                      : FontWeight.w500,
+                                ),
+                              )),
                         ),
-                      )),
+                      ),
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          styledTabsBloc.add(ToggleTabs());
+                          widget.changeState?.call(isLeftSelected);                          
+                        },
+                        child: Container(
+                          decoration: ShapeDecoration(
+                            color: !isLeftSelected
+                                ? NexusColors.primaryColorLight
+                                : NexusColors.accentColorLight,
+                            shape: SmoothRectangleBorder(
+                                borderRadius: SmoothBorderRadius(
+                                    cornerRadius: 10, cornerSmoothing: 0.8)),
+                          ),
+                          child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Center(
+                                child: StyledText(
+                                  text: widget.rightTabText,
+                                  color: !isLeftSelected
+                                      ? NexusColors.textColorLight
+                                      : NexusColors.textColorDark,
+                                  fontWeight: !isLeftSelected
+                                      ? FontWeight.w600
+                                      : FontWeight.w500,
+                                ),
+                              )),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
               ),
-            ),
-            Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    widget.isLeftSelected = !widget.isLeftSelected;
-                    widget.changeState?.call();
-                  });
-                },
-                child: Container(
-                  decoration: ShapeDecoration(
-                    color: !widget.isLeftSelected
-                        ? NexusColors.primaryColorLight
-                        : NexusColors.accentColorLight,
-                    shape: SmoothRectangleBorder(
-                        borderRadius: SmoothBorderRadius(
-                            cornerRadius: 10, cornerSmoothing: 0.8)),
-                  ),
-                  child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Center(
-                        child: StyledText(
-                          text: widget.rightTabText,
-                          color: !widget.isLeftSelected
-                              ? NexusColors.textColorLight
-                              : NexusColors.textColorDark,
-                          fontWeight: !widget.isLeftSelected
-                              ? FontWeight.w600
-                              : FontWeight.w500,
-                        ),
-                      )),
-                ),
-              ),
-            )
-          ],
-        ),
+            );
+          } else {
+            return const SizedBox();
+          }
+        },
       ),
     );
   }

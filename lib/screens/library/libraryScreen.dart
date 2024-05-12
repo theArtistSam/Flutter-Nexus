@@ -37,7 +37,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
       return 1;
     }
 
-    void changeState() {
+    void changeState(bool isLeftSelected) {
       setState(() {
         isFolderSelected = !isFolderSelected;
       });
@@ -88,7 +88,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                 StyledTabs(
                     leftTabText: 'Folders',
                     rightTabText: 'Content',
-                    isLeftSelected: isFolderSelected,
+                    // isLeftSelected: isFolderSelected,
                     changeState: changeState),
                 const Divider(
                   color: NexusColors.dividerColor,

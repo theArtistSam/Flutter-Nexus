@@ -2,8 +2,10 @@ import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:awesome_bottom_bar/tab_item.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:nexus/blocs/navbar_bloc/bloc/navbar_bloc.dart';
 import 'package:nexus/screens/chat/chatScreen.dart';
 import 'package:nexus/screens/home/homeScreen.dart';
 import 'package:nexus/screens/home/widgets/contentUploadTile.dart';
@@ -14,17 +16,28 @@ import 'package:nexus/widgets/styledButton.dart';
 import 'package:nexus/widgets/styledTabs.dart';
 
 class BottomNavBar extends StatefulWidget {
-  const BottomNavBar({super.key});
+  const BottomNavBar({Key? key}) : super(key: key);
 
   @override
   State<BottomNavBar> createState() => _BottomNavBarState();
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
-  int _selectedIndex = 0;
-  bool isTranslateSelected = false;
+  late NavbarBloc navbarBloc;
 
-  final List _pages = [
+  @override
+  void initState() {
+    navbarBloc = NavbarBloc();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    navbarBloc.close();
+    super.dispose();
+  }
+
+  final List<Widget> _pages = [
     const HomeScreen(),
     const LibraryScreen(),
     const SizedBox(), // Empty screen
@@ -32,34 +45,50 @@ class _BottomNavBarState extends State<BottomNavBar> {
     Center(child: StyledText(text: 'Profile'))
   ];
 
-  _changeTab(int index) {
-    setState(() {
-      final temp = _selectedIndex;
-      _selectedIndex = index;
+  void _changeTab(int index, NavbarState state) {
+    if (state is NavbarInitial) {
+      final temp = state.index;
       if (index == 2) {
         showModalBottomSheet(
           isScrollControlled: true,
           context: context,
           builder: (context) => contentBottomSheet(),
-        );
-        _selectedIndex = temp;
+        ).whenComplete(() {
+          navbarBloc.add(SwitchScreenEvent(index: temp));
+        });
+      } else {
+        navbarBloc.add(SwitchScreenEvent(index: index));
       }
-    });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: BottomBarCreative(
-        items: navbarItems(index: _selectedIndex),
-        backgroundColor: Colors.white,
-        color: Colors.black,
-        colorSelected: NexusColors.primaryColorLight,
-        titleStyle:
-            GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w500),
-        indexSelected: _selectedIndex,
-        onTap: (int index) => _changeTab(index),
+    return BlocProvider(
+      create: (context) => navbarBloc,
+      child: BlocBuilder<NavbarBloc, NavbarState>(
+        builder: (context, state) {
+          if (state is NavbarInitial) {
+            return Scaffold(
+              body: _pages[state.index],
+              bottomNavigationBar: BottomBarCreative(
+                items: navbarItems(index: state.index),
+                backgroundColor: Colors.white,
+                color: Colors.black,
+                colorSelected: NexusColors.primaryColorLight,
+                titleStyle: GoogleFonts.poppins(
+                    fontSize: 11, fontWeight: FontWeight.w500),
+                indexSelected: state.index,
+                onTap: (int index) => _changeTab(index, state),
+              ),
+            );
+          } else {
+            return Scaffold(
+              body:
+                  Container(), // You can add a loading indicator or handle other states here
+            );
+          }
+        },
       ),
     );
   }
@@ -281,9 +310,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 ),
                 const SizedBox(height: 15),
                 StyledTabs(
-                    leftTabText: 'Translate',
-                    rightTabText: 'Summarize',
-                    isLeftSelected: isTranslateSelected),
+                  leftTabText: 'Translate',
+                  rightTabText: 'Summarize',
+                ),
                 const Divider(color: NexusColors.dividerColor, height: 30),
                 Row(
                   children: [

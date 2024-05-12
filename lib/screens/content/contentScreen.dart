@@ -438,9 +438,10 @@ class _ContentScreenState extends State<ContentScreen> {
                     ),
                     const SizedBox(height: 15),
                     StyledTabs(
-                        leftTabText: 'Translate',
-                        rightTabText: 'Summarize',
-                        isLeftSelected: false),
+                      leftTabText: 'Translate',
+                      rightTabText: 'Summarize',
+                      // isLeftSelected: false
+                    ),
                     const Divider(
                       height: 30,
                       color: NexusColors.dividerColor,
@@ -487,9 +488,10 @@ class _ContentScreenState extends State<ContentScreen> {
                         ),
                         const SizedBox(height: 15),
                         StyledTabs(
-                            leftTabText: 'Details',
-                            rightTabText: 'Tags',
-                            isLeftSelected: false),
+                          leftTabText: 'Details',
+                          rightTabText: 'Tags',
+                          // isLeftSelected: false
+                        ),
                         const Divider(
                           color: NexusColors.dividerColor,
                           height: 30,

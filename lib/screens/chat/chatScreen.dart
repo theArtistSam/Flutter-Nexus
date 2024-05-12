@@ -57,7 +57,7 @@ class ChatScreen extends StatelessWidget {
                   StyledTabs(
                     leftTabText: 'Translate',
                     rightTabText: 'Summarize',
-                    isLeftSelected: false,
+                    // isLeftSelected: false,
                   ),
                   const Divider(
                     height: 30,
