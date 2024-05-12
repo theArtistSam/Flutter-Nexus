@@ -3,6 +3,7 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nexus/screens/content/widgets/contentConfigureTabs.dart';
+import 'package:nexus/screens/content/widgets/editBottomSheet.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/contentTile.dart';
 import 'package:nexus/widgets/styledButton.dart';
@@ -80,11 +81,11 @@ class _ContentScreenState extends State<ContentScreen> {
     super.dispose();
   }
 
+  final tags = ['sfs fsf', 'sfsdfdfsf', 'dsfs', 'sfsdf', 'sdf42142 sdf'];
   @override
   Widget build(BuildContext context) {
     final appbarHeight = MediaQuery.of(context).padding.top;
     final screenHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
       backgroundColor: NexusColors.accentColorLight,
       body: SizedBox(
@@ -140,7 +141,7 @@ class _ContentScreenState extends State<ContentScreen> {
                                 isScrollControlled: true,
                                 context: context,
                                 builder: (context) =>
-                                    contentEditBottomSheet() // Add actual content
+                                    const EditBottomSheet() // Add actual content
                                 )
                           },
                           padding: 11.5,
@@ -454,171 +455,6 @@ class _ContentScreenState extends State<ContentScreen> {
         ),
       );
 
-  contentEditBottomSheet() => SingleChildScrollView(
-        child: Padding(
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: Wrap(
-            children: [
-              Container(
-                decoration: const ShapeDecoration(
-                  color: Colors.white,
-                  shape: SmoothRectangleBorder(
-                    borderRadius: SmoothBorderRadius.only(
-                        topLeft: SmoothRadius(
-                            cornerRadius: 20, cornerSmoothing: 0.8),
-                        topRight: SmoothRadius(
-                            cornerRadius: 20, cornerSmoothing: 0.8)),
-                  ),
-                ),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Center(
-                          child: Container(
-                            width: 60,
-                            height: 5,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: NexusColors.borderColor),
-                          ),
-                        ),
-                        const SizedBox(height: 15),
-                        StyledTabs(
-                          leftTabText: 'Details',
-                          rightTabText: 'Tags',
-                          // isLeftSelected: false
-                        ),
-                        const Divider(
-                          color: NexusColors.dividerColor,
-                          height: 30,
-                        ),
-                        Stack(
-                          children: [
-                            ClipRRect(
-                                borderRadius: SmoothBorderRadius(
-                                    cornerRadius: 15, cornerSmoothing: 0.8),
-                                child: Image.asset('assets/images/content.png',
-                                    height: 180,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover)),
-                            Positioned.fill(
-                                child: Container(
-                              // height: 410,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Colors.black.withOpacity(
-                                        .1), // Start color (0% black)
-                                    Colors.black.withOpacity(
-                                        0.5), // End color (90% black)
-                                  ],
-                                ),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: Row(
-                                  // crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(
-                                      'assets/icons/pencil-filled.svg',
-                                      color: Colors.white,
-                                    ),
-                                    const SizedBox(width: 5),
-                                    StyledText(
-                                      text: 'Change Thumbnail',
-                                      fontWeight: FontWeight.w500,
-                                      color: NexusColors.textColorLight,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            )),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        StyledText(text: 'Video Title', fontSize: 18),
-                        const SizedBox(height: 10),
-                        StyledTextfield(
-                          icon: null,
-                          hintText: 'Add video title...',
-                          controller: TextEditingController(),
-                          maxlines: 5,
-                        ),
-                        const SizedBox(height: 20),
-                        StyledText(text: 'Select Folder', fontSize: 18),
-                        const SizedBox(height: 10),
-                        Container(
-                          width: double.infinity,
-                          decoration: ShapeDecoration(
-                              // color: Colors.amber,
-                              shape: SmoothRectangleBorder(
-                                  side: const BorderSide(
-                                      width: 2, color: NexusColors.borderColor),
-                                  borderRadius: SmoothBorderRadius(
-                                      cornerRadius: 15, cornerSmoothing: 0.8))),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 15.0),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                borderRadius: SmoothBorderRadius(
-                                    cornerRadius: 15, cornerSmoothing: 0.8),
-                                icon: SvgPicture.asset(
-                                  'assets/icons/small-arrow-down.svg',
-                                  color: NexusColors.primaryColorLight,
-                                ),
-                                // value: dropdownValue,
-                                items: <String>['A', 'B', 'C', 'D']
-                                    .map((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: StyledText(
-                                      text: value,
-                                      color: NexusColors.primaryColorLight,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  );
-                                }).toList(),
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    dropdownValue = newValue!;
-                                  });
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                        const Divider(
-                          height: 50,
-                          color: NexusColors.dividerColor,
-                        ),
-                        StyledButton(
-                            text: 'Delete Video',
-                            onTap: () {},
-                            isDeleteable: true),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        StyledButton(text: 'Confirm Changes', onTap: () {}),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                      ]),
-                ),
-              )
-            ],
-          ),
-        ),
-      );
-
   contentConfigureBottomSheet() => Wrap(
         children: [
           Container(
@@ -683,7 +519,7 @@ class _ContentScreenState extends State<ContentScreen> {
                     ),
                     ContentConfigureTabs(
                       tabsText: const ['Small', 'Medium', 'Large'],
-                      index: 1,
+                      // index: 1,
                     ),
                     const SizedBox(
                       height: 10,
@@ -693,8 +529,9 @@ class _ContentScreenState extends State<ContentScreen> {
                       height: 10,
                     ),
                     ContentConfigureTabs(
-                        tabsText: const ['Creative', 'Balanaced', 'Precise'],
-                        index: 1),
+                      tabsText: const ['Creative', 'Balanaced', 'Precise'],
+                      // index: 1
+                    ),
                     const Divider(
                       height: 50,
                       color: NexusColors.dividerColor,

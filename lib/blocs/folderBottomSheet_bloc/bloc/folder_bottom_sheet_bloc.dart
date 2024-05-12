@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-part 'folderBottomSheet_event.dart';
-part 'folderBottomSheet_state.dart';
+part 'folder_bottom_sheet_event.dart';
+part 'folder_bottom_sheet_state.dart';
 
 class FolderBottomSheetBloc
     extends Bloc<FolderBottomSheetEvent, FolderBottomSheetState> {

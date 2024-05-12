@@ -1,4 +1,4 @@
-part of 'folderBottomSheet_bloc.dart';
+part of 'folder_bottom_sheet_bloc.dart';
 
 sealed class FolderBottomSheetState extends Equatable {
   const FolderBottomSheetState();

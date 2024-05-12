@@ -59,8 +59,9 @@ class _StyledTabsState extends State<StyledTabs> {
                       child: GestureDetector(
                         onTap: () {
                           if (!isLeftSelected) {
-                            styledTabsBloc
-                                .add(ToggleTabs(isLeftSelected: true));
+                            styledTabsBloc.add(
+                              ToggleTabs(isLeftSelected: true),
+                            );
 
                             // !isLeftSelected is used because state update afterwards
                             widget.changeState?.call(!isLeftSelected);
