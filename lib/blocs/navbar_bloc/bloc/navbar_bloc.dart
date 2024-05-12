@@ -13,6 +13,7 @@ class NavbarBloc extends Bloc<NavbarEvent, NavbarState> {
 
   FutureOr<void> switchScreenEvent(
       SwitchScreenEvent event, Emitter<NavbarState> emit) {
-    emit((state as NavbarInitial).copyWith(index: event.index));
+    final currentState = state as NavbarInitial;
+    emit((currentState).copyWith(index: event.index));
   }
 }

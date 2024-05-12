@@ -58,8 +58,13 @@ class _StyledTabsState extends State<StyledTabs> {
                     Expanded(
                       child: GestureDetector(
                         onTap: () {
-                          styledTabsBloc.add(ToggleTabs());
-                          widget.changeState?.call(isLeftSelected);                          
+                          if (!isLeftSelected) {
+                            styledTabsBloc
+                                .add(ToggleTabs(isLeftSelected: true));
+
+                            // !isLeftSelected is used because state update afterwards
+                            widget.changeState?.call(!isLeftSelected);
+                          }
                         },
                         child: Container(
                           decoration: ShapeDecoration(
@@ -89,8 +94,11 @@ class _StyledTabsState extends State<StyledTabs> {
                     Expanded(
                       child: GestureDetector(
                         onTap: () {
-                          styledTabsBloc.add(ToggleTabs());
-                          widget.changeState?.call(isLeftSelected);                          
+                          if (isLeftSelected) {
+                            styledTabsBloc
+                                .add(ToggleTabs(isLeftSelected: false));
+                            widget.changeState?.call(!isLeftSelected);
+                          }
                         },
                         child: Container(
                           decoration: ShapeDecoration(

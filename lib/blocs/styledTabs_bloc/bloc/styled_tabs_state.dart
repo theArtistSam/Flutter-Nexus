@@ -11,7 +11,7 @@ sealed class StyledTabsState extends Equatable {
 class StyledTabsInitial extends StyledTabsState {
   bool isLeftSelected;
 
-  StyledTabsInitial({this.isLeftSelected = false});
+  StyledTabsInitial({this.isLeftSelected = true});
 
   StyledTabsInitial copyWith({bool? isLeftSelected}) {
     return StyledTabsInitial(

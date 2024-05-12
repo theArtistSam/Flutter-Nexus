@@ -24,6 +24,7 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> {
   late NavbarBloc navbarBloc;
+  bool? isLeftSelected;
 
   @override
   void initState() {
@@ -213,7 +214,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
         ],
       );
 
-  Widget uploadBottomSheet() => Wrap(
+  void tabCallBack(bool isLeftSelected) {
+    this.isLeftSelected = isLeftSelected;
+  }
+
+  Widget uploadBottomSheet(bool isLeftSelected) => Wrap(
         children: [
           Container(
             decoration: const ShapeDecoration(
@@ -275,7 +280,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 ),
                 const SizedBox(height: 20),
                 StyledButton(
-                  text: 'Summarize All',
+                  text: isLeftSelected ? 'Translate All' : 'Summarize All',
                   onTap: () => {},
                 ),
                 const SizedBox(height: 20),
@@ -312,6 +317,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 StyledTabs(
                   leftTabText: 'Translate',
                   rightTabText: 'Summarize',
+                  changeState: tabCallBack,
                 ),
                 const Divider(color: NexusColors.dividerColor, height: 30),
                 Row(
@@ -324,9 +330,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
                           showModalBottomSheet(
                               isScrollControlled: true,
                               context: context,
-                              builder: (context) =>
-                                  uploadBottomSheet() // Add actual content
-                              );
+                              builder: (context) => uploadBottomSheet(
+                                  isLeftSelected ?? true) // Add actual content
+                              ).whenComplete(() => isLeftSelected = true);
                         }),
                     const Spacer(),
                     ContentUploadTile(

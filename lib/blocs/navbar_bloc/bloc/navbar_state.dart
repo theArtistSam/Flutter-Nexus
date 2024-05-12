@@ -11,7 +11,7 @@ class NavbarInitial extends NavbarState {
 
   NavbarInitial({this.index = 0});
 
-  NavbarInitial copyWith({int? index, bool? isTranslateSelected}) {
+  NavbarInitial copyWith({int? index}) {
     return NavbarInitial(
       index: index ?? this.index,
     );

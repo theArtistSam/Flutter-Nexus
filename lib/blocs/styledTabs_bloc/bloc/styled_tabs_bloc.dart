@@ -13,6 +13,6 @@ class StyledTabsBloc extends Bloc<StyledTabsEvent, StyledTabsState> {
 
   FutureOr<void> toggleTabs(ToggleTabs event, Emitter<StyledTabsState> emit) {
     final currentState = (state as StyledTabsInitial);
-    emit((currentState).copyWith(isLeftSelected: !currentState.isLeftSelected));
+    emit((currentState).copyWith(isLeftSelected: event.isLeftSelected));
   }
 }

@@ -7,4 +7,8 @@ sealed class StyledTabsEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class ToggleTabs extends StyledTabsEvent {}
+// ignore: must_be_immutable
+class ToggleTabs extends StyledTabsEvent {
+  bool isLeftSelected;
+  ToggleTabs({required this.isLeftSelected});
+}
