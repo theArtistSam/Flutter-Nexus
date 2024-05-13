@@ -89,34 +89,38 @@ class _FolderBottomSheetState extends State<FolderBottomSheet> {
                           color: NexusColors.borderColor),
                     ),
                     const SizedBox(height: 15),
-                    StyledTextfield(
-                      icon: 'folder-minus',
-                      hintText: 'New Folder name',
-                      controller: TextEditingController(),
-                    ),
-                    const SizedBox(height: 15),
                     BlocBuilder<FolderBottomSheetBloc, FolderBottomSheetState>(
                       builder: (context, state) {
                         if (state is FolderBottomSheetInitial) {
-                          return MasonryGridView.count(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              padding: const EdgeInsets.all(0),
-                              crossAxisCount: gridCount(),
-                              crossAxisSpacing: 15, //
-                              mainAxisSpacing: 15,
-                              itemCount: icons.length,
-                              itemBuilder: (context, index) {
-                                return StyledIconButton(
-                                    icon: icons[index],
-                                    iconColor: index == state.index
-                                        ? Colors.white
-                                        : NexusColors.primaryColorLight,
-                                    backgroundColor: index == state.index
-                                        ? NexusColors.primaryColorLight
-                                        : NexusColors.accentColorLight,
-                                    onTap: () => setSelectedIndex(index));
-                              });
+                          return Column(
+                            children: [
+                              StyledTextfield(
+                                icon: icons[state.index],
+                                hintText: 'New folder name',
+                                controller: TextEditingController(),
+                              ),
+                              const SizedBox(height: 15),
+                              MasonryGridView.count(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  padding: const EdgeInsets.all(0),
+                                  crossAxisCount: gridCount(),
+                                  crossAxisSpacing: 15, //
+                                  mainAxisSpacing: 15,
+                                  itemCount: icons.length,
+                                  itemBuilder: (context, index) {
+                                    return StyledIconButton(
+                                        icon: icons[index],
+                                        iconColor: index == state.index
+                                            ? Colors.white
+                                            : NexusColors.primaryColorLight,
+                                        backgroundColor: index == state.index
+                                            ? NexusColors.primaryColorLight
+                                            : NexusColors.accentColorLight,
+                                        onTap: () => setSelectedIndex(index));
+                                  }),
+                            ],
+                          );
                         }
                         return const SizedBox();
                       },
