@@ -4,13 +4,13 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:nexus/blocs/editBottomSheet_bloc/bloc/edit_bottom_sheet_bloc.dart';
+import 'package:nexus/blocs/edit_bottom_sheet_bloc/bloc/edit_bottom_sheet_bloc.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styledButton.dart';
-import 'package:nexus/widgets/styledIconButton.dart';
-import 'package:nexus/widgets/styledTabs.dart';
-import 'package:nexus/widgets/styledText.dart';
-import 'package:nexus/widgets/styledTextfield.dart';
+import 'package:nexus/widgets/styled_button.dart';
+import 'package:nexus/widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_tabs.dart';
+import 'package:nexus/widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_textfield.dart';
 
 class EditBottomSheet extends StatefulWidget {
   const EditBottomSheet({super.key});

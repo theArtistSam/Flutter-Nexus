@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:nexus/screens/content/contentScreen.dart';
-import 'package:nexus/screens/folder/widgets/folderBottomSheet.dart';
-import 'package:nexus/widgets/contentTile.dart';
+import 'package:nexus/screens/content/content_screen.dart';
+import 'package:nexus/screens/folder/widgets/folder_bottom_sheet.dart';
+import 'package:nexus/widgets/content_tile.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styledText.dart';
-import 'package:nexus/widgets/styledButton.dart';
-import 'package:nexus/widgets/styledIconButton.dart';
-import 'package:nexus/widgets/styledTextfield.dart';
+import 'package:nexus/widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_button.dart';
+import 'package:nexus/widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_textfield.dart';
 
 // ignore: must_be_immutable
 class FolderScreen extends StatefulWidget {

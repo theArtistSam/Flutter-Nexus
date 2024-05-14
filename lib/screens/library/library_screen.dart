@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:nexus/blocs/libraryScreen_bloc/bloc/library_screen_bloc.dart';
-import 'package:nexus/screens/folder/folderScreen.dart';
-import 'package:nexus/widgets/contentTile.dart';
-import 'package:nexus/screens/search/searchScreen.dart';
+import 'package:nexus/blocs/library_screen_bloc/bloc/library_screen_bloc.dart';
+import 'package:nexus/screens/folder/folder_screen.dart';
+import 'package:nexus/widgets/content_tile.dart';
+import 'package:nexus/screens/search/search_screen.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styledText.dart';
-import 'package:nexus/widgets/styledIconButton.dart';
-import 'package:nexus/widgets/styledIconTile.dart';
-import 'package:nexus/widgets/styledTabs.dart';
+import 'package:nexus/widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_icon_tile.dart';
+import 'package:nexus/widgets/styled_tabs.dart';
 
 // ignore: must_be_immutable
 class LibraryScreen extends StatefulWidget {

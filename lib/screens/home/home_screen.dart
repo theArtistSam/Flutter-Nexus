@@ -6,16 +6,16 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:nexus/screens/home/widgets/contentUploadTile.dart';
-import 'package:nexus/widgets/contentTile.dart';
-import 'package:nexus/screens/home/widgets/guideTile.dart';
+import 'package:nexus/screens/home/widgets/content_upload_tile.dart';
+import 'package:nexus/widgets/content_tile.dart';
+import 'package:nexus/screens/home/widgets/guide_tile.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styledText.dart';
-import 'package:nexus/widgets/styledButton.dart';
-import 'package:nexus/widgets/styledIconButton.dart';
+import 'package:nexus/widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_button.dart';
+import 'package:nexus/widgets/styled_icon_button.dart';
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
-import 'package:nexus/widgets/styledIconTile.dart';
-import 'package:nexus/widgets/styledTabs.dart';
+import 'package:nexus/widgets/styled_icon_tile.dart';
+import 'package:nexus/widgets/styled_tabs.dart';
 
 class HomeScreen extends StatefulWidget {
   // ignore: use_key_in_widget_constructors

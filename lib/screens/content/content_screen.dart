@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:nexus/blocs/contentScreen_bloc/bloc/content_screen_bloc.dart';
-import 'package:nexus/screens/content/widgets/contentConfigureTabs.dart';
-import 'package:nexus/screens/content/widgets/editBottomSheet.dart';
+import 'package:nexus/blocs/content_screen_bloc/bloc/content_screen_bloc.dart';
+import 'package:nexus/screens/content/widgets/content_configure_tabs.dart';
+import 'package:nexus/screens/content/widgets/edit_bottom_sheet.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/contentTile.dart';
-import 'package:nexus/widgets/styledButton.dart';
-import 'package:nexus/widgets/styledIconButton.dart';
-import 'package:nexus/widgets/styledTabs.dart';
-import 'package:nexus/widgets/styledText.dart';
-import 'package:nexus/widgets/styledTextfield.dart';
+import 'package:nexus/widgets/content_tile.dart';
+import 'package:nexus/widgets/styled_button.dart';
+import 'package:nexus/widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_tabs.dart';
+import 'package:nexus/widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_textfield.dart';
 
 // ignore: must_be_immutable
 class ContentScreen extends StatefulWidget {
@@ -572,7 +572,7 @@ class _ContentScreenState extends State<ContentScreen> {
                       height: 10,
                     ),
                     ContentConfigureTabs(
-                      tabsText: const ['Small', 'Medium', 'Large'],
+                      tabsText: const ['Short', 'Medium', 'Long'],
                       // index: 1,
                     ),
                     const SizedBox(

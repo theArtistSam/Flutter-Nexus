@@ -1,11 +1,11 @@
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
-import 'package:nexus/widgets/contentTile.dart';
+import 'package:nexus/widgets/content_tile.dart';
 import 'package:nexus/screens/search/widgets/filterTile.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styledText.dart';
-import 'package:nexus/widgets/styledIconButton.dart';
-import 'package:nexus/widgets/styledTextfield.dart';
+import 'package:nexus/widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_textfield.dart';
 
 class SearchScreenn extends StatefulWidget {
   const SearchScreenn({super.key});

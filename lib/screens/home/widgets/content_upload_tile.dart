@@ -2,7 +2,7 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styledText.dart';
+import 'package:nexus/widgets/styled_text.dart';
 
 // ignore: must_be_immutable
 class ContentUploadTile extends StatelessWidget {

@@ -1,11 +1,12 @@
 import 'package:flutter/services.dart' as services;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nexus/screens/content/contentScreen.dart';
-import 'package:nexus/screens/folder/folderScreen.dart';
-import 'package:nexus/screens/home/homeScreen.dart';
-import 'package:nexus/screens/library/libraryScreen.dart';
-import 'package:nexus/utils/bottomNavbar.dart';
+import 'package:nexus/screens/content/content_screen.dart';
+import 'package:nexus/screens/folder/folder_screen.dart';
+import 'package:nexus/screens/home/home_screen.dart';
+import 'package:nexus/screens/library/library_screen.dart';
+import 'package:nexus/screens/sample_screen.dart';
+import 'package:nexus/utils/bottom_navbar.dart';
 import 'package:nexus/utils/constants.dart';
 
 void main() {

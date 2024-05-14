@@ -6,14 +6,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nexus/blocs/navbar_bloc/bloc/navbar_bloc.dart';
-import 'package:nexus/screens/chat/chatScreen.dart';
-import 'package:nexus/screens/home/homeScreen.dart';
-import 'package:nexus/screens/home/widgets/contentUploadTile.dart';
-import 'package:nexus/screens/library/libraryScreen.dart';
+import 'package:nexus/screens/chat/chat_screen.dart';
+import 'package:nexus/screens/home/home_screen.dart';
+import 'package:nexus/screens/home/widgets/content_upload_tile.dart';
+import 'package:nexus/screens/library/library_screen.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styledText.dart';
-import 'package:nexus/widgets/styledButton.dart';
-import 'package:nexus/widgets/styledTabs.dart';
+import 'package:nexus/widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_button.dart';
+import 'package:nexus/widgets/styled_tabs.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({Key? key}) : super(key: key);

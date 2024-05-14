@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, file_names
 
 import 'dart:ffi';
 
@@ -6,7 +6,7 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styledText.dart';
+import 'package:nexus/widgets/styled_text.dart';
 
 // ignore: must_be_immutable
 class ContentTile extends StatelessWidget {

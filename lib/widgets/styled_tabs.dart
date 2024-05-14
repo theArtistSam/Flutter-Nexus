@@ -1,9 +1,9 @@
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nexus/blocs/styledTabs_bloc/bloc/styled_tabs_bloc.dart';
+import 'package:nexus/blocs/styled_tabs_bloc/bloc/styled_tabs_bloc.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styledText.dart';
+import 'package:nexus/widgets/styled_text.dart';
 
 // ignore: must_be_immutable
 class StyledTabs extends StatefulWidget {

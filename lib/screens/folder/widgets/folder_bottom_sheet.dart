@@ -2,11 +2,11 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:nexus/blocs/folderBottomSheet_bloc/bloc/folder_bottom_sheet_bloc.dart';
+import 'package:nexus/blocs/folder_bottom_sheet_bloc/bloc/folder_bottom_sheet_bloc.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styledButton.dart';
-import 'package:nexus/widgets/styledIconButton.dart';
-import 'package:nexus/widgets/styledTextfield.dart';
+import 'package:nexus/widgets/styled_button.dart';
+import 'package:nexus/widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_textfield.dart';
 
 class FolderBottomSheet extends StatefulWidget {
   const FolderBottomSheet({super.key});

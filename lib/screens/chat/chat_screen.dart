@@ -2,12 +2,15 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:nexus/blocs/chatScreen_bloc/bloc/chat_screen_bloc.dart';
+import 'package:nexus/blocs/chat_screen_bloc/bloc/chat_screen_bloc.dart';
+import 'package:nexus/blocs/extractive_model_bloc/bloc/extractive_model_bloc.dart';
+import 'package:nexus/models/extractive_model.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styledText.dart';
-import 'package:nexus/widgets/styledIconButton.dart';
-import 'package:nexus/widgets/styledTabs.dart';
-import 'package:nexus/widgets/styledTextfield.dart';
+import 'package:nexus/widgets/content_configure_bottomsheet.dart';
+import 'package:nexus/widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_tabs.dart';
+import 'package:nexus/widgets/styled_textfield.dart';
 
 // ignore: must_be_immutable
 class ChatScreen extends StatefulWidget {
@@ -20,27 +23,33 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   TextEditingController controller = TextEditingController();
   late ChatScreenBloc chatScreenBloc;
-
+  late ExtractiveModelBloc extractiveModelBloc;
   @override
   void initState() {
     chatScreenBloc = ChatScreenBloc();
+    extractiveModelBloc = ExtractiveModelBloc();
     super.initState();
   }
 
   @override
   void dispose() {
     chatScreenBloc.close();
+    extractiveModelBloc.close();
     super.dispose();
   }
 
   void toggleView(bool isLeftSelected) {
+    print(isLeftSelected);
     chatScreenBloc.add(ToggleView(isLeftSelected: isLeftSelected));
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => chatScreenBloc,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<ChatScreenBloc>.value(value: chatScreenBloc),
+        BlocProvider<ExtractiveModelBloc>.value(value: extractiveModelBloc),
+      ],
       child: Scaffold(
           backgroundColor: NexusColors.accentColorLight,
           appBar: PreferredSize(
@@ -61,7 +70,17 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
                 title: StyledText(text: 'Chat with AI', fontSize: 24),
                 actions: [
-                  StyledIconButton(icon: 'menu', onTap: () {}),
+                  StyledIconButton(
+                    icon: 'menu',
+                    onTap: () {
+                      showModalBottomSheet(
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (context) =>
+                              const ContentConfigureBottomSheet() // Add actual content
+                          );
+                    },
+                  ),
                 ],
               ),
             ),
@@ -133,16 +152,21 @@ class _ChatScreenState extends State<ChatScreen> {
                   Expanded(
                     child: StyledTextfield(
                       icon: null,
-                      maxlines: 3,
+                      maxlines: 5,
                       hintText: 'Write text to translate',
                       controller: controller,
                     ),
                   ),
                   const SizedBox(width: 10),
                   StyledIconButton(
-                      icon: 'arrow-up',
-                      backgroundColor: NexusColors.primaryColorLight,
-                      onTap: () => {})
+                    icon: 'arrow-up',
+                    backgroundColor: NexusColors.primaryColorLight,
+                    onTap: () => {
+                      if (controller.text.isNotEmpty)
+                        extractiveModelBloc
+                            .add(FetchModelResult(text: controller.text))
+                    },
+                  )
                 ],
               ),
             ),
