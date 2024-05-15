@@ -4,8 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nexus/blocs/chat_screen_bloc/bloc/chat_screen_bloc.dart';
 import 'package:nexus/blocs/extractive_model_bloc/bloc/extractive_model_bloc.dart';
+import 'package:nexus/models/chat_model.dart';
 import 'package:nexus/models/extractive_model.dart';
 import 'package:nexus/utils/constants.dart';
+import 'package:nexus/utils/enums.dart';
 import 'package:nexus/widgets/content_configure_bottomsheet.dart';
 import 'package:nexus/widgets/styled_text.dart';
 import 'package:nexus/widgets/styled_icon_button.dart';
@@ -28,6 +30,9 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     chatScreenBloc = ChatScreenBloc();
     extractiveModelBloc = ExtractiveModelBloc();
+
+    //  FOR NOW JUST KEEP SUMMARIZATION
+    chatScreenBloc.add(ToggleView(isLeftSelected: false));
     super.initState();
   }
 
@@ -39,7 +44,6 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void toggleView(bool isLeftSelected) {
-    print(isLeftSelected);
     chatScreenBloc.add(ToggleView(isLeftSelected: isLeftSelected));
   }
 
@@ -110,23 +114,42 @@ class _ChatScreenState extends State<ChatScreen> {
                     height: 30,
                     color: NexusColors.dividerColor,
                   ),
-                  BlocBuilder<ChatScreenBloc, ChatScreenState>(
-                    builder: (context, state) {
-                      if (state is ChatScreenInitial) {
-                        bool isLeftSelected = state.isLeftSelected;
-                        return coversation(
-                            isTranslation: isLeftSelected,
-                            userChat:
-                                "What were they eating? It didn't taste like anything she had ever eaten before and although she was famished, she didn't dare ask. She knew the answer would be one she didn't want to hear.",
-                            aiChat: isLeftSelected
-                                ? "وہ کیا کھا رہے تھے؟ اس کا ذائقہ ایسا نہیں تھا جو اس نے پہلے کبھی کھایا ہو اور اگرچہ وہ بھوکی تھی، اس نے پوچھنے کی ہمت نہیں کی۔ وہ جانتی تھی کہ جواب وہی ہوگا جو وہ سننا نہیں چاہتی تھی۔"
-                                : "What were they eating? It didn't taste like anything she had ever eaten before and although she was famished");
+                  BlocListener<ExtractiveModelBloc, ExtractiveModelState>(
+                    listener: (context, state) {
+                      if (state is ExtractiveModelInitial &&
+                          state.status == ModelStatus.success) {
+                        chatScreenBloc.add(NewChatSummary(
+                            chat: ChatModel(
+                                user: 'ai',
+                                message: state.message,
+                                type: 'summarization')));
+
+                        // print(state.message);
                       }
-                      return const SizedBox();
                     },
+                    child: BlocBuilder<ChatScreenBloc, ChatScreenState>(
+                      builder: (context, state) {
+                        if (state is ChatScreenInitial) {
+                          bool isLeftSelected = state.isLeftSelected;
+                          List<ChatModel> chatList = isLeftSelected
+                              ? state.translations
+                              : state.summaries;
+                          return coversation(
+                              isTranslation: isLeftSelected, chatList: chatList
+                              // userChat:
+                              //     "What were they eating? It didn't taste like anything she had ever eaten before and although she was famished, she didn't dare ask. She knew the answer would be one she didn't want to hear.",
+                              // aiChat: isLeftSelected
+                              //     ? "وہ کیا کھا رہے تھے؟ اس کا ذائقہ ایسا نہیں تھا جو اس نے پہلے کبھی کھایا ہو اور اگرچہ وہ بھوکی تھی، اس نے پوچھنے کی ہمت نہیں کی۔ وہ جانتی تھی کہ جواب وہی ہوگا جو وہ سننا نہیں چاہتی تھی۔"
+                              //     : "What were they eating? It didn't taste like anything she had ever eaten before and although she was famished");
+                              );
+                        }
+                        return const SizedBox();
+                      },
+                    ),
                   ),
                   const SizedBox(
-                    height: 105,
+                    // 190
+                    height: 102,
                   )
                 ],
               ),
@@ -153,7 +176,8 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: StyledTextfield(
                       icon: null,
                       maxlines: 5,
-                      hintText: 'Write text to translate',
+                      // FOR NOW LET"S KEEP IT SUMMARIZE
+                      hintText: 'Write text to summarize',
                       controller: controller,
                     ),
                   ),
@@ -163,8 +187,21 @@ class _ChatScreenState extends State<ChatScreen> {
                     backgroundColor: NexusColors.primaryColorLight,
                     onTap: () => {
                       if (controller.text.isNotEmpty)
-                        extractiveModelBloc
-                            .add(FetchModelResult(text: controller.text))
+                        {
+                          extractiveModelBloc.add(
+                            FetchModelResult(text: controller.text),
+                          ),
+                          chatScreenBloc.add(
+                            NewChatSummary(
+                              chat: ChatModel(
+                                user: 'user',
+                                message: controller.text,
+                                type: 'summarization',
+                              ),
+                            ),
+                          ),
+                          controller.clear()
+                        }
                     },
                   )
                 ],
@@ -251,23 +288,22 @@ class _ChatScreenState extends State<ChatScreen> {
       );
 
   coversation(
-          {required bool isTranslation,
-          required String userChat,
-          required String aiChat}) =>
+          {required bool isTranslation, required List<ChatModel> chatList}) =>
       Expanded(
         child: ListView.separated(
           reverse: true,
-          itemCount: 6, // Number of items
+          itemCount: chatList.length, // Number of items
           separatorBuilder: (BuildContext context, int index) {
             return const SizedBox(height: 15); // Separator between items
           },
           itemBuilder: (BuildContext context, int index) {
-            if (index % 2 != 0) {
-              return this.userChat(chat: userChat);
+            final recent = chatList.length - index - 1;
+            if (chatList[recent].user == 'user') {
+              return userChat(chat: chatList[recent].message);
             }
-            return this.aiChat(
+            return aiChat(
               isTranslation: isTranslation,
-              chat: aiChat,
+              chat: chatList[recent].message,
             );
           },
         ),

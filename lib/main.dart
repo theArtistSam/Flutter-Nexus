@@ -5,7 +5,6 @@ import 'package:nexus/screens/content/content_screen.dart';
 import 'package:nexus/screens/folder/folder_screen.dart';
 import 'package:nexus/screens/home/home_screen.dart';
 import 'package:nexus/screens/library/library_screen.dart';
-import 'package:nexus/screens/sample_screen.dart';
 import 'package:nexus/utils/bottom_navbar.dart';
 import 'package:nexus/utils/constants.dart';
 

@@ -12,3 +12,9 @@ class ToggleView extends ChatScreenEvent {
   bool isLeftSelected;
   ToggleView({required this.isLeftSelected});
 }
+
+// ignore: must_be_immutable
+class NewChatSummary extends ChatScreenEvent {
+  ChatModel chat;
+  NewChatSummary({required this.chat});
+}

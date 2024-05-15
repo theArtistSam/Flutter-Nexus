@@ -8,15 +8,27 @@ sealed class ChatScreenState extends Equatable {
 }
 
 // ignore: must_be_immutable
-final class ChatScreenInitial extends ChatScreenState {
-  bool isLeftSelected;
-  ChatScreenInitial({this.isLeftSelected = true});
+class ChatScreenInitial extends ChatScreenState {
+  final bool isLeftSelected;
+  final List<ChatModel> summaries;
+  final List<ChatModel> translations;
 
-  ChatScreenInitial copyWith({bool? isLeftSelected}) {
+  const ChatScreenInitial(
+      {this.isLeftSelected = true,
+      this.summaries = const <ChatModel>[],
+      this.translations = const <ChatModel>[]});
+
+  ChatScreenInitial copyWith(
+      {bool? isLeftSelected,
+      List<ChatModel>? summaries,
+      List<ChatModel>? translations}) {
     return ChatScreenInitial(
-        isLeftSelected: isLeftSelected ?? this.isLeftSelected);
+      isLeftSelected: isLeftSelected ?? this.isLeftSelected,
+      summaries: summaries ?? this.summaries,
+      translations: translations ?? this.translations,
+    );
   }
 
   @override
-  List<Object> get props => [isLeftSelected];
+  List<Object> get props => [isLeftSelected, summaries, translations];
 }
