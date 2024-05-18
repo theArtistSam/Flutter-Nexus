@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:awesome_bottom_bar/tab_item.dart';
 import 'package:figma_squircle/figma_squircle.dart';
@@ -46,14 +48,15 @@ class _BottomNavBarState extends State<BottomNavBar> {
     Center(child: StyledText(text: 'Profile'))
   ];
 
-  void _changeTab(int index, NavbarState state) {
+  void _changeTab(int index, NavbarState state, double bottomPadding) {
     if (state is NavbarInitial) {
       final temp = state.index;
       if (index == 2) {
         showModalBottomSheet(
           isScrollControlled: true,
           context: context,
-          builder: (context) => contentBottomSheet(),
+          builder: (context) =>
+              contentBottomSheet(bottomPadding: bottomPadding),
         ).whenComplete(() {
           navbarBloc.add(SwitchScreenEvent(index: temp));
         });
@@ -65,14 +68,27 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   @override
   Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
     return BlocProvider(
       create: (context) => navbarBloc,
       child: BlocBuilder<NavbarBloc, NavbarState>(
         builder: (context, state) {
           if (state is NavbarInitial) {
             return Scaffold(
+              extendBody: true,
+              // resizeToAvoidBottomInset: true,
               body: _pages[state.index],
               bottomNavigationBar: BottomBarCreative(
+                // isFloating: true,
+                // top: 5,
+                bottom: 5,
+                highlightStyle: const HighlightStyle(
+                    // elevation: 3,
+                    sizeLarge: true,
+                    // isHexagon: true,
+                    // background: Colors.transparent,
+                    color: Color.fromARGB(0, 3, 3, 3)),
                 items: navbarItems(index: state.index),
                 backgroundColor: Colors.white,
                 color: Colors.black,
@@ -80,7 +96,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 titleStyle: GoogleFonts.poppins(
                     fontSize: 11, fontWeight: FontWeight.w500),
                 indexSelected: state.index,
-                onTap: (int index) => _changeTab(index, state),
+                onTap: (int index) => _changeTab(index, state, bottomPadding),
               ),
             );
           } else {
@@ -114,11 +130,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
             ),
             title: 'Library'),
         TabItem(
-            icon: SvgPicture.asset(
-              'assets/icons/sparkle.svg',
-              height: 24,
-            ),
-            title: 'AI'),
+          icon: SvgPicture.asset(
+            'assets/icons/sparkle.svg',
+            height: 24,
+          ),
+          // title: 'AI',
+        ),
         TabItem(
             icon: SvgPicture.asset(
               index == 3
@@ -218,7 +235,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
     this.isLeftSelected = isLeftSelected;
   }
 
-  Widget uploadBottomSheet(bool isLeftSelected) => Wrap(
+  Widget uploadBottomSheet(
+          {required bool isLeftSelected, required double bottomPadding}) =>
+      Wrap(
         children: [
           Container(
             decoration: const ShapeDecoration(
@@ -283,14 +302,14 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   text: isLeftSelected ? 'Translate All' : 'Summarize All',
                   onTap: () => {},
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: bottomPadding),
               ]),
             ),
           )
         ],
       );
 
-  Widget contentBottomSheet() => Wrap(
+  Widget contentBottomSheet({required double bottomPadding}) => Wrap(
         children: [
           Container(
             decoration: const ShapeDecoration(
@@ -328,11 +347,13 @@ class _BottomNavBarState extends State<BottomNavBar> {
                         onTap: () {
                           Navigator.of(context).pop();
                           showModalBottomSheet(
-                              isScrollControlled: true,
-                              context: context,
-                              builder: (context) => uploadBottomSheet(
-                                  isLeftSelected ?? true) // Add actual content
-                              ).whenComplete(() => isLeftSelected = true);
+                            isScrollControlled: true,
+                            context: context,
+                            builder: (context) => uploadBottomSheet(
+                                isLeftSelected: isLeftSelected ?? true,
+                                bottomPadding:
+                                    bottomPadding), // Add actual content
+                          ).whenComplete(() => isLeftSelected = true);
                         }),
                     const Spacer(),
                     ContentUploadTile(
@@ -361,7 +382,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   },
                   icon: 'message-filled',
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: bottomPadding),
               ]),
             ),
           )

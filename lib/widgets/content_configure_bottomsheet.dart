@@ -11,6 +11,8 @@ class ContentConfigureBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
     return Wrap(
       children: [
         Container(
@@ -91,7 +93,7 @@ class ContentConfigureBottomSheet extends StatelessWidget {
                 color: NexusColors.dividerColor,
               ),
               StyledButton(text: 'Confirm changes', onTap: () {}),
-              const SizedBox(height: 20),
+              SizedBox(height: bottomPadding),
             ]),
           ),
         )

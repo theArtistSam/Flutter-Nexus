@@ -41,6 +41,8 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
     return BlocProvider(
       create: (context) => editBottomSheetBloc,
       child: SingleChildScrollView(
@@ -93,9 +95,12 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                         builder: (context, state) {
                           if (state is EditBottomSheetInitial) {
                             return state.isLeftSelected
-                                ? editBottomSheetContent()
+                                ? editBottomSheetContent(
+                                    bottomPadding: bottomPadding)
                                 : tagsBottomSheetContent(
-                                    tags: tags, onTap: () {});
+                                    tags: tags,
+                                    onTap: () {},
+                                    bottomPadding: bottomPadding);
                           } else {
                             return const SizedBox();
                           }
@@ -154,7 +159,8 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
         ),
       );
 
-  tagsBottomSheetContent({tags, onTap}) => Column(
+  tagsBottomSheetContent({tags, onTap, required double bottomPadding}) =>
+      Column(
         children: [
           Row(
             children: [
@@ -173,7 +179,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
           ),
           SizedBox(
             width: double.infinity,
-            height: 523,
+            height: 503 + bottomPadding,
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Wrap(children: [
@@ -184,7 +190,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
         ],
       );
 
-  editBottomSheetContent() => Column(
+  editBottomSheetContent({required double bottomPadding}) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Stack(
@@ -290,8 +296,8 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
             height: 15,
           ),
           StyledButton(text: 'Confirm Changes', onTap: () {}),
-          const SizedBox(
-            height: 20,
+          SizedBox(
+            height: bottomPadding,
           ),
         ],
       );

@@ -40,6 +40,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void dispose() {
     chatScreenBloc.close();
     extractiveModelBloc.close();
+    controller.dispose();
     super.dispose();
   }
 
@@ -118,14 +119,17 @@ class _ChatScreenState extends State<ChatScreen> {
                     listener: (context, state) {
                       if (state is ExtractiveModelInitial &&
                           state.status == ModelStatus.success) {
-                        chatScreenBloc.add(NewChatSummary(
+                        chatScreenBloc.add(
+                          NewChatSummary(
                             chat: ChatModel(
                                 user: 'ai',
                                 message: state.message,
-                                type: 'summarization')));
-
-                        // print(state.message);
+                                type: 'summarization'),
+                          ),
+                        );
                       }
+                      // ADD AN ELSE IN CASE OF ERROR
+                      // REMOVE PREVIOUS ADDED ITEM
                     },
                     child: BlocBuilder<ChatScreenBloc, ChatScreenState>(
                       builder: (context, state) {

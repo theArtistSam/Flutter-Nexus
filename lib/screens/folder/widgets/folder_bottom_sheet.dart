@@ -51,6 +51,8 @@ class _FolderBottomSheetState extends State<FolderBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
     int gridCount() {
       if (screenWidth > 70) {
         return (screenWidth ~/ 65).toInt();
@@ -135,7 +137,7 @@ class _FolderBottomSheetState extends State<FolderBottomSheet> {
                         onTap: () => {}),
                     const SizedBox(height: 20),
                     StyledButton(text: 'Confirm Changes', onTap: () => {}),
-                    const SizedBox(height: 20),
+                    SizedBox(height: bottomPadding),
                   ]),
                 ),
               )
