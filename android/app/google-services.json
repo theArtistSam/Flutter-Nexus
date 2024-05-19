@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "217320925090",
+    "project_id": "nexus-ef4c1",
+    "storage_bucket": "nexus-ef4c1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:217320925090:android:bf4c7c37d5c0df98cc34fb",
+        "android_client_info": {
+          "package_name": "com.example.nexus"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-Kcgm4RmMydrKt-VzRsNCyWx9ZJYnHD8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

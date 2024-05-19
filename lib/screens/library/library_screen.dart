@@ -60,7 +60,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
       child: Scaffold(
           backgroundColor: NexusColors.accentColorLight,
           appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(kToolbarHeight + 15),
+            preferredSize: const Size.fromHeight(kToolbarHeight + 5),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: AppBar(
@@ -104,9 +104,12 @@ class _LibraryScreenState extends State<LibraryScreen> {
                       leftTabText: 'Folders',
                       rightTabText: 'Content',
                       changeState: toggleView),
+                  const SizedBox(
+                    height: 15,
+                  ),
                   const Divider(
                     color: NexusColors.dividerColor,
-                    height: 30,
+                    height: 1,
                   ),
                   BlocBuilder<LibraryScreenBloc, LibraryScreenState>(
                       builder: (context, state) {
@@ -115,7 +118,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                       return isLeftSelected
                           ? Expanded(
                               child: MasonryGridView.count(
-                                  padding: const EdgeInsets.all(0),
+                                  padding: const EdgeInsets.only(top: 15),
                                   crossAxisCount: gridCount(),
                                   crossAxisSpacing: 15, //
                                   mainAxisSpacing: 15,
@@ -144,6 +147,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                             )
                           : Expanded(
                               child: ListView.separated(
+                                padding: const EdgeInsets.only(top: 15),
                                 itemCount: 5, // Number of items
                                 separatorBuilder:
                                     (BuildContext context, int index) {
@@ -153,13 +157,14 @@ class _LibraryScreenState extends State<LibraryScreen> {
                                 itemBuilder: (BuildContext context, int index) {
                                   // Build each item
                                   return ContentTile(
-                                      title:
-                                          'Learn how to make vids on YouTube from home',
-                                      image: 'content',
-                                      date: 'December 10, 2024',
-                                      icon: 'video',
-                                      // isSmall: true,
-                                      onTap: () => {});
+                                    title:
+                                        'Learn how to make vids on YouTube from home',
+                                    image: 'content',
+                                    date: 'December 10, 2024',
+                                    icon: 'video',
+                                    // isSmall: true,
+                                    onTap: () => {},
+                                  );
                                 },
                               ),
                             );
@@ -167,6 +172,9 @@ class _LibraryScreenState extends State<LibraryScreen> {
                       return const SizedBox();
                     }
                   }),
+                  const SizedBox(
+                    height: kBottomNavigationBarHeight + 35,
+                  )
                 ],
               ),
             ),

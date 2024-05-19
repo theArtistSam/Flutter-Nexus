@@ -28,7 +28,7 @@ class _FolderScreenState extends State<FolderScreen> {
     return Scaffold(
       backgroundColor: NexusColors.accentColorLight,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight + 15),
+        preferredSize: const Size.fromHeight(kToolbarHeight + 5),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: AppBar(

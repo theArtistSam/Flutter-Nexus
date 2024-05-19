@@ -50,6 +50,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
     return MultiBlocProvider(
       providers: [
         BlocProvider<ChatScreenBloc>.value(value: chatScreenBloc),
@@ -58,7 +59,7 @@ class _ChatScreenState extends State<ChatScreen> {
       child: Scaffold(
           backgroundColor: NexusColors.accentColorLight,
           appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(kToolbarHeight + 15),
+            preferredSize: const Size.fromHeight(kToolbarHeight + 5),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: AppBar(
@@ -111,8 +112,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     changeState: toggleView,
                     // isLeftSelected: false,
                   ),
+                  const SizedBox(height: 15),
                   const Divider(
-                    height: 30,
+                    height: 1,
                     color: NexusColors.dividerColor,
                   ),
                   BlocListener<ExtractiveModelBloc, ExtractiveModelState>(
@@ -153,7 +155,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   const SizedBox(
                     // 190
-                    height: 102,
+                    height: 106,
                   )
                 ],
               ),
@@ -172,7 +174,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ],
             ),
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
+              padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + bottomPadding),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -295,6 +297,7 @@ class _ChatScreenState extends State<ChatScreen> {
           {required bool isTranslation, required List<ChatModel> chatList}) =>
       Expanded(
         child: ListView.separated(
+          padding: const EdgeInsets.only(top: 15),
           reverse: true,
           itemCount: chatList.length, // Number of items
           separatorBuilder: (BuildContext context, int index) {

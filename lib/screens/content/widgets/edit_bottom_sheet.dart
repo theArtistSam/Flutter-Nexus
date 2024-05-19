@@ -88,9 +88,6 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                         color: NexusColors.dividerColor,
                         height: 30,
                       ),
-                      // editBottomSheetContent()
-
-                      const SizedBox(height: 10),
                       BlocBuilder<EditBottomSheetBloc, EditBottomSheetState>(
                         builder: (context, state) {
                           if (state is EditBottomSheetInitial) {

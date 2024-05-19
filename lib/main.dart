@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart' as services;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,10 +6,21 @@ import 'package:nexus/screens/content/content_screen.dart';
 import 'package:nexus/screens/folder/folder_screen.dart';
 import 'package:nexus/screens/home/home_screen.dart';
 import 'package:nexus/screens/library/library_screen.dart';
+import 'package:nexus/screens/sample.dart';
 import 'package:nexus/utils/bottom_navbar.dart';
 import 'package:nexus/utils/constants.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+      options: const FirebaseOptions(
+    apiKey: 'AIzaSyA-Kcgm4RmMydrKt-VzRsNCyWx9ZJYnHD8',
+    appId: '1:217320925090:android:bf4c7c37d5c0df98cc34fb',
+    messagingSenderId: '217320925090',
+    projectId: 'nexus-ef4c1',
+    storageBucket: 'nexus-ef4c1.appspot.com',
+  ));
   runApp(const MyApp());
 }
 
@@ -34,8 +46,11 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       title: 'Coffee Application',
       // theme: ThemeData(
-      //     appBarTheme:
-      //         const AppBarTheme(color: NexusColors.backgroundColorLight)),
+      //   appBarTheme: AppBarTheme(
+      //     iconTheme: IconThemeData(color: Colors.black),
+      //     color: Colors.green, //<-- SEE HERE
+      //   ),
+      // ),
       debugShowCheckedModeBanner: false,
       home: BottomNavBar(),
     );

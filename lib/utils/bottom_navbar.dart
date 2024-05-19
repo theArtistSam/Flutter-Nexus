@@ -80,15 +80,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
               // resizeToAvoidBottomInset: true,
               body: _pages[state.index],
               bottomNavigationBar: BottomBarCreative(
-                // isFloating: true,
-                // top: 5,
-                bottom: 5,
-                highlightStyle: const HighlightStyle(
-                    // elevation: 3,
-                    sizeLarge: true,
-                    // isHexagon: true,
-                    // background: Colors.transparent,
-                    color: Color.fromARGB(0, 3, 3, 3)),
                 items: navbarItems(index: state.index),
                 backgroundColor: Colors.white,
                 color: Colors.black,
@@ -112,63 +103,67 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   navbarItems({int? index}) => [
         TabItem(
-            icon: SvgPicture.asset(
-              index == 0
-                  ? 'assets/icons/home-filled.svg'
-                  : 'assets/icons/home.svg',
-              color: index == 0 ? NexusColors.primaryColorLight : Colors.black,
-              height: 24,
-            ),
-            title: 'Home'),
+          icon: SvgPicture.asset(
+            index == 0
+                ? 'assets/icons/home-filled.svg'
+                : 'assets/icons/home.svg',
+            color: index == 0 ? NexusColors.primaryColorLight : Colors.black,
+            height: 24,
+          ),
+          title: 'Home',
+        ),
         TabItem(
-            icon: SvgPicture.asset(
-              index == 1
-                  ? 'assets/icons/library-filled.svg'
-                  : 'assets/icons/library.svg',
-              color: index == 1 ? NexusColors.primaryColorLight : Colors.black,
-              height: 24,
-            ),
-            title: 'Library'),
+          icon: SvgPicture.asset(
+            index == 1
+                ? 'assets/icons/library-filled.svg'
+                : 'assets/icons/library.svg',
+            color: index == 1 ? NexusColors.primaryColorLight : Colors.black,
+            height: 24,
+          ),
+          title: 'Library',
+        ),
         TabItem(
           icon: SvgPicture.asset(
             'assets/icons/sparkle.svg',
             height: 24,
           ),
-          // title: 'AI',
+          title: 'AI',
         ),
         TabItem(
-            icon: SvgPicture.asset(
-              index == 3
-                  ? 'assets/icons/community-filled.svg'
-                  : 'assets/icons/community.svg',
-              color: index == 3 ? NexusColors.primaryColorLight : Colors.black,
-              height: 24,
-            ),
-            title: 'Forum'),
+          icon: SvgPicture.asset(
+            index == 3
+                ? 'assets/icons/community-filled.svg'
+                : 'assets/icons/community.svg',
+            color: index == 3 ? NexusColors.primaryColorLight : Colors.black,
+            height: 24,
+          ),
+          title: 'Forum',
+        ),
         TabItem(
-            icon: SizedBox(
-              width: 24,
-              height: 24,
-              child: Container(
-                padding: const EdgeInsets.all(1.0), // Adjust padding as needed
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: index == 4
-                      ? Border.all(
-                          color: NexusColors.primaryColorLight,
-                          width: 2,
-                        )
-                      : null,
-                ),
-                child: ClipOval(
-                  child: Image.asset(
-                    'assets/images/profile-picture.png',
-                    fit: BoxFit.cover,
-                  ),
+          icon: SizedBox(
+            width: 24,
+            height: 24,
+            child: Container(
+              padding: const EdgeInsets.all(1.0), // Adjust padding as needed
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: index == 4
+                    ? Border.all(
+                        color: NexusColors.primaryColorLight,
+                        width: 2,
+                      )
+                    : null,
+              ),
+              child: ClipOval(
+                child: Image.asset(
+                  'assets/images/profile-picture.png',
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
-            title: 'Profile')
+          ),
+          title: 'Profile',
+        )
       ];
 
   Widget uploadingTile(

@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: NexusColors.accentColorLight,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight + 15),
+        preferredSize: const Size.fromHeight(kToolbarHeight + 5),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: AppBar(
@@ -68,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
               borderRadius: BorderRadius.circular(5),
               onTap: () {}, // Handle tap on leading widget
               child: Transform.scale(
-                scale: .9,
+                scale: .85,
                 child: ClipOval(
                   child: Image.asset(
                     'assets/images/profile-picture.png',
@@ -80,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                StyledText(text: 'Dunn Oliver', fontSize: 20),
+                StyledText(text: 'Dunn Oliver', fontSize: 18),
                 Row(
                   children: [
                     StyledText(
@@ -116,19 +116,18 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          decoration: const ShapeDecoration(
-            color: Colors.white,
-            shape: SmoothRectangleBorder(
-              borderRadius: SmoothBorderRadius.only(
-                  topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
-                  topRight:
-                      SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8)),
-            ),
+      body: Container(
+        decoration: const ShapeDecoration(
+          color: Colors.white,
+          shape: SmoothRectangleBorder(
+            borderRadius: SmoothBorderRadius.only(
+                topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
+                topRight: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8)),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
