@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:nexus/blocs/library_screen_bloc/bloc/library_screen_bloc.dart';
+import 'package:nexus/models/content_model.dart';
 import 'package:nexus/screens/folder/folder_screen.dart';
+import 'package:nexus/utils/enums.dart';
 import 'package:nexus/widgets/content_tile.dart';
 import 'package:nexus/screens/search/search_screen.dart';
 import 'package:nexus/utils/constants.dart';
@@ -29,6 +32,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
   @override
   void initState() {
     libraryScreenBloc = LibraryScreenBloc();
+    libraryScreenBloc.add(LoadContent());
     super.initState();
   }
 
@@ -107,74 +111,79 @@ class _LibraryScreenState extends State<LibraryScreen> {
                   const SizedBox(
                     height: 15,
                   ),
-                  const Divider(
-                    color: NexusColors.dividerColor,
-                    height: 1,
-                  ),
                   BlocBuilder<LibraryScreenBloc, LibraryScreenState>(
-                      builder: (context, state) {
-                    if (state is LibraryScreenInitial) {
-                      bool isLeftSelected = state.isLeftSelected;
-                      return isLeftSelected
-                          ? Expanded(
-                              child: MasonryGridView.count(
-                                  padding: const EdgeInsets.only(top: 15),
-                                  crossAxisCount: gridCount(),
-                                  crossAxisSpacing: 15, //
-                                  mainAxisSpacing: 15,
-                                  itemCount: 20,
-                                  itemBuilder: (context, index) {
-                                    if (index == 0) {
-                                      return StyledIconTile(
-                                          icon: 'add-folder-filled',
-                                          text: 'Create Folder',
-                                          onTap: () => {});
-                                    }
-                                    return StyledIconTile(
-                                        icon: 'folder-minus',
-                                        text: 'School Work',
-                                        isPrimary: false,
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (builder) =>
-                                                      FolderScreen(
-                                                          folderName:
-                                                              'School Work')));
-                                        });
-                                  }),
-                            )
-                          : Expanded(
+                    builder: (context, state) {
+                      if (state is LibraryScreenInitial) {
+                        bool isLeftSelected = state.isLeftSelected;
+                        List<ContentModel> contentList = state.contents;
+                        ContentStatus status = state.status;
+                        if (isLeftSelected) {
+                          return Expanded(
+                            child: MasonryGridView.count(
+                              // padding: const EdgeInsets.only(top: 15),
+                              crossAxisCount: gridCount(),
+                              crossAxisSpacing: 15, //
+                              mainAxisSpacing: 15,
+                              itemCount: 20,
+                              itemBuilder: (context, index) {
+                                if (index == 0) {
+                                  return StyledIconTile(
+                                      icon: 'add-folder-filled',
+                                      text: 'Create Folder',
+                                      onTap: () => {});
+                                }
+                                return StyledIconTile(
+                                  icon: 'folder-minus',
+                                  text: 'School Work',
+                                  isPrimary: false,
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (builder) => FolderScreen(
+                                            folderName: 'School Work'),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          );
+                        } else {
+                          if (status == ContentStatus.loading) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (status == ContentStatus.success) {
+                            return Expanded(
                               child: ListView.separated(
-                                padding: const EdgeInsets.only(top: 15),
-                                itemCount: 5, // Number of items
+                                itemCount:
+                                    contentList.length, // Number of items
                                 separatorBuilder:
                                     (BuildContext context, int index) {
                                   return const SizedBox(
                                       height: 15); // Separator between items
                                 },
                                 itemBuilder: (BuildContext context, int index) {
-                                  // Build each item
+                                  ContentModel content = contentList[index];
                                   return ContentTile(
-                                    title:
-                                        'Learn how to make vids on YouTube from home',
-                                    image: 'content',
-                                    date: 'December 10, 2024',
-                                    icon: 'video',
-                                    // isSmall: true,
+                                    title: content.title ?? '',
+                                    thumbnail: content.thumbnail ?? '',
+                                    date: TimeConversion.formattedTime(
+                                        datetime: content.dateUpdated ?? ''),
+                                    icon: content.type ?? '',
                                     onTap: () => {},
                                   );
                                 },
                               ),
                             );
-                    } else {
-                      return const SizedBox();
-                    }
-                  }),
-                  const SizedBox(
-                    height: kBottomNavigationBarHeight + 35,
-                  )
+                          }
+                        }
+                      }
+                      return const SizedBox(
+                        child: Text('Something went wrong'),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),

@@ -113,7 +113,7 @@ class _SearchScreennState extends State<SearchScreenn> {
                         return ContentTile(
                             title:
                                 'Learn how to make vids on YouTube from home',
-                            image: 'content',
+                            thumbnail: 'content',
                             date: 'December 10, 2024',
                             icon: 'video',
                             onTap: () => {});

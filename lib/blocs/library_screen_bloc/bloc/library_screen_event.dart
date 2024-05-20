@@ -12,3 +12,5 @@ class ToggleView extends LibraryScreenEvent {
   bool isLeftSelected;
   ToggleView({required this.isLeftSelected});
 }
+
+class LoadContent extends LibraryScreenEvent {}

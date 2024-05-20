@@ -6,7 +6,8 @@ import 'package:nexus/screens/content/content_screen.dart';
 import 'package:nexus/screens/folder/folder_screen.dart';
 import 'package:nexus/screens/home/home_screen.dart';
 import 'package:nexus/screens/library/library_screen.dart';
-import 'package:nexus/screens/sample.dart';
+import 'package:nexus/screens/ai_stub.dart';
+import 'package:nexus/screens/database_stub.dart';
 import 'package:nexus/utils/bottom_navbar.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -43,7 +44,7 @@ class MyApp extends StatelessWidget {
     services.SystemChrome.setEnabledSystemUIMode(
         services.SystemUiMode.edgeToEdge,
         overlays: [services.SystemUiOverlay.top]);
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Coffee Application',
       // theme: ThemeData(
       //   appBarTheme: AppBarTheme(

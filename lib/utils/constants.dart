@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class NexusColors {
   static const primaryColorLight = Color(0XFF2A4E8F);
@@ -57,4 +58,12 @@ class NexusThemes {
         .withOpacity(0.3), // You can adjust the opacity as needed
     // Add other colors as needed
   );
+}
+
+class TimeConversion {
+  static String formattedTime({required String datetime}) {
+    DateTime dateTime = DateTime.parse(datetime);
+    String formattedDate = DateFormat('MMMM dd, yyyy').format(dateTime);
+    return formattedDate;
+  }
 }

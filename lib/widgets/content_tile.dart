@@ -13,7 +13,7 @@ class ContentTile extends StatelessWidget {
   ContentTile(
       {super.key,
       required this.title,
-      required this.image,
+      required this.thumbnail,
       required this.date,
       required this.icon,
       required this.onTap,
@@ -22,7 +22,7 @@ class ContentTile extends StatelessWidget {
   String title;
   String date;
   String icon;
-  String image;
+  String thumbnail;
   VoidCallback onTap;
   bool isSmall;
 
@@ -50,8 +50,8 @@ class ContentTile extends StatelessWidget {
                   bottomLeft:
                       SmoothRadius(cornerRadius: 15, cornerSmoothing: 0.8),
                 ),
-                child: Image.asset(
-                  'assets/images/$image.png',
+                child: Image.network(
+                  thumbnail,
                   fit: BoxFit.cover,
                   width: 100,
                   // height: double.infinity,
@@ -120,8 +120,8 @@ class ContentTile extends StatelessWidget {
                   cornerRadius: 15,
                   cornerSmoothing: 0.8,
                 ),
-                child: Image.asset(
-                  'assets/images/$image.png',
+                child: Image.network(
+                  thumbnail,
                   fit: BoxFit.cover,
                   width: double.infinity,
                 ),
