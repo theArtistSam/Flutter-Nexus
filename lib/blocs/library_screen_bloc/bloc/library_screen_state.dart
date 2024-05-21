@@ -11,22 +11,28 @@ sealed class LibraryScreenState extends Equatable {
 class LibraryScreenInitial extends LibraryScreenState {
   bool isLeftSelected;
   List<ContentModel> contents;
-  ContentStatus status;
-  LibraryScreenInitial(
-      {this.isLeftSelected = true,
-      this.contents = const <ContentModel>[],
-      this.status = ContentStatus.loading});
+  List<FolderModel> folders;
+  LibraryStatus status;
+  LibraryScreenInitial({
+    this.isLeftSelected = true,
+    this.contents = const <ContentModel>[],
+    this.status = LibraryStatus.loading,
+    this.folders = const <FolderModel>[],
+  });
 
-  LibraryScreenInitial copyWith(
-      {bool? isLeftSelected,
-      List<ContentModel>? contents,
-      ContentStatus? status}) {
+  LibraryScreenInitial copyWith({
+    bool? isLeftSelected,
+    List<ContentModel>? contents,
+    LibraryStatus? status,
+    List<FolderModel>? folders,
+  }) {
     return LibraryScreenInitial(
         isLeftSelected: isLeftSelected ?? this.isLeftSelected,
         contents: contents ?? this.contents,
-        status: status ?? this.status);
+        status: status ?? this.status,
+        folders: folders ?? this.folders);
   }
 
   @override
-  List<Object> get props => [isLeftSelected, contents, status];
+  List<Object> get props => [isLeftSelected, contents, status, folders];
 }

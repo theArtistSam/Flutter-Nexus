@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:nexus/models/content_model.dart';
+import 'package:nexus/models/folder_model.dart';
 import 'package:nexus/repositories/content_repository.dart';
+import 'package:nexus/repositories/folder_repository.dart';
+import 'package:nexus/screens/library/library_screen.dart';
 import 'package:nexus/utils/enums.dart';
 // import 'package:flutter/material.dart';
 
@@ -28,10 +31,15 @@ class LibraryScreenBloc extends Bloc<LibraryScreenEvent, LibraryScreenState> {
     try {
       List<ContentModel> contentList =
           await ContentRepository().getAllContents();
+
+      List<FolderModel> folderList = await FolderRepository().getAllFolders();
+
       emit(currentState.copyWith(
-          contents: contentList, status: ContentStatus.success));
+          contents: contentList,
+          status: LibraryStatus.success,
+          folders: folderList));
     } catch (e) {
-      emit(currentState.copyWith(status: ContentStatus.failure));
+      emit(currentState.copyWith(status: LibraryStatus.failure));
     }
   }
 }

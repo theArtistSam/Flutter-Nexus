@@ -16,7 +16,7 @@ class _UserListScreenState extends State<UserListScreen> {
   @override
   void initState() {
     super.initState();
-    _usersFuture = UserRepository().getAllUsers();
+    // _usersFuture = UserRepository().getAllUsers();
     _contentsFuture = ContentRepository().getAllContents();
     // ContentRepository().addContents();
   }

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nexus/blocs/content_screen_bloc/bloc/content_screen_bloc.dart';
+import 'package:nexus/models/content_model.dart';
 import 'package:nexus/screens/content/widgets/content_configure_tabs.dart';
 import 'package:nexus/screens/content/widgets/edit_bottom_sheet.dart';
 import 'package:nexus/utils/constants.dart';
@@ -18,20 +19,9 @@ import 'package:nexus/widgets/styled_textfield.dart';
 
 // ignore: must_be_immutable
 class ContentScreen extends StatefulWidget {
-  ContentScreen(
-      {super.key,
-      required this.image,
-      required this.title,
-      this.folder,
-      this.summary,
-      this.translation});
+  ContentScreen({super.key, required this.content});
 
-  String image;
-  String title;
-  String? summary;
-  String? translation;
-  String? folder;
-
+  ContentModel content;
   @override
   State<ContentScreen> createState() => _ContentScreenState();
 }
@@ -106,8 +96,8 @@ class _ContentScreenState extends State<ContentScreen> {
         body: SizedBox(
           child: Stack(
             children: [
-              Image.asset(
-                'assets/images/${widget.image}.png',
+              Image.network(
+                widget.content.thumbnail ?? '',
                 fit: BoxFit.cover,
                 width: double.infinity,
                 // height: double.infinity,
@@ -155,8 +145,9 @@ class _ContentScreenState extends State<ContentScreen> {
                               showModalBottomSheet(
                                   isScrollControlled: true,
                                   context: context,
-                                  builder: (context) =>
-                                      const EditBottomSheet() // Add actual content
+                                  builder: (context) => EditBottomSheet(
+                                        content: widget.content,
+                                      ) // Add actual content
                                   )
                             },
                             padding: 11.5,
@@ -180,65 +171,64 @@ class _ContentScreenState extends State<ContentScreen> {
                         ],
                       ),
                       const Spacer(),
-                      GestureDetector(
-                        onTap: () async {
-                          isPlaying
-                              ? await player.pause()
-                              : await player.resume();
-
-                          setState(() {
-                            isPlaying = !isPlaying;
-                          });
-                        },
-                        child: Center(
-                          child: SvgPicture.asset(
-                            isPlaying
-                                ? 'assets/icons/pause.svg'
-                                : 'assets/icons/play.svg',
-                            height: 45,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
+                      // GestureDetector(
+                      //   onTap: () async {
+                      //     isPlaying
+                      //         ? await player.pause()
+                      //         : await player.resume();
+                      //     setState(() {
+                      //       isPlaying = !isPlaying;
+                      //     });
+                      //   },
+                      //   child: Center(
+                      //     child: SvgPicture.asset(
+                      //       isPlaying
+                      //           ? 'assets/icons/pause.svg'
+                      //           : 'assets/icons/play.svg',
+                      //       height: 45,
+                      //       color: Colors.white,
+                      //     ),
+                      //   ),
+                      // ),
                       const Spacer(),
                       // contentTyle: isAudio
-                      Container(
-                        decoration: ShapeDecoration(
-                            color: Colors.black26,
-                            shape: SmoothRectangleBorder(
-                                borderRadius: SmoothBorderRadius(
-                                    cornerRadius: 15, cornerSmoothing: .8))),
-                        child: Padding(
-                          padding: const EdgeInsets.all(2),
-                          child: Slider(
-                            thumbColor: Colors.white,
-                            activeColor: Colors.white,
-                            inactiveColor: Colors.white54,
-                            min: 0,
-                            max: duration.inSeconds.toDouble(),
-                            value: position.inSeconds.toDouble(),
-                            onChanged: (value) async {
-                              final newPosition =
-                                  Duration(seconds: value.toInt());
-                              await player.seek(newPosition);
-                              // Resume playback if necessary
-                            },
-                          ),
-                        ),
-                      ),
+                      // Container(
+                      //   decoration: ShapeDecoration(
+                      //       color: Colors.black26,
+                      //       shape: SmoothRectangleBorder(
+                      //           borderRadius: SmoothBorderRadius(
+                      //               cornerRadius: 15, cornerSmoothing: .8))),
+                      //   child: Padding(
+                      //     padding: const EdgeInsets.all(2),
+                      //     child: Slider(
+                      //       thumbColor: Colors.white,
+                      //       activeColor: Colors.white,
+                      //       inactiveColor: Colors.white54,
+                      //       min: 0,
+                      //       max: duration.inSeconds.toDouble(),
+                      //       value: position.inSeconds.toDouble(),
+                      //       onChanged: (value) async {
+                      //         final newPosition =
+                      //             Duration(seconds: value.toInt());
+                      //         await player.seek(newPosition);
+                      //         // Resume playback if necessary
+                      //       },
+                      //     ),
+                      //   ),
+                      // ),
 
                       // contentType: isImage
                       // contentIconButton('View complete image', 'maximize', () {}),
 
                       // contentType: isDocument
-                      // contentIconButton(
-                      //     'View complete document', 'sticky-note', () {}),
+                      contentIconButton(
+                          'View complete document', 'sticky-note', () {}),
 
                       const SizedBox(
                         height: 10,
                       ),
                       StyledText(
-                        text: widget.title,
+                        text: widget.content.title ?? '',
                         color: NexusColors.textColorLight,
                         fontSize: 18,
                       )
@@ -247,11 +237,12 @@ class _ContentScreenState extends State<ContentScreen> {
                 ),
               ),
               DraggableScrollableSheet(
-                  initialChildSize: (screenHeight - 410 + 40) / screenHeight,
-                  minChildSize: (screenHeight - 410 + 40) / screenHeight,
-                  maxChildSize: .95,
-                  builder: (context, controller) =>
-                      contentBottomSheet(controller))
+                initialChildSize: (screenHeight - 410 + 40) / screenHeight,
+                minChildSize: (screenHeight - 410 + 40) / screenHeight,
+                maxChildSize: .95,
+                builder: (context, controller) =>
+                    contentBottomSheet(controller),
+              )
             ],
           ),
         ),
@@ -361,20 +352,21 @@ class _ContentScreenState extends State<ContentScreen> {
 
   contentBottomSheet(controller) => Container(
         decoration: const ShapeDecoration(
-            color: Colors.white,
-            shape: SmoothRectangleBorder(
-                borderRadius: SmoothBorderRadius.only(
-                    topLeft:
-                        SmoothRadius(cornerRadius: 25, cornerSmoothing: .8),
-                    topRight:
-                        SmoothRadius(cornerRadius: 25, cornerSmoothing: .8)))),
+          color: Colors.white,
+          shape: SmoothRectangleBorder(
+            borderRadius: SmoothBorderRadius.only(
+              topLeft: SmoothRadius(cornerRadius: 25, cornerSmoothing: .8),
+              topRight: SmoothRadius(cornerRadius: 25, cornerSmoothing: .8),
+            ),
+          ),
+        ),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
           child: Stack(
             children: [
               ListView(
                 key: UniqueKey(),
-                padding: const EdgeInsets.fromLTRB(0, 105, 0, 0),
+                padding: const EdgeInsets.only(top: 95),
                 controller: controller,
                 children: [
                   BlocBuilder<ContentScreenBloc, ContentScreenState>(
@@ -384,14 +376,16 @@ class _ContentScreenState extends State<ContentScreen> {
                         return Column(
                           children: [
                             contentTile(
-                                onTap: () {
-                                  contentScreenBloc.add(
-                                      ToggleContainerView(isOriginal: true));
-                                },
-                                isOpen: state.isOriginal ? true : false,
-                                openTitle: 'Original',
-                                closeTitle: 'View original text',
-                                text: 'This is the original text'),
+                              onTap: () {
+                                contentScreenBloc.add(
+                                  ToggleContainerView(isOriginal: true),
+                                );
+                              },
+                              isOpen: state.isOriginal ? true : false,
+                              openTitle: 'Original',
+                              closeTitle: 'View original text',
+                              text: widget.content.extractedText,
+                            ),
                             const SizedBox(
                               height: 10,
                             ),
@@ -409,9 +403,10 @@ class _ContentScreenState extends State<ContentScreen> {
                                     ? 'View Translation'
                                     : 'View summary',
                                 text: isLeftSelected
-                                    ? widget.translation ??
+                                    ? widget.content.translation?.text ??
                                         'کوئی ترجمہ دستیاب نہیں ہے۔'
-                                    : widget.summary ?? 'No Summary available'),
+                                    : widget.content.summarization?.text ??
+                                        'No Summary available'),
 
                             const SizedBox(height: 10),
                             Row(
@@ -478,7 +473,7 @@ class _ContentScreenState extends State<ContentScreen> {
               ),
               // been put at the end to act as a sticky header
               Container(
-                height: 105,
+                height: 95,
                 color: Colors.white,
                 child: Column(
                   children: [
@@ -498,10 +493,13 @@ class _ContentScreenState extends State<ContentScreen> {
                       changeState: toggleView,
                       // isLeftSelected: false
                     ),
-                    const Divider(
-                      height: 30,
-                      color: NexusColors.dividerColor,
-                    ),
+                    // const SizedBox(
+                    //   height: 15,
+                    // )
+                    // const Divider(
+                    //   height: 30,
+                    //   color: NexusColors.dividerColor,
+                    // ),
                   ],
                 ),
               ),

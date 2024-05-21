@@ -6,6 +6,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:nexus/blocs/library_screen_bloc/bloc/library_screen_bloc.dart';
 import 'package:nexus/models/content_model.dart';
+import 'package:nexus/models/folder_model.dart';
+import 'package:nexus/screens/content/content_screen.dart';
 import 'package:nexus/screens/folder/folder_screen.dart';
 import 'package:nexus/utils/enums.dart';
 import 'package:nexus/widgets/content_tile.dart';
@@ -116,67 +118,77 @@ class _LibraryScreenState extends State<LibraryScreen> {
                       if (state is LibraryScreenInitial) {
                         bool isLeftSelected = state.isLeftSelected;
                         List<ContentModel> contentList = state.contents;
-                        ContentStatus status = state.status;
-                        if (isLeftSelected) {
-                          return Expanded(
-                            child: MasonryGridView.count(
-                              // padding: const EdgeInsets.only(top: 15),
-                              crossAxisCount: gridCount(),
-                              crossAxisSpacing: 15, //
-                              mainAxisSpacing: 15,
-                              itemCount: 20,
-                              itemBuilder: (context, index) {
-                                if (index == 0) {
-                                  return StyledIconTile(
+                        List<FolderModel> folderList = state.folders;
+                        LibraryStatus status = state.status;
+
+                        if (status == LibraryStatus.success) {
+                          if (isLeftSelected) {
+                            return Expanded(
+                              child: MasonryGridView.count(
+                                // padding: const EdgeInsets.only(top: 15),
+                                crossAxisCount: gridCount(),
+                                crossAxisSpacing: 15, //
+                                mainAxisSpacing: 15,
+                                itemCount: folderList.length + 1,
+                                itemBuilder: (context, index) {
+                                  if (index == 0) {
+                                    return StyledIconTile(
                                       icon: 'add-folder-filled',
                                       text: 'Create Folder',
-                                      onTap: () => {});
-                                }
-                                return StyledIconTile(
-                                  icon: 'folder-minus',
-                                  text: 'School Work',
-                                  isPrimary: false,
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (builder) => FolderScreen(
-                                            folderName: 'School Work'),
-                                      ),
+                                      onTap: () => {},
                                     );
-                                  },
-                                );
-                              },
-                            ),
-                          );
-                        } else {
-                          if (status == ContentStatus.loading) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          } else if (status == ContentStatus.success) {
-                            return Expanded(
-                              child: ListView.separated(
-                                itemCount:
-                                    contentList.length, // Number of items
-                                separatorBuilder:
-                                    (BuildContext context, int index) {
-                                  return const SizedBox(
-                                      height: 15); // Separator between items
-                                },
-                                itemBuilder: (BuildContext context, int index) {
-                                  ContentModel content = contentList[index];
-                                  return ContentTile(
-                                    title: content.title ?? '',
-                                    thumbnail: content.thumbnail ?? '',
-                                    date: TimeConversion.formattedTime(
-                                        datetime: content.dateUpdated ?? ''),
-                                    icon: content.type ?? '',
-                                    onTap: () => {},
+                                  }
+                                  return StyledIconTile(
+                                    icon: FolderIcons.icons[index - 1],
+                                    text: folderList[index - 1].title ?? '',
+                                    isPrimary: false,
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (builder) => FolderScreen(
+                                            folder: folderList[index - 1],
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   );
                                 },
                               ),
                             );
                           }
+                          return Expanded(
+                            child: ListView.separated(
+                              itemCount: contentList.length, // Number of items
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return const SizedBox(
+                                    height: 15); // Separator between items
+                              },
+                              itemBuilder: (BuildContext context, int index) {
+                                ContentModel content = contentList[index];
+                                return ContentTile(
+                                  title: content.title ?? '',
+                                  thumbnail: content.thumbnail ?? '',
+                                  date: DateTimeConversion.formattedTime(
+                                      datetime: content.dateUpdated ?? ''),
+                                  icon: content.type ?? '',
+                                  onTap: () => {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (builder) =>
+                                            ContentScreen(content: content),
+                                      ),
+                                    )
+                                  },
+                                );
+                              },
+                            ),
+                          );
+                        } else if (status == LibraryStatus.loading) {
+                          return const Center(
+                              child: CircularProgressIndicator());
                         }
                       }
                       return const SizedBox(

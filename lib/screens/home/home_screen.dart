@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:nexus/blocs/home_screen_bloc/bloc/home_screen_bloc.dart';
 import 'package:nexus/models/content_model.dart';
+import 'package:nexus/screens/content/content_screen.dart';
 import 'package:nexus/screens/home/widgets/content_upload_tile.dart';
 import 'package:nexus/utils/enums.dart';
 import 'package:nexus/widgets/content_tile.dart';
@@ -31,17 +32,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late HomeScreenBloc homeScreenBloc;
+  // late HomeScreenBloc homeScreenBloc;
   @override
   void initState() {
-    homeScreenBloc = HomeScreenBloc();
-    homeScreenBloc.add(LoadContent());
+    context.read<HomeScreenBloc>().add(LoadContent());
+    // homeScreenBloc.add(LoadContent());
     super.initState();
   }
 
   @override
   void dispose() {
-    homeScreenBloc.close();
+    // homeScreenBloc.close();
     super.dispose();
   }
 
@@ -60,162 +61,163 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    return BlocProvider(
-      create: (context) => homeScreenBloc,
-      child: Scaffold(
-        backgroundColor: NexusColors.accentColorLight,
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(kToolbarHeight + 5),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: AppBar(
-              surfaceTintColor: Colors.transparent,
-              backgroundColor: NexusColors.accentColorLight,
-              automaticallyImplyLeading: false,
-              leading: InkWell(
-                borderRadius: BorderRadius.circular(5),
-                onTap: () {}, // Handle tap on leading widget
-                child: Transform.scale(
-                  scale: .85,
-                  child: ClipOval(
-                    child: Image.asset(
-                      'assets/images/profile-picture.png',
-                      fit: BoxFit.cover,
+    return Scaffold(
+      backgroundColor: NexusColors.accentColorLight,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight + 5),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: AppBar(
+            surfaceTintColor: Colors.transparent,
+            backgroundColor: NexusColors.accentColorLight,
+            automaticallyImplyLeading: false,
+            leading: InkWell(
+              borderRadius: BorderRadius.circular(5),
+              onTap: () {}, // Handle tap on leading widget
+              child: Transform.scale(
+                scale: .85,
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/images/profile-picture.png',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                StyledText(text: 'Dunn Oliver', fontSize: 18),
+                Row(
+                  children: [
+                    StyledText(
+                      text: 'Premium Account',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: NexusColors.secondaryTextColorDark,
                     ),
-                  ),
+                    const SizedBox(width: 8),
+                    SvgPicture.asset(
+                      'assets/icons/small-arrow-right.svg',
+                      color: NexusColors.secondaryTextColorDark,
+                      height: 12,
+                    )
+                  ],
                 ),
-              ),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  StyledText(text: 'Dunn Oliver', fontSize: 18),
-                  Row(
-                    children: [
-                      StyledText(
-                        text: 'Premium Account',
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: NexusColors.secondaryTextColorDark,
-                      ),
-                      const SizedBox(width: 8),
-                      SvgPicture.asset(
-                        'assets/icons/small-arrow-right.svg',
-                        color: NexusColors.secondaryTextColorDark,
-                        height: 12,
-                      )
-                    ],
-                  ),
-                ],
-              ),
-              actions: [
-                StyledIconButton(
-                  icon: 'notification',
-                  onTap: () {},
-                  backgroundColor: Colors.white,
-                  iconColor: Colors.black,
-                ),
-                const SizedBox(width: 10),
-                StyledIconButton(
-                    icon: 'menu',
-                    onTap: () {
-                      // _toggleTheme(isDarkMode ? ThemeMode.dark : ThemeMode.light);
-                    }),
               ],
             ),
+            actions: [
+              StyledIconButton(
+                icon: 'notification',
+                onTap: () {},
+                backgroundColor: Colors.white,
+                iconColor: Colors.black,
+              ),
+              const SizedBox(width: 10),
+              StyledIconButton(
+                  icon: 'menu',
+                  onTap: () {
+                    // _toggleTheme(isDarkMode ? ThemeMode.dark : ThemeMode.light);
+                  }),
+            ],
           ),
         ),
-        body: Container(
-          decoration: const ShapeDecoration(
-            color: Colors.white,
-            shape: SmoothRectangleBorder(
-              borderRadius: SmoothBorderRadius.only(
-                  topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
-                  topRight:
-                      SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8)),
-            ),
+      ),
+      body: Container(
+        decoration: const ShapeDecoration(
+          color: Colors.white,
+          shape: SmoothRectangleBorder(
+            borderRadius: SmoothBorderRadius.only(
+                topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
+                topRight: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8)),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CarouselSlider(
-                    options: CarouselOptions(
-                        height: 170, autoPlay: true, viewportFraction: 1),
-                    items: [1, 2, 3, 4, 5].map((i) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 5.0),
-                            child: GuideTile(
-                                image: 'image',
-                                title: 'title',
-                                onTap: () => {}),
-                          );
-                        },
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: 15),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: StyledIconTile(
-                            icon: 'translate-filled',
-                            text: 'Translate',
-                            onTap: () => {}),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: StyledIconTile(
-                            icon: 'book-filled',
-                            text: 'Summarize',
-                            onTap: () => {}),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 15),
-                  StyledText(text: 'Recent Content', fontSize: 20),
-                  const SizedBox(height: 10),
-                  BlocBuilder<HomeScreenBloc, HomeScreenState>(
-                    builder: (context, state) {
-                      if (state is HomeScreenInitial) {
-                        List<ContentModel> contentList = state.contents;
-                        ContentStatus status = state.status;
-                        if (status == ContentStatus.success) {
-                          return ListView.separated(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: contentList.length, // Number of items
-                            separatorBuilder:
-                                (BuildContext context, int index) {
-                              return const SizedBox(
-                                  height: 15); // Separator between items
-                            },
-                            itemBuilder: (BuildContext context, int index) {
-                              ContentModel content = contentList[index];
-                              return ContentTile(
-                                  title: content.title ?? '',
-                                  thumbnail: content.thumbnail ?? '',
-                                  date: TimeConversion.formattedTime(
-                                      datetime: content.dateUpdated ?? ''),
-                                  icon: content.type ?? '',
-                                  onTap: () => {});
-                            },
-                          );
-                        } else if (status == ContentStatus.loading) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CarouselSlider(
+                  options: CarouselOptions(
+                      height: 170, autoPlay: true, viewportFraction: 1),
+                  items: [1, 2, 3, 4, 5].map((i) {
+                    return Builder(
+                      builder: (BuildContext context) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                          child: GuideTile(
+                              image: 'image', title: 'title', onTap: () => {}),
+                        );
+                      },
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 15),
+                Row(
+                  children: [
+                    Expanded(
+                      child: StyledIconTile(
+                          icon: 'translate-filled',
+                          text: 'Translate',
+                          onTap: () => {}),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: StyledIconTile(
+                          icon: 'book-filled',
+                          text: 'Summarize',
+                          onTap: () => {}),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 15),
+                StyledText(text: 'Recent Content', fontSize: 20),
+                const SizedBox(height: 10),
+                BlocBuilder<HomeScreenBloc, HomeScreenState>(
+                  builder: (context, state) {
+                    if (state is HomeScreenInitial) {
+                      List<ContentModel> contentList = state.contents;
+                      ContentStatus status = state.status;
+                      if (status == ContentStatus.success) {
+                        return ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: contentList.length, // Number of items
+                          separatorBuilder: (BuildContext context, int index) {
+                            return const SizedBox(
+                                height: 15); // Separator between items
+                          },
+                          itemBuilder: (BuildContext context, int index) {
+                            ContentModel content = contentList[index];
+                            return ContentTile(
+                              title: content.title ?? '',
+                              thumbnail: content.thumbnail ?? '',
+                              date: DateTimeConversion.formattedTime(
+                                  datetime: content.dateUpdated ?? ''),
+                              icon: content.type ?? '',
+                              onTap: () => {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (builder) =>
+                                        ContentScreen(content: content),
+                                  ),
+                                )
+                              },
+                            );
+                          },
+                        );
+                      } else if (status == ContentStatus.loading) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
                       }
-                      return const Center(child: CircularProgressIndicator());
-                    },
-                  ),
-                ],
-              ),
+                    }
+                    return const Center(child: CircularProgressIndicator());
+                  },
+                ),
+              ],
             ),
           ),
         ),

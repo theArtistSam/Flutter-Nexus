@@ -24,6 +24,8 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
           await ContentRepository().getAllContents();
       emit(currentState.copyWith(
           contents: contentList, status: ContentStatus.success));
+
+      print('LOADING ... ');
     } catch (e) {
       emit(currentState.copyWith(status: ContentStatus.failure));
     }

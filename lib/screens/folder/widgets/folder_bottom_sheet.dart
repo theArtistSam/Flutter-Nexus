@@ -29,21 +29,6 @@ class _FolderBottomSheetState extends State<FolderBottomSheet> {
     super.dispose();
   }
 
-  final List icons = [
-    'folder-minus',
-    'double-folder',
-    'heart-folder',
-    'favorite-chart',
-    'notification-status',
-    'brush-square',
-    'gallery',
-    'audio-square',
-    'video-square',
-    'calendar',
-    'code',
-    'key-square',
-  ];
-
   void setSelectedIndex(index) {
     folderBottomSheetBloc.add(SelectFolderIcon(index: index));
   }
@@ -97,7 +82,7 @@ class _FolderBottomSheetState extends State<FolderBottomSheet> {
                           return Column(
                             children: [
                               StyledTextfield(
-                                icon: icons[state.index],
+                                icon: FolderIcons.icons[state.index],
                                 hintText: 'New folder name',
                                 controller: TextEditingController(),
                               ),
@@ -109,10 +94,10 @@ class _FolderBottomSheetState extends State<FolderBottomSheet> {
                                   crossAxisCount: gridCount(),
                                   crossAxisSpacing: 15, //
                                   mainAxisSpacing: 15,
-                                  itemCount: icons.length,
+                                  itemCount: FolderIcons.icons.length,
                                   itemBuilder: (context, index) {
                                     return StyledIconButton(
-                                        icon: icons[index],
+                                        icon: FolderIcons.icons[index],
                                         iconColor: index == state.index
                                             ? Colors.white
                                             : NexusColors.primaryColorLight,

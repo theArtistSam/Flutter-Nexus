@@ -60,10 +60,27 @@ class NexusThemes {
   );
 }
 
-class TimeConversion {
+class DateTimeConversion {
   static String formattedTime({required String datetime}) {
     DateTime dateTime = DateTime.parse(datetime);
     String formattedDate = DateFormat('MMMM dd, yyyy').format(dateTime);
     return formattedDate;
   }
+}
+
+class FolderIcons {
+  static const List icons = [
+    'folder-minus',
+    'double-folder',
+    'heart-folder',
+    'favorite-chart',
+    'notification-status',
+    'brush-square',
+    'gallery',
+    'audio-square',
+    'video-square',
+    'calendar',
+    'code',
+    'key-square',
+  ];
 }

@@ -1,10 +1,16 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nexus/blocs/edit_bottom_sheet_bloc/bloc/edit_bottom_sheet_bloc.dart';
+import 'package:nexus/blocs/home_screen_bloc/bloc/home_screen_bloc.dart';
+import 'package:nexus/models/content_model.dart';
+import 'package:nexus/models/folder_model.dart';
+import 'package:nexus/screens/home/home_screen.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/styled_button.dart';
 import 'package:nexus/widgets/styled_icon_button.dart';
@@ -12,20 +18,30 @@ import 'package:nexus/widgets/styled_tabs.dart';
 import 'package:nexus/widgets/styled_text.dart';
 import 'package:nexus/widgets/styled_textfield.dart';
 
+// ignore: must_be_immutable
 class EditBottomSheet extends StatefulWidget {
-  const EditBottomSheet({super.key});
+  EditBottomSheet({super.key, required this.content});
 
+  ContentModel content;
   @override
   State<EditBottomSheet> createState() => _EditBottomSheetState();
 }
 
 class _EditBottomSheetState extends State<EditBottomSheet> {
   late EditBottomSheetBloc editBottomSheetBloc;
-  final tags = ['sfs fsf', 'sfsdfdfsf', 'dsfs', 'sfsdf', 'sdf42142 sdf'];
+  late TextEditingController titleController;
+  late TextEditingController tagController;
 
   @override
   void initState() {
     editBottomSheetBloc = EditBottomSheetBloc();
+    // Load all the folders at the initial event
+    editBottomSheetBloc.add(InitialEvent());
+
+    titleController = TextEditingController();
+    titleController.text = widget.content.title ?? '';
+
+    tagController = TextEditingController();
     super.initState();
   }
 
@@ -84,18 +100,21 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                         changeState: changeView,
                         // isLeftSelected: false
                       ),
-                      const Divider(
-                        color: NexusColors.dividerColor,
-                        height: 30,
-                      ),
+                      const SizedBox(height: 15),
+                      // const Divider(
+                      //   color: NexusColors.dividerColor,
+                      //   height: 30,
+                      // ),
                       BlocBuilder<EditBottomSheetBloc, EditBottomSheetState>(
                         builder: (context, state) {
                           if (state is EditBottomSheetInitial) {
                             return state.isLeftSelected
                                 ? editBottomSheetContent(
-                                    bottomPadding: bottomPadding)
+                                    content: state.content ?? widget.content,
+                                    bottomPadding: bottomPadding,
+                                    folders: state.folders)
                                 : tagsBottomSheetContent(
-                                    tags: tags,
+                                    content: state.content ?? widget.content,
                                     onTap: () {},
                                     bottomPadding: bottomPadding);
                           } else {
@@ -156,7 +175,10 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
         ),
       );
 
-  tagsBottomSheetContent({tags, onTap, required double bottomPadding}) =>
+  tagsBottomSheetContent(
+          {onTap,
+          required double bottomPadding,
+          required ContentModel content}) =>
       Column(
         children: [
           Row(
@@ -165,13 +187,33 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                 child: StyledTextfield(
                   icon: 'hashtag-square',
                   hintText: 'Add a tag',
-                  controller: TextEditingController(),
+                  controller: tagController,
                 ),
               ),
               const SizedBox(
                 width: 10,
               ),
-              StyledIconButton(icon: 'arrow-up', onTap: () {})
+              StyledIconButton(
+                icon: 'arrow-up',
+                onTap: () {
+                  String newTag = tagController.text.trim();
+                  if (content.tags != null && content.tags!.contains(newTag)) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Already Exists'),
+                      ),
+                    );
+                  } else if (newTag.isNotEmpty) {
+                    editBottomSheetBloc.add(
+                      AddTag(tag: newTag, contentId: widget.content.contentId!),
+                    );
+                    tagController.clear();
+                  }
+                },
+                backgroundColor: tagController.text.isEmpty
+                    ? NexusColors.primaryColorLight.withOpacity(.5)
+                    : NexusColors.primaryColorLight,
+              )
             ],
           ),
           SizedBox(
@@ -180,66 +222,98 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Wrap(children: [
-                for (var tag in tags) tagTile(tagTitle: tag, onTap: onTap)
+                for (var tag in content.tags!)
+                  tagTile(
+                      tagTitle: tag,
+                      onTap: () {
+                        editBottomSheetBloc.add(
+                            RemoveTag(tag: tag, contentId: content.contentId!));
+                      })
               ]),
             ),
           ),
         ],
       );
 
-  editBottomSheetContent({required double bottomPadding}) => Column(
+  editBottomSheetContent(
+          {required double bottomPadding,
+          required ContentModel content,
+          required List<FolderModel> folders}) =>
+      Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Stack(
             children: [
               ClipRRect(
-                  borderRadius: SmoothBorderRadius(
-                      cornerRadius: 15, cornerSmoothing: 0.8),
-                  child: Image.asset('assets/images/content.png',
-                      height: 180, width: double.infinity, fit: BoxFit.cover)),
+                borderRadius:
+                    SmoothBorderRadius(cornerRadius: 15, cornerSmoothing: 0.8),
+                child: Image.network(content.thumbnail ?? '',
+                    height: 180, width: double.infinity, fit: BoxFit.cover),
+              ),
               Positioned.fill(
-                  child: Container(
-                // height: 410,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.black.withOpacity(.1), // Start color (0% black)
-                      Colors.black.withOpacity(0.5), // End color (90% black)
-                    ],
+                  child: GestureDetector(
+                onTap: () async {
+                  // Use image picker to pick the image from gallery
+                  final picker = ImagePicker();
+                  final XFile? pickedFile = await picker.pickImage(
+                    source: ImageSource.gallery,
+                    imageQuality: 30,
+                  );
+
+                  if (pickedFile != null) {
+                    // Trigger the ChangeThumbnail operation with the picked image file and content ID
+                    editBottomSheetBloc.add(
+                      ChangeThumbnail(
+                          file: File(pickedFile.path),
+                          contentId: content.contentId!),
+                    );
+                  } else {
+                    // User canceled the image picker
+                    // Handle accordingly or show a message
+                  }
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withOpacity(.1), // Start color (0% black)
+                        Colors.black.withOpacity(0.5), // End color (90% black)
+                      ],
+                    ),
                   ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Row(
-                    // crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SvgPicture.asset(
-                        'assets/icons/pencil-filled.svg',
-                        color: Colors.white,
-                      ),
-                      const SizedBox(width: 5),
-                      StyledText(
-                        text: 'Change Thumbnail',
-                        fontWeight: FontWeight.w500,
-                        color: NexusColors.textColorLight,
-                      )
-                    ],
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Row(
+                      // crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          'assets/icons/pencil-filled.svg',
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: 10),
+                        StyledText(
+                          text: 'Change Thumbnail',
+                          fontWeight: FontWeight.w500,
+                          color: NexusColors.textColorLight,
+                        )
+                      ],
+                    ),
                   ),
                 ),
               )),
             ],
           ),
           const SizedBox(height: 20),
-          StyledText(text: 'Video Title', fontSize: 18),
+          StyledText(text: 'Content Title', fontSize: 18),
           const SizedBox(height: 10),
           StyledTextfield(
             icon: null,
             hintText: 'Add video title...',
-            controller: TextEditingController(),
+            controller: titleController,
             maxlines: 5,
           ),
           const SizedBox(height: 20),
@@ -259,26 +333,38 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
                   borderRadius: SmoothBorderRadius(
-                      cornerRadius: 15, cornerSmoothing: 0.8),
+                    cornerRadius: 15,
+                    cornerSmoothing: 0.8,
+                  ),
                   icon: SvgPicture.asset(
                     'assets/icons/small-arrow-down.svg',
                     color: NexusColors.primaryColorLight,
                   ),
-                  // value: dropdownValue,
-                  items: <String>['A', 'B', 'C', 'D'].map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
+                  // value: content.title,
+                  items: [
+                    DropdownMenuItem<String>(
+                      value: null,
                       child: StyledText(
-                        text: value,
+                        text: 'None',
                         color: NexusColors.primaryColorLight,
                         fontWeight: FontWeight.w500,
                       ),
-                    );
-                  }).toList(),
+                    ),
+                    ...folders.map((FolderModel folder) {
+                      return DropdownMenuItem<String>(
+                        value: folder.title,
+                        child: StyledText(
+                          text: folder.title ?? '>>>',
+                          color: NexusColors.primaryColorLight,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      );
+                    }).toList(),
+                  ],
                   onChanged: (String? newValue) {
-                    // setState(() {
-                    //   dropdownValue = newValue!;
-                    // });
+                    setState(() {
+                      content.title = newValue;
+                    });
                   },
                 ),
               ),
@@ -288,7 +374,31 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
             height: 50,
             color: NexusColors.dividerColor,
           ),
-          StyledButton(text: 'Delete Video', onTap: () {}, isDeleteable: true),
+          StyledButton(
+            text: 'Delete content',
+            onTap: () async {
+              editBottomSheetBloc.add(
+                DeleteContent(contentId: content.contentId!),
+              );
+              // Reload content on HomeScreen
+              context.read<HomeScreenBloc>().add(LoadContent());
+
+              // Pop from EditBottomSheet
+              Navigator.of(context).pop();
+              // Pop from Content Screen
+              Navigator.of(context).pop();
+
+              // Show an error message or handle the failure case
+              await Future.delayed(const Duration(seconds: 1));
+              // ignore: use_build_context_synchronously
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Content deleted!'),
+                ),
+              );
+            },
+            isDeleteable: true,
+          ),
           const SizedBox(
             height: 15,
           ),

@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:nexus/models/content_model.dart';
 
 class ContentRepository {
@@ -22,6 +25,118 @@ class ContentRepository {
       return [];
     }
   }
+
+  Future<ContentModel> addTag(
+      {required String tag, required String contentId}) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc('Bd4umkyLqOLnMpdOLZ0E')
+          .collection('content')
+          .doc(contentId)
+          .update({
+        'tags': FieldValue.arrayUnion([tag]),
+      });
+
+      // Fetch the updated document to return the updated ContentModel
+      final updatedDoc = await _firestore
+          .collection('users')
+          .doc('Bd4umkyLqOLnMpdOLZ0E')
+          .collection('content')
+          .doc(contentId)
+          .get();
+      print('ADDED!!');
+      return ContentModel.fromJson(updatedDoc.data()!);
+    } catch (e) {
+      // Handle the error
+      throw Exception('Failed to add tag: $e');
+    }
+  }
+
+  Future<ContentModel> removeTag(
+      {required String tag, required String contentId}) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc('Bd4umkyLqOLnMpdOLZ0E')
+          .collection('content')
+          .doc(contentId)
+          .update({
+        'tags': FieldValue.arrayRemove([tag]),
+      });
+
+      // Fetch the updated document to return the updated ContentModel
+      final updatedDoc = await _firestore
+          .collection('users')
+          .doc('Bd4umkyLqOLnMpdOLZ0E')
+          .collection('content')
+          .doc(contentId)
+          .get();
+      return ContentModel.fromJson(updatedDoc.data()!);
+    } catch (e) {
+      // Handle the error
+      throw Exception('Failed to add tag: $e');
+    }
+  }
+
+  Future<String> deleteContent({required String contentId}) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc('Bd4umkyLqOLnMpdOLZ0E')
+          .collection('content')
+          .doc(contentId)
+          .delete();
+      return 'Success';
+    } catch (e) {
+      return 'Failed to delete content: ${e.toString()}';
+    }
+  }
+
+  Future<ContentModel> changeThumbnail(
+      {required File? file, required String contentId}) async {
+    try {
+      if (file == null) {
+        throw Exception('File is null');
+      }
+
+      // Reference to the storage location
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child('users')
+          .child('Bd4umkyLqOLnMpdOLZ0E') // Replace with user ID
+          .child('content')
+          .child(contentId)
+          .child('image.jpg'); // Assuming the file is an image
+
+      // Upload the file to Firestore storage
+      await ref.putFile(file);
+
+      // Get the download URL of the uploaded image
+      final downloadURL = await ref.getDownloadURL();
+
+      // Update link firebase
+      await _firestore
+          .collection('users')
+          .doc('Bd4umkyLqOLnMpdOLZ0E')
+          .collection('content')
+          .doc(contentId)
+          .update({'thumbnail': downloadURL});
+      // Update the thumbnail field of the content model with the download URL
+      final updatedContent = ContentModel(
+        // Assuming ContentModel has a constructor to update the thumbnail
+        // Update other fields as needed
+        thumbnail: downloadURL,
+      );
+
+      // Return the updated content model
+      return updatedContent;
+    } catch (e) {
+      // Handle errors
+      throw Exception('Failed to change thumbnail: $e');
+    }
+  }
+
   // Future<void> addContents() async {
   //   List<ContentModel> contents = [
   //     ContentModel(
@@ -37,7 +152,8 @@ class ContentRepository {
   //       type: 'Type 1',
   //       title: 'Title 1',
   //       folderId: 'folder1',
-  //       thumbnail: 'thumbnail1.jpg',
+  //       thumbnail:
+  //           'https://images.unsplash.com/photo-1657981879763-d39602db3838?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   //       link: 'http://link1.com',
   //       tags: ['tag1', 'tag2'],
   //     ),
@@ -54,7 +170,8 @@ class ContentRepository {
   //       type: 'Type 2',
   //       title: 'Title 2',
   //       folderId: 'folder2',
-  //       thumbnail: 'thumbnail2.jpg',
+  //       thumbnail:
+  //           'https://images.unsplash.com/photo-1657981879763-d39602db3838?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   //       link: 'http://link2.com',
   //       tags: ['tag3', 'tag4'],
   //     ),
@@ -71,7 +188,8 @@ class ContentRepository {
   //       type: 'Type 3',
   //       title: 'Title 3',
   //       folderId: 'folder3',
-  //       thumbnail: 'thumbnail3.jpg',
+  //       thumbnail:
+  //           'https://images.unsplash.com/photo-1657981879763-d39602db3838?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   //       link: 'http://link3.com',
   //       tags: ['tag5', 'tag6'],
   //     ),
@@ -88,7 +206,8 @@ class ContentRepository {
   //       type: 'Type 4',
   //       title: 'Title 4',
   //       folderId: 'folder4',
-  //       thumbnail: 'thumbnail4.jpg',
+  //       thumbnail:
+  //           'https://images.unsplash.com/photo-1657981879763-d39602db3838?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   //       link: 'http://link4.com',
   //       tags: ['tag7', 'tag8'],
   //     ),
@@ -105,7 +224,8 @@ class ContentRepository {
   //       type: 'Type 5',
   //       title: 'Title 5',
   //       folderId: 'folder5',
-  //       thumbnail: 'thumbnail5.jpg',
+  //       thumbnail:
+  //           'https://images.unsplash.com/photo-1657981879763-d39602db3838?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   //       link: 'http://link5.com',
   //       tags: ['tag9', 'tag10'],
   //     ),

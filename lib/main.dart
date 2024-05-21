@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart' as services;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nexus/blocs/home_screen_bloc/bloc/home_screen_bloc.dart';
 import 'package:nexus/screens/content/content_screen.dart';
 import 'package:nexus/screens/folder/folder_screen.dart';
 import 'package:nexus/screens/home/home_screen.dart';
@@ -44,16 +46,13 @@ class MyApp extends StatelessWidget {
     services.SystemChrome.setEnabledSystemUIMode(
         services.SystemUiMode.edgeToEdge,
         overlays: [services.SystemUiOverlay.top]);
-    return MaterialApp(
-      title: 'Coffee Application',
-      // theme: ThemeData(
-      //   appBarTheme: AppBarTheme(
-      //     iconTheme: IconThemeData(color: Colors.black),
-      //     color: Colors.green, //<-- SEE HERE
-      //   ),
-      // ),
-      debugShowCheckedModeBanner: false,
-      home: BottomNavBar(),
+    return BlocProvider(
+      create: (context) => HomeScreenBloc(),
+      child: const MaterialApp(
+        title: 'Coffee Application',
+        debugShowCheckedModeBanner: false,
+        home: BottomNavBar(),
+      ),
     );
   }
 }
