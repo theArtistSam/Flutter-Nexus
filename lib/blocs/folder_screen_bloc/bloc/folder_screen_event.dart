@@ -9,6 +9,6 @@ sealed class FolderScreenEvent extends Equatable {
 
 // ignore: must_be_immutable
 class LoadContent extends FolderScreenEvent {
-  List<String>? contentIDs;
-  LoadContent({required this.contentIDs});
+  String folderID;
+  LoadContent({required this.folderID});
 }

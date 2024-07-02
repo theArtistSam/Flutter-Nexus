@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nexus/blocs/content_screen_bloc/bloc/content_screen_bloc.dart';
 import 'package:nexus/models/content_model.dart';
+import 'package:nexus/models/folder_model.dart';
 import 'package:nexus/screens/content/widgets/content_configure_tabs.dart';
 import 'package:nexus/screens/content/widgets/edit_bottom_sheet.dart';
 import 'package:nexus/utils/constants.dart';
@@ -39,6 +40,10 @@ class _ContentScreenState extends State<ContentScreen> {
   @override
   void initState() {
     contentScreenBloc = ContentScreenBloc();
+
+    // CHECK THIS: NOT BEING USED AT THE MOMENT
+    contentScreenBloc.add(ContentScreenInitialEvent(content: widget.content));
+
     // Create the audio player.
     player = AudioPlayer();
 
@@ -67,7 +72,6 @@ class _ContentScreenState extends State<ContentScreen> {
         position = newPosition;
       });
     });
-
     super.initState();
   }
 
@@ -79,10 +83,9 @@ class _ContentScreenState extends State<ContentScreen> {
   }
 
   void toggleView(bool isLeftSelected) {
-    contentScreenBloc.add(ToggleView(isLeftSelected: isLeftSelected));
+    contentScreenBloc
+        .add(ToggleTranslateSummarizeView(isLeftSelected: isLeftSelected));
   }
-
-  final tags = ['sfs fsf', 'sfsdfdfsf', 'dsfs', 'sfsdf', 'sdf42142 sdf'];
 
   @override
   Widget build(BuildContext context) {
@@ -145,8 +148,20 @@ class _ContentScreenState extends State<ContentScreen> {
                               showModalBottomSheet(
                                   isScrollControlled: true,
                                   context: context,
-                                  builder: (context) => EditBottomSheet(
-                                        content: widget.content,
+                                  builder: (context) => BlocProvider(
+                                        create: (context) => contentScreenBloc,
+                                        child: BlocBuilder<ContentScreenBloc,
+                                            ContentScreenState>(
+                                          builder: (context, state) {
+                                            return EditBottomSheet(
+                                              content: widget.content,
+                                              // FIX THIS >>>
+                                              folders: (state
+                                                      as ContentScreenInitial)
+                                                  .folders,
+                                            );
+                                          },
+                                        ),
                                       ) // Add actual content
                                   )
                             },

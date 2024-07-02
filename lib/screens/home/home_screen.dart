@@ -32,17 +32,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // late HomeScreenBloc homeScreenBloc;
+  late HomeScreenBloc homeScreenBloc;
   @override
   void initState() {
-    context.read<HomeScreenBloc>().add(LoadContent());
-    // homeScreenBloc.add(LoadContent());
+    // context.read<HomeScreenBloc>().add(LoadContent());
+    homeScreenBloc = HomeScreenBloc();
+    homeScreenBloc.add(LoadContent());
     super.initState();
   }
 
   @override
   void dispose() {
-    // homeScreenBloc.close();
+    homeScreenBloc.close();
     super.dispose();
   }
 
@@ -61,163 +62,181 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      backgroundColor: NexusColors.accentColorLight,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight + 5),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: AppBar(
-            surfaceTintColor: Colors.transparent,
-            backgroundColor: NexusColors.accentColorLight,
-            automaticallyImplyLeading: false,
-            leading: InkWell(
-              borderRadius: BorderRadius.circular(5),
-              onTap: () {}, // Handle tap on leading widget
-              child: Transform.scale(
-                scale: .85,
-                child: ClipOval(
-                  child: Image.asset(
-                    'assets/images/profile-picture.png',
-                    fit: BoxFit.cover,
+    return BlocProvider(
+      create: (context) => homeScreenBloc,
+      child: Scaffold(
+        backgroundColor: NexusColors.accentColorLight,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight + 5),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: AppBar(
+              surfaceTintColor: Colors.transparent,
+              backgroundColor: NexusColors.accentColorLight,
+              automaticallyImplyLeading: false,
+              leading: InkWell(
+                borderRadius: BorderRadius.circular(5),
+                onTap: () {}, // Handle tap on leading widget
+                child: Transform.scale(
+                  scale: .85,
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/images/profile-picture.png',
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
-            ),
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                StyledText(text: 'Dunn Oliver', fontSize: 18),
-                Row(
-                  children: [
-                    StyledText(
-                      text: 'Premium Account',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: NexusColors.secondaryTextColorDark,
-                    ),
-                    const SizedBox(width: 8),
-                    SvgPicture.asset(
-                      'assets/icons/small-arrow-right.svg',
-                      color: NexusColors.secondaryTextColorDark,
-                      height: 12,
-                    )
-                  ],
-                ),
-              ],
-            ),
-            actions: [
-              StyledIconButton(
-                icon: 'notification',
-                onTap: () {},
-                backgroundColor: Colors.white,
-                iconColor: Colors.black,
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  StyledText(text: 'Dunn Oliver', fontSize: 18),
+                  Row(
+                    children: [
+                      StyledText(
+                        text: 'Premium Account',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: NexusColors.secondaryTextColorDark,
+                      ),
+                      const SizedBox(width: 8),
+                      SvgPicture.asset(
+                        'assets/icons/small-arrow-right.svg',
+                        color: NexusColors.secondaryTextColorDark,
+                        height: 12,
+                      )
+                    ],
+                  ),
+                ],
               ),
-              const SizedBox(width: 10),
-              StyledIconButton(
-                  icon: 'menu',
-                  onTap: () {
-                    // _toggleTheme(isDarkMode ? ThemeMode.dark : ThemeMode.light);
-                  }),
-            ],
-          ),
-        ),
-      ),
-      body: Container(
-        decoration: const ShapeDecoration(
-          color: Colors.white,
-          shape: SmoothRectangleBorder(
-            borderRadius: SmoothBorderRadius.only(
-                topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
-                topRight: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8)),
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CarouselSlider(
-                  options: CarouselOptions(
-                      height: 170, autoPlay: true, viewportFraction: 1),
-                  items: [1, 2, 3, 4, 5].map((i) {
-                    return Builder(
-                      builder: (BuildContext context) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                          child: GuideTile(
-                              image: 'image', title: 'title', onTap: () => {}),
-                        );
-                      },
-                    );
-                  }).toList(),
+              actions: [
+                StyledIconButton(
+                  icon: 'notification',
+                  onTap: () {},
+                  backgroundColor: Colors.white,
+                  iconColor: Colors.black,
                 ),
-                const SizedBox(height: 15),
-                Row(
-                  children: [
-                    Expanded(
-                      child: StyledIconTile(
-                          icon: 'translate-filled',
-                          text: 'Translate',
-                          onTap: () => {}),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: StyledIconTile(
-                          icon: 'book-filled',
-                          text: 'Summarize',
-                          onTap: () => {}),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 15),
-                StyledText(text: 'Recent Content', fontSize: 20),
-                const SizedBox(height: 10),
-                BlocBuilder<HomeScreenBloc, HomeScreenState>(
-                  builder: (context, state) {
-                    if (state is HomeScreenInitial) {
-                      List<ContentModel> contentList = state.contents;
-                      ContentStatus status = state.status;
-                      if (status == ContentStatus.success) {
-                        return ListView.separated(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: contentList.length, // Number of items
-                          separatorBuilder: (BuildContext context, int index) {
-                            return const SizedBox(
-                                height: 15); // Separator between items
-                          },
-                          itemBuilder: (BuildContext context, int index) {
-                            ContentModel content = contentList[index];
-                            return ContentTile(
-                              title: content.title ?? '',
-                              thumbnail: content.thumbnail ?? '',
-                              date: DateTimeConversion.formattedTime(
-                                  datetime: content.dateUpdated ?? ''),
-                              icon: content.type ?? '',
-                              onTap: () => {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (builder) =>
-                                        ContentScreen(content: content),
-                                  ),
-                                )
-                              },
-                            );
-                          },
-                        );
-                      } else if (status == ContentStatus.loading) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                    }
-                    return const Center(child: CircularProgressIndicator());
-                  },
-                ),
+                const SizedBox(width: 10),
+                StyledIconButton(
+                    icon: 'menu',
+                    onTap: () {
+                      // _toggleTheme(isDarkMode ? ThemeMode.dark : ThemeMode.light);
+                    }),
               ],
+            ),
+          ),
+        ),
+        body: Container(
+          decoration: const ShapeDecoration(
+            color: Colors.white,
+            shape: SmoothRectangleBorder(
+              borderRadius: SmoothBorderRadius.only(
+                  topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
+                  topRight:
+                      SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8)),
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CarouselSlider(
+                    options: CarouselOptions(
+                        height: 170, autoPlay: true, viewportFraction: 1),
+                    items: [1, 2, 3, 4, 5].map((i) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 5.0),
+                            child: GuideTile(
+                                image: 'image',
+                                title: 'title',
+                                onTap: () => {}),
+                          );
+                        },
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 15),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: StyledIconTile(
+                            icon: 'translate-filled',
+                            text: 'Translate',
+                            onTap: () => {}),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: StyledIconTile(
+                            icon: 'book-filled',
+                            text: 'Summarize',
+                            onTap: () => {}),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                  StyledText(text: 'Recent Content', fontSize: 20),
+                  const SizedBox(height: 10),
+                  BlocBuilder<HomeScreenBloc, HomeScreenState>(
+                    builder: (context, state) {
+                      Stream<List<ContentModel>> contents =
+                          (state as HomeScreenInitial).contents;
+
+                      return StreamBuilder<List<ContentModel>>(
+                        stream: contents,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(
+                                child: Text('Error: ${snapshot.error}'));
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return const Center(
+                                child: Text('No content available'));
+                          }
+
+                          List<ContentModel> contentList = snapshot.data!;
+
+                          return ListView.separated(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: contentList.length,
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return const SizedBox(height: 15);
+                            },
+                            itemBuilder: (BuildContext context, int index) {
+                              ContentModel content = contentList[index];
+                              return ContentTile(
+                                title: content.title ?? '',
+                                thumbnail: content.thumbnail ?? '',
+                                date: content.dateUpdated ?? '',
+                                icon: content.type ?? '',
+                                onTap: () => {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (builder) =>
+                                          ContentScreen(content: content),
+                                    ),
+                                  )
+                                },
+                              );
+                            },
+                          );
+                        },
+                      );
+                    },
+                  )
+                ],
+              ),
             ),
           ),
         ),

@@ -10,19 +10,19 @@ sealed class LibraryScreenState extends Equatable {
 // ignore: must_be_immutable
 class LibraryScreenInitial extends LibraryScreenState {
   bool isLeftSelected;
-  List<ContentModel> contents;
+  Stream<List<ContentModel>> contents;
   List<FolderModel> folders;
   LibraryStatus status;
   LibraryScreenInitial({
     this.isLeftSelected = true,
-    this.contents = const <ContentModel>[],
+    this.contents = const Stream.empty(),
     this.status = LibraryStatus.loading,
     this.folders = const <FolderModel>[],
   });
 
   LibraryScreenInitial copyWith({
     bool? isLeftSelected,
-    List<ContentModel>? contents,
+    Stream<List<ContentModel>>? contents,
     LibraryStatus? status,
     List<FolderModel>? folders,
   }) {

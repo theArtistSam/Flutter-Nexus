@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:nexus/blocs/content_screen_bloc/bloc/content_screen_bloc.dart';
 import 'package:nexus/blocs/edit_bottom_sheet_bloc/bloc/edit_bottom_sheet_bloc.dart';
 import 'package:nexus/blocs/home_screen_bloc/bloc/home_screen_bloc.dart';
 import 'package:nexus/models/content_model.dart';
 import 'package:nexus/models/folder_model.dart';
+import 'package:nexus/screens/content/content_screen.dart';
 import 'package:nexus/screens/home/home_screen.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/styled_button.dart';
@@ -20,9 +22,10 @@ import 'package:nexus/widgets/styled_textfield.dart';
 
 // ignore: must_be_immutable
 class EditBottomSheet extends StatefulWidget {
-  EditBottomSheet({super.key, required this.content});
+  EditBottomSheet({super.key, required this.content, required this.folders});
 
   ContentModel content;
+  List<FolderModel> folders;
   @override
   State<EditBottomSheet> createState() => _EditBottomSheetState();
 }
@@ -35,8 +38,9 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
   @override
   void initState() {
     editBottomSheetBloc = EditBottomSheetBloc();
+
     // Load all the folders at the initial event
-    editBottomSheetBloc.add(InitialEvent());
+    // editBottomSheetBloc.add(InitialEvent());
 
     titleController = TextEditingController();
     titleController.text = widget.content.title ?? '';
@@ -112,7 +116,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                                 ? editBottomSheetContent(
                                     content: state.content ?? widget.content,
                                     bottomPadding: bottomPadding,
-                                    folders: state.folders)
+                                    folders: widget.folders)
                                 : tagsBottomSheetContent(
                                     content: state.content ?? widget.content,
                                     onTap: () {},
@@ -381,7 +385,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                 DeleteContent(contentId: content.contentId!),
               );
               // Reload content on HomeScreen
-              context.read<HomeScreenBloc>().add(LoadContent());
+              // context.read<HomeScreenBloc>().add(LoadContent());
 
               // Pop from EditBottomSheet
               Navigator.of(context).pop();

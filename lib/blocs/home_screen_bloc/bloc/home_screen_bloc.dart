@@ -20,8 +20,8 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
     final currentState = state as HomeScreenInitial;
 
     try {
-      List<ContentModel> contentList =
-          await ContentRepository().getAllContents();
+      Stream<List<ContentModel>> contentList =
+          ContentRepository().getAllContents();
       emit(currentState.copyWith(
           contents: contentList, status: ContentStatus.success));
 

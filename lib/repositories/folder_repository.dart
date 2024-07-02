@@ -27,22 +27,18 @@ class FolderRepository {
     }
   }
 
-  Future<List<ContentModel>> getAllFolderContents(
-      {required List<String>? contentIDs}) async {
+  Stream<List<ContentModel>> getAllFolderContents({required String folderID}) {
     try {
-      // Fetch all contents from the repository
-      List<ContentModel> allContents =
-          await ContentRepository().getAllContents();
+      // Fetch all contents from the repository with the provided query
+      Stream<List<ContentModel>> allContents = ContentRepository()
+          .getAllContents(
+              queryBuilder: (query) =>
+                  query.where('folder_id', isEqualTo: folderID));
 
-      // Filter the contents to only include those with IDs in the provided list
-      List<ContentModel> folderContents = allContents.where((content) {
-        return contentIDs!.contains(content.contentId);
-      }).toList();
-
-      return folderContents;
+      return allContents;
     } catch (e) {
       print('Error getting folder contents: $e');
-      return [];
+      return const Stream.empty();
     }
   }
 }

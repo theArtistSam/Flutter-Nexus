@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:docx_to_text/docx_to_text.dart';
 import 'package:flutter/services.dart';
+import 'package:nexus/models/extractive_model.dart';
+import 'package:nexus/repositories/extractive_model_repository.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 class Sample extends StatefulWidget {
@@ -14,14 +16,16 @@ class Sample extends StatefulWidget {
 
 class _SampleState extends State<Sample> {
   String? extractedText;
-
+  String? outputText;
   Future<void> _extractWordText() async {
     try {
       final bytes = await rootBundle.load("assets/files/sample-doc.docx");
       final text =
           docxToText(bytes.buffer.asUint8List()); // Use buffer.asUint8List()
 
-      print(text);
+      ExtractiveModel output = await ExtractiveModelRepository()
+          .sendRequest(text: text, sentences: 'short');
+      outputText = output.text;
       setState(() {
         extractedText = text;
       });
@@ -53,6 +57,10 @@ class _SampleState extends State<Sample> {
           .replaceAll(RegExp(r'\s+'), ' ')
           .trim();
 
+      ExtractiveModel output = await ExtractiveModelRepository()
+          .sendRequest(text: text, sentences: 'medium');
+      outputText = output.text;
+
       setState(() {
         extractedText = text;
       });
@@ -64,20 +72,26 @@ class _SampleState extends State<Sample> {
   @override
   void initState() {
     super.initState();
-    _extractWordText();
-    // _extractPdfText();
+    // _extractWordText();
+    _extractPdfText();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      body: ListView(
+        // mainAxisAlignment: MainAxisAlignment.center,
+        // crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           extractedText != null
-              ? Text(extractedText!)
+              ? Text("EXTRACTED: ${extractedText!}")
               : const Text('Extracting text...'),
+          const SizedBox(
+            height: 20,
+          ),
+          outputText != null
+              ? Text("OUTPUT: ${outputText!}")
+              : const Text('Generating output '),
         ],
       ),
     );

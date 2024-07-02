@@ -20,8 +20,9 @@ class FolderScreenBloc extends Bloc<FolderScreenEvent, FolderScreenState> {
     final currentState = state as FolderScreenInitial;
 
     try {
-      List<ContentModel> folderContents = await FolderRepository()
-          .getAllFolderContents(contentIDs: event.contentIDs);
+      Stream<List<ContentModel>> folderContents =
+          FolderRepository().getAllFolderContents(folderID: event.folderID);
+
       emit(currentState.copyWith(
           folderContents: folderContents, status: ContentStatus.success));
 

@@ -28,6 +28,7 @@ class _ChatScreenState extends State<ChatScreen> {
   late ExtractiveModelBloc extractiveModelBloc;
   @override
   void initState() {
+    // CHECK OUT THE STREAM BUILDER
     chatScreenBloc = ChatScreenBloc();
     extractiveModelBloc = ExtractiveModelBloc();
 
@@ -113,10 +114,6 @@ class _ChatScreenState extends State<ChatScreen> {
                     // isLeftSelected: false,
                   ),
                   const SizedBox(height: 15),
-                  const Divider(
-                    height: 1,
-                    color: NexusColors.dividerColor,
-                  ),
                   BlocListener<ExtractiveModelBloc, ExtractiveModelState>(
                     listener: (context, state) {
                       if (state is ExtractiveModelInitial &&
@@ -155,7 +152,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   const SizedBox(
                     // 190
-                    height: 106,
+                    height: 116,
                   )
                 ],
               ),
@@ -195,7 +192,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       if (controller.text.isNotEmpty)
                         {
                           extractiveModelBloc.add(
-                            FetchModelResult(text: controller.text),
+                            FetchModelResult(
+                                text: controller.text, senteces: 'medium'),
                           ),
                           chatScreenBloc.add(
                             NewChatSummary(

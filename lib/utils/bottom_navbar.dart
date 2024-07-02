@@ -80,6 +80,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
               // resizeToAvoidBottomInset: true,
               body: _pages[state.index],
               bottomNavigationBar: BottomBarCreative(
+                pad: 1,
+                // top: 5,
+                bottom: 5,
                 items: navbarItems(index: state.index),
                 backgroundColor: Colors.white,
                 color: Colors.black,
@@ -126,6 +129,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           icon: SvgPicture.asset(
             'assets/icons/sparkle.svg',
             height: 24,
+            // color: NexusColors.primaryColorLight,
           ),
           title: 'AI',
         ),

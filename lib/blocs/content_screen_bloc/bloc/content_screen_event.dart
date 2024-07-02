@@ -8,9 +8,9 @@ sealed class ContentScreenEvent extends Equatable {
 }
 
 // ignore: must_be_immutable
-class ToggleView extends ContentScreenEvent {
+class ToggleTranslateSummarizeView extends ContentScreenEvent {
   bool isLeftSelected;
-  ToggleView({required this.isLeftSelected});
+  ToggleTranslateSummarizeView({required this.isLeftSelected});
 }
 
 // ignore: must_be_immutable
@@ -23,4 +23,10 @@ class ToggleContainerView extends ContentScreenEvent {
 class ToggleLikeDislike extends ContentScreenEvent {
   bool isLiked;
   ToggleLikeDislike({required this.isLiked});
+}
+
+// ignore: must_be_immutable
+class ContentScreenInitialEvent extends ContentScreenEvent {
+  ContentModel content;
+  ContentScreenInitialEvent({required this.content});
 }

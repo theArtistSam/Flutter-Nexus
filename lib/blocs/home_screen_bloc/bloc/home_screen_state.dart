@@ -9,15 +9,15 @@ sealed class HomeScreenState extends Equatable {
 
 // ignore: must_be_immutable
 final class HomeScreenInitial extends HomeScreenState {
-  List<ContentModel> contents;
+  Stream<List<ContentModel>> contents;
   ContentStatus status;
 
   HomeScreenInitial(
-      {this.contents = const <ContentModel>[],
+      {this.contents = const Stream.empty(),
       this.status = ContentStatus.loading});
 
   HomeScreenInitial copyWith(
-      {List<ContentModel>? contents, ContentStatus? status}) {
+      {Stream<List<ContentModel>>? contents, ContentStatus? status}) {
     return HomeScreenInitial(
         contents: contents ?? this.contents, status: status ?? this.status);
   }

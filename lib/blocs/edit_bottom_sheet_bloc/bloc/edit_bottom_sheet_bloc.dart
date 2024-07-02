@@ -19,7 +19,7 @@ part 'edit_bottom_sheet_state.dart';
 class EditBottomSheetBloc
     extends Bloc<EditBottomSheetEvent, EditBottomSheetState> {
   EditBottomSheetBloc() : super(EditBottomSheetInitial()) {
-    on<InitialEvent>(initialEvent);
+    // on<InitialEvent>(initialEvent);
     on<ToggleView>(toggleView);
     on<AddTag>(addTag);
     on<RemoveTag>(removeTag);
@@ -27,17 +27,17 @@ class EditBottomSheetBloc
     on<ChangeThumbnail>(changeThumbnail);
   }
 
-  FutureOr<void> initialEvent(
-      InitialEvent event, Emitter<EditBottomSheetState> emit) async {
-    final currentState = (state as EditBottomSheetInitial);
-    try {
-      List<FolderModel> folders = await FolderRepository().getAllFolders();
-      emit(currentState.copyWith(folders: folders));
-      print('Loading Folders');
-    } catch (e) {
-      print(e.toString());
-    }
-  }
+  // FutureOr<void> initialEvent(
+  //     InitialEvent event, Emitter<EditBottomSheetState> emit) async {
+  //   final currentState = (state as EditBottomSheetInitial);
+  //   try {
+  //     List<FolderModel> folders = await FolderRepository().getAllFolders();
+  //     emit(currentState.copyWith(folders: folders));
+  //     print('Loading Folders');
+  //   } catch (e) {
+  //     print(e.toString());
+  //   }
+  // }
 
   FutureOr<void> toggleView(
       ToggleView event, Emitter<EditBottomSheetState> emit) {

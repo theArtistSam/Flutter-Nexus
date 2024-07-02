@@ -5,13 +5,14 @@ import 'package:http/http.dart' as http;
 import 'package:nexus/models/extractive_model.dart';
 
 class ExtractiveModelRepository {
-  Future<ExtractiveModel> sendRequest({required String text}) async {
+  Future<ExtractiveModel> sendRequest(
+      {required String text, required String sentences}) async {
     try {
-      final uri = Uri.parse('http://192.168.32.35:8000/get-response/');
+      final uri = Uri.parse('http://192.168.43.231:8000/get-response/');
       final headers = {'Content-Type': 'application/json'};
       final body = jsonEncode({
         "model_name": "Text_summarization",
-        "arguments": {"sentences": "medium"},
+        "arguments": {"sentences": sentences},
         "text": text
       });
 

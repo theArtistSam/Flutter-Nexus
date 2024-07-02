@@ -117,7 +117,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                     builder: (context, state) {
                       if (state is LibraryScreenInitial) {
                         bool isLeftSelected = state.isLeftSelected;
-                        List<ContentModel> contentList = state.contents;
+                        Stream<List<ContentModel>> contentList = state.contents;
                         List<FolderModel> folderList = state.folders;
                         LibraryStatus status = state.status;
 
@@ -157,34 +157,55 @@ class _LibraryScreenState extends State<LibraryScreen> {
                               ),
                             );
                           }
-                          return Expanded(
-                            child: ListView.separated(
-                              itemCount: contentList.length, // Number of items
-                              separatorBuilder:
-                                  (BuildContext context, int index) {
-                                return const SizedBox(
-                                    height: 15); // Separator between items
-                              },
-                              itemBuilder: (BuildContext context, int index) {
-                                ContentModel content = contentList[index];
-                                return ContentTile(
-                                  title: content.title ?? '',
-                                  thumbnail: content.thumbnail ?? '',
-                                  date: DateTimeConversion.formattedTime(
-                                      datetime: content.dateUpdated ?? ''),
-                                  icon: content.type ?? '',
-                                  onTap: () => {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (builder) =>
-                                            ContentScreen(content: content),
-                                      ),
-                                    )
+                          return StreamBuilder<List<ContentModel>>(
+                            stream: contentList,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              } else if (snapshot.hasError) {
+                                return Center(
+                                    child: Text('Error: ${snapshot.error}'));
+                              } else if (!snapshot.hasData ||
+                                  snapshot.data!.isEmpty) {
+                                return const Center(
+                                    child: Text('No content available'));
+                              }
+
+                              List<ContentModel> contentList = snapshot.data!;
+
+                              return Expanded(
+                                child: ListView.separated(
+                                  // shrinkWrap: true,
+                                  // physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: contentList.length,
+                                  separatorBuilder:
+                                      (BuildContext context, int index) {
+                                    return const SizedBox(height: 15);
                                   },
-                                );
-                              },
-                            ),
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    ContentModel content = contentList[index];
+                                    return ContentTile(
+                                      title: content.title ?? '',
+                                      thumbnail: content.thumbnail ?? '',
+                                      date: content.dateUpdated ?? '',
+                                      icon: content.type ?? '',
+                                      onTap: () => {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (builder) =>
+                                                ContentScreen(content: content),
+                                          ),
+                                        )
+                                      },
+                                    );
+                                  },
+                                ),
+                              );
+                            },
                           );
                         } else if (status == LibraryStatus.loading) {
                           return const Center(

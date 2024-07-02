@@ -10,5 +10,6 @@ sealed class ExtractiveModelEvent extends Equatable {
 // ignore: must_be_immutable
 class FetchModelResult extends ExtractiveModelEvent {
   String text;
-  FetchModelResult({required this.text});
+  String senteces;
+  FetchModelResult({required this.text, required this.senteces});
 }

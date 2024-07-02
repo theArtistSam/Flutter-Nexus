@@ -9,14 +9,14 @@ sealed class FolderScreenState extends Equatable {
 
 // ignore: must_be_immutable
 final class FolderScreenInitial extends FolderScreenState {
-  List<ContentModel> folderContents;
+  Stream<List<ContentModel>> folderContents;
   ContentStatus status;
   FolderScreenInitial(
-      {this.folderContents = const <ContentModel>[],
+      {this.folderContents = const Stream.empty(),
       this.status = ContentStatus.loading});
 
   FolderScreenInitial copyWith(
-      {List<ContentModel>? folderContents, ContentStatus? status}) {
+      {Stream<List<ContentModel>>? folderContents, ContentStatus? status}) {
     return FolderScreenInitial(
         folderContents: folderContents ?? this.folderContents,
         status: status ?? this.status);

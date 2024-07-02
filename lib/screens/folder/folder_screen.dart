@@ -5,6 +5,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nexus/blocs/folder_screen_bloc/bloc/folder_screen_bloc.dart';
+import 'package:nexus/models/content_model.dart';
 import 'package:nexus/models/folder_model.dart';
 import 'package:nexus/screens/content/content_screen.dart';
 import 'package:nexus/screens/folder/widgets/folder_bottom_sheet.dart';
@@ -31,7 +32,7 @@ class _FolderScreenState extends State<FolderScreen> {
   @override
   void initState() {
     folderScreenBloc = FolderScreenBloc();
-    folderScreenBloc.add(LoadContent(contentIDs: widget.folder.contents));
+    folderScreenBloc.add(LoadContent(folderID: widget.folder.folderId ?? ''));
     super.initState();
   }
 
@@ -100,48 +101,55 @@ class _FolderScreenState extends State<FolderScreen> {
               // ),
               BlocBuilder<FolderScreenBloc, FolderScreenState>(
                 builder: (context, state) {
-                  final currentState = state as FolderScreenInitial;
-                  final contents = currentState.folderContents;
-                  final status = state.status;
-                  if (status == ContentStatus.loading) {
-                    return const SizedBox(
-                      child: Expanded(
-                          child: Center(child: CircularProgressIndicator())),
-                    );
-                  } else if (status == ContentStatus.success) {
-                    return Expanded(
-                      child: ListView.separated(
-                        itemCount: contents.length, // Number of items
-                        separatorBuilder: (BuildContext context, int index) {
-                          return const SizedBox(
-                              height: 15); // Separator between items
-                        },
-                        itemBuilder: (BuildContext context, int index) {
-                          // Build each item
-                          return ContentTile(
-                            title: contents[index].title ?? '',
-                            thumbnail: contents[index].thumbnail ?? '',
-                            date: DateTimeConversion.formattedTime(
-                                datetime: contents[index].dateUpdated ?? ''),
-                            icon: 'video',
-                            onTap: () => {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (builder) => ContentScreen(
-                                    content: contents[index],
+                  Stream<List<ContentModel>> contents =
+                      (state as FolderScreenInitial).folderContents;
+
+                  return StreamBuilder<List<ContentModel>>(
+                    stream: contents,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(
+                            child: Text('No content available'));
+                      }
+
+                      List<ContentModel> contentList = snapshot.data!;
+
+                      return Expanded(
+                        child: ListView.separated(
+                          // shrinkWrap: true,
+                          // physics: const NeverScrollableScrollPhysics(),
+                          itemCount: contentList.length,
+                          separatorBuilder: (BuildContext context, int index) {
+                            return const SizedBox(height: 15);
+                          },
+                          itemBuilder: (BuildContext context, int index) {
+                            ContentModel content = contentList[index];
+                            return ContentTile(
+                              title: content.title ?? '',
+                              thumbnail: content.thumbnail ?? '',
+                              date: content.dateUpdated ?? '',
+                              icon: content.type ?? '',
+                              onTap: () => {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (builder) =>
+                                        ContentScreen(content: content),
                                   ),
-                                ),
-                              ),
-                            },
-                          );
-                        },
-                      ),
-                    );
-                  }
-                  return const Text('Smth Went Wrong');
+                                )
+                              },
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  );
                 },
-              ),
+              )
             ]),
           ),
         ),

@@ -16,6 +16,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Create an env file to hide that
   await Firebase.initializeApp(
       options: const FirebaseOptions(
     apiKey: 'AIzaSyA-Kcgm4RmMydrKt-VzRsNCyWx9ZJYnHD8',
@@ -46,13 +47,10 @@ class MyApp extends StatelessWidget {
     services.SystemChrome.setEnabledSystemUIMode(
         services.SystemUiMode.edgeToEdge,
         overlays: [services.SystemUiOverlay.top]);
-    return BlocProvider(
-      create: (context) => HomeScreenBloc(),
-      child: const MaterialApp(
-        title: 'Coffee Application',
-        debugShowCheckedModeBanner: false,
-        home: BottomNavBar(),
-      ),
+    return const MaterialApp(
+      title: 'Coffee Application',
+      debugShowCheckedModeBanner: false,
+      home: BottomNavBar(),
     );
   }
 }

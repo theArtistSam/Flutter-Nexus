@@ -29,8 +29,8 @@ class LibraryScreenBloc extends Bloc<LibraryScreenEvent, LibraryScreenState> {
       LoadContent event, Emitter<LibraryScreenState> emit) async {
     final currentState = (state as LibraryScreenInitial);
     try {
-      List<ContentModel> contentList =
-          await ContentRepository().getAllContents();
+      Stream<List<ContentModel>> contentList =
+          ContentRepository().getAllContents();
 
       List<FolderModel> folderList = await FolderRepository().getAllFolders();
 
