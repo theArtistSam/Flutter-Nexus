@@ -25,8 +25,9 @@ import 'package:nexus/widgets/styled_tabs.dart';
 
 class HomeScreen extends StatefulWidget {
   // ignore: use_key_in_widget_constructors
-  const HomeScreen({Key? key});
+  HomeScreen({Key? key, required this.controller});
 
+  ScrollController controller;
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -137,8 +138,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
             child: SingleChildScrollView(
+              controller: widget.controller,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -179,7 +181,22 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   const SizedBox(height: 15),
-                  StyledText(text: 'Recent Content', fontSize: 20),
+                  GestureDetector(
+                    onTap: () {
+                      // TODO: Tap to navigate to the content library   section
+                    },
+                    child: Row(
+                      children: [
+                        StyledText(text: 'Recent Content', fontSize: 20),
+                        const Spacer(),
+                        SvgPicture.asset(
+                          'assets/icons/small-arrow-right.svg',
+                          height: 18,
+                          color: Colors.black45,
+                        )
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 10),
                   BlocBuilder<HomeScreenBloc, HomeScreenState>(
                     builder: (context, state) {

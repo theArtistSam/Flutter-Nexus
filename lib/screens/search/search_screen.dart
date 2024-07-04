@@ -118,9 +118,12 @@ class _SearchScreennState extends State<SearchScreenn> {
                 //     },
                 //   ),
                 // ),
-                const Divider(
-                  color: NexusColors.dividerColor,
-                  height: 30,
+                // const Divider(
+                //   color: NexusColors.dividerColor,
+                //   height: 30,
+                // ),
+                const SizedBox(
+                  height: 15,
                 ),
                 BlocBuilder<SearchScreenBloc, SearchScreenState>(
                   builder: (context, state) {

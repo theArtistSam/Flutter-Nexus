@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
     services.SystemChrome.setSystemUIOverlayStyle(
       const services.SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.light,
+          // statusBarIconBrightness: Brightness.light,
           systemNavigationBarColor: Colors.transparent,
           systemNavigationBarDividerColor:
               Colors.transparent // Set the desired background color
@@ -45,8 +45,9 @@ class MyApp extends StatelessWidget {
     );
 
     services.SystemChrome.setEnabledSystemUIMode(
-        services.SystemUiMode.edgeToEdge,
-        overlays: [services.SystemUiOverlay.top]);
+      services.SystemUiMode.edgeToEdge,
+      overlays: [services.SystemUiOverlay.top],
+    );
     return const MaterialApp(
       title: 'Coffee Application',
       debugShowCheckedModeBanner: false,

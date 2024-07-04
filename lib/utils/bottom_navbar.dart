@@ -7,11 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hidable/hidable.dart';
 import 'package:nexus/blocs/navbar_bloc/bloc/navbar_bloc.dart';
 import 'package:nexus/screens/chat/chat_screen.dart';
 import 'package:nexus/screens/home/home_screen.dart';
 import 'package:nexus/screens/home/widgets/content_upload_tile.dart';
 import 'package:nexus/screens/library/library_screen.dart';
+import 'package:nexus/screens/test_screen.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/styled_text.dart';
 import 'package:nexus/widgets/styled_button.dart';
@@ -27,26 +29,31 @@ class BottomNavBar extends StatefulWidget {
 class _BottomNavBarState extends State<BottomNavBar> {
   late NavbarBloc navbarBloc;
   bool? isLeftSelected;
-
+  late ScrollController controller;
   @override
   void initState() {
     navbarBloc = NavbarBloc();
+    controller = ScrollController();
     super.initState();
   }
 
   @override
   void dispose() {
     navbarBloc.close();
+    controller.dispose();
     super.dispose();
   }
 
-  final List<Widget> _pages = [
-    const HomeScreen(),
-    const LibraryScreen(),
-    const SizedBox(), // Empty screen
-    Center(child: StyledText(text: 'Forum')),
-    Center(child: StyledText(text: 'Profile'))
-  ];
+  List<Widget> _pages({ScrollController? controller}) {
+    List<Widget> pages = [
+      HomeScreen(controller: controller ?? ScrollController()),
+      LibraryScreen(controller: controller ?? ScrollController()),
+      const SizedBox(), // Empty screen
+      Center(child: StyledText(text: 'Community')),
+      Center(child: StyledText(text: 'Profile'))
+    ];
+    return pages;
+  }
 
   void _changeTab(int index, NavbarState state, double bottomPadding) {
     if (state is NavbarInitial) {
@@ -78,19 +85,26 @@ class _BottomNavBarState extends State<BottomNavBar> {
             return Scaffold(
               extendBody: true,
               // resizeToAvoidBottomInset: true,
-              body: _pages[state.index],
-              bottomNavigationBar: BottomBarCreative(
-                pad: 1,
-                // top: 5,
-                bottom: 5,
-                items: navbarItems(index: state.index),
-                backgroundColor: Colors.white,
-                color: Colors.black,
-                colorSelected: NexusColors.primaryColorLight,
-                titleStyle: GoogleFonts.poppins(
-                    fontSize: 11, fontWeight: FontWeight.w500),
-                indexSelected: state.index,
-                onTap: (int index) => _changeTab(index, state, bottomPadding),
+              body: _pages(controller: controller)[state.index],
+              bottomNavigationBar: Hidable(
+                preferredWidgetSize: Size.fromHeight(56 + bottomPadding),
+                controller: controller,
+                child: BottomBarCreative(
+                  highlightStyle: const HighlightStyle(
+                    background: Colors.white,
+                  ),
+                  pad: 1,
+                  top: 5,
+                  bottom: 0,
+                  items: navbarItems(index: state.index),
+                  backgroundColor: Colors.white,
+                  color: Colors.black,
+                  colorSelected: NexusColors.primaryColorLight,
+                  titleStyle: GoogleFonts.poppins(
+                      fontSize: 11, fontWeight: FontWeight.w500),
+                  indexSelected: state.index,
+                  onTap: (int index) => _changeTab(index, state, bottomPadding),
+                ),
               ),
             );
           } else {
@@ -128,8 +142,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
         TabItem(
           icon: SvgPicture.asset(
             'assets/icons/sparkle.svg',
-            height: 24,
-            // color: NexusColors.primaryColorLight,
+            height: 32,
+            color: NexusColors.primaryColorLight,
           ),
           title: 'AI',
         ),
@@ -141,7 +155,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
             color: index == 3 ? NexusColors.primaryColorLight : Colors.black,
             height: 24,
           ),
-          title: 'Forum',
+          title: 'Community',
         ),
         TabItem(
           icon: SizedBox(

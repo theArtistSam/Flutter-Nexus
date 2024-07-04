@@ -20,10 +20,8 @@ import 'package:nexus/widgets/styled_tabs.dart';
 
 // ignore: must_be_immutable
 class LibraryScreen extends StatefulWidget {
-  const LibraryScreen({
-    super.key,
-  });
-
+  LibraryScreen({super.key, required this.controller});
+  ScrollController controller;
   @override
   State<LibraryScreen> createState() => _LibraryScreenState();
 }
@@ -125,6 +123,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                           if (isLeftSelected) {
                             return Expanded(
                               child: MasonryGridView.count(
+                                controller: widget.controller,
                                 // padding: const EdgeInsets.only(top: 15),
                                 crossAxisCount: gridCount(),
                                 crossAxisSpacing: 15, //
@@ -179,6 +178,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                                 child: ListView.separated(
                                   // shrinkWrap: true,
                                   // physics: const NeverScrollableScrollPhysics(),
+                                  controller: widget.controller,
                                   itemCount: contentList.length,
                                   separatorBuilder:
                                       (BuildContext context, int index) {

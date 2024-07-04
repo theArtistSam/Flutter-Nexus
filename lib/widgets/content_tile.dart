@@ -114,7 +114,7 @@ class ContentTile extends StatelessWidget {
         child: Stack(
           children: [
             SizedBox(
-              height: 210,
+              height: 170,
               child: ClipSmoothRect(
                 radius: SmoothBorderRadius(
                   cornerRadius: 15,
@@ -143,7 +143,7 @@ class ContentTile extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 210,
+              height: 170,
               child: Padding(
                 padding: const EdgeInsets.all(15),
                 child: Column(

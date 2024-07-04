@@ -19,6 +19,13 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
     // Check if the current state is HomeScreenLoadContent
     final currentState = state as HomeScreenInitial;
 
+    // TODO: FIX THE last_updated to add the below query
+    // queryBuilder: (query) => query
+    //         .orderBy(
+    //           'timestamp',
+    //           descending: true,
+    //         ) // Replace 'timestamp' with the field indicating when the content was added
+    //         .limit(3),
     try {
       Stream<List<ContentModel>> contentList =
           ContentRepository().getAllContents();
