@@ -25,9 +25,8 @@ class StyledIconTile extends StatelessWidget {
         onTap: onTap,
         child: Ink(
           decoration: ShapeDecoration(
-            color: isPrimary
-                ? NexusColors.primaryColorLight
-                : NexusColors.accentColorLight,
+            color:
+                isPrimary ? NexusColors.primaryColor : NexusColors.accentColor,
             shape: SmoothRectangleBorder(
               borderRadius: SmoothBorderRadius(
                 cornerRadius: 15,
@@ -43,14 +42,14 @@ class StyledIconTile extends StatelessWidget {
                 SvgPicture.asset(
                   'assets/icons/$icon.svg',
                   height: 35,
-                  color: isPrimary ? Colors.white : Colors.black,
+                  color: isPrimary ? Colors.white : NexusColors.textColor,
                 ),
                 const SizedBox(height: 10),
                 StyledText(
                   text: text,
                   color: isPrimary
                       ? NexusColors.textColorLight
-                      : NexusColors.textColorDark,
+                      : NexusColors.textColor,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 )

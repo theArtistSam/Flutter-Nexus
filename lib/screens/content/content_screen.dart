@@ -95,7 +95,7 @@ class _ContentScreenState extends State<ContentScreen> {
     return BlocProvider(
       create: (context) => contentScreenBloc,
       child: Scaffold(
-        backgroundColor: NexusColors.accentColorLight,
+        backgroundColor: NexusColors.accentColor,
         body: SizedBox(
           child: Stack(
             children: [
@@ -312,10 +312,12 @@ class _ContentScreenState extends State<ContentScreen> {
           onTap: onTap,
           child: Ink(
             decoration: ShapeDecoration(
-                color: NexusColors.accentColorLight,
-                shape: SmoothRectangleBorder(
-                    borderRadius: SmoothBorderRadius(
-                        cornerRadius: 15, cornerSmoothing: 0.8))),
+              color: NexusColors.accentColor,
+              shape: SmoothRectangleBorder(
+                borderRadius:
+                    SmoothBorderRadius(cornerRadius: 15, cornerSmoothing: 0.8),
+              ),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: Column(
@@ -328,13 +330,19 @@ class _ContentScreenState extends State<ContentScreen> {
                       StyledText(
                         fontSize: 14,
                         text: isOpen ? openTitle : closeTitle,
-                        color: NexusColors.primaryColorLight,
+                        // COLOR: FIX
+                        color: NexusColors.isDark
+                            ? Colors.white54
+                            : NexusColors.primaryColorLight,
                       ),
                       const Spacer(),
                       !isOpen
                           ? SvgPicture.asset(
                               'assets/icons/small-arrow-down.svg',
-                              color: NexusColors.primaryColorLight,
+                              // COLOR: FIX
+                              color: NexusColors.isDark
+                                  ? Colors.white54
+                                  : NexusColors.primaryColorLight,
                             )
                           : const SizedBox()
                     ],
@@ -345,7 +353,10 @@ class _ContentScreenState extends State<ContentScreen> {
                           ? Text(
                               text,
                               style: GoogleFonts.notoNastaliqUrdu(
-                                color: NexusColors.primaryColorLight,
+                                // COLOR: FIX
+                                color: NexusColors.isDark
+                                    ? Colors.white
+                                    : NexusColors.primaryColorLight,
                                 height: 2,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
@@ -353,9 +364,13 @@ class _ContentScreenState extends State<ContentScreen> {
                               textAlign: TextAlign.right,
                             )
                           : StyledText(
-                              fontSize: 18,
+                              fontSize: 16,
                               text: text,
                               fontWeight: FontWeight.w500,
+                              // COLOR: FIX
+                              color: NexusColors.isDark
+                                  ? Colors.white
+                                  : NexusColors.primaryColorLight,
                             )
                       : const SizedBox(),
                 ],
@@ -366,9 +381,9 @@ class _ContentScreenState extends State<ContentScreen> {
       );
 
   contentBottomSheet(controller) => Container(
-        decoration: const ShapeDecoration(
-          color: Colors.white,
-          shape: SmoothRectangleBorder(
+        decoration: ShapeDecoration(
+          color: NexusColors.backgroundColor,
+          shape: const SmoothRectangleBorder(
             borderRadius: SmoothBorderRadius.only(
               topLeft: SmoothRadius(cornerRadius: 25, cornerSmoothing: .8),
               topRight: SmoothRadius(cornerRadius: 25, cornerSmoothing: .8),
@@ -429,29 +444,37 @@ class _ContentScreenState extends State<ContentScreen> {
                                 StyledIconButton(
                                   icon: 'rotate-left',
                                   onTap: () {},
-                                  backgroundColor: NexusColors.accentColorLight,
-                                  iconColor: NexusColors.primaryColorLight,
+                                  backgroundColor: NexusColors.accentColor,
+                                  iconColor: NexusColors.isDark
+                                      ? Colors.white
+                                      : NexusColors.primaryColorLight,
                                 ),
                                 const SizedBox(width: 5),
                                 StyledIconButton(
                                   icon: 'arrow-down',
                                   onTap: () {},
-                                  backgroundColor: NexusColors.accentColorLight,
-                                  iconColor: NexusColors.primaryColorLight,
+                                  backgroundColor: NexusColors.accentColor,
+                                  iconColor: NexusColors.isDark
+                                      ? Colors.white
+                                      : NexusColors.primaryColorLight,
                                 ),
                                 const SizedBox(width: 5),
                                 StyledIconButton(
                                   icon: 'share',
                                   onTap: () {},
-                                  backgroundColor: NexusColors.accentColorLight,
-                                  iconColor: NexusColors.primaryColorLight,
+                                  backgroundColor: NexusColors.accentColor,
+                                  iconColor: NexusColors.isDark
+                                      ? Colors.white
+                                      : NexusColors.primaryColorLight,
                                 ),
                                 const SizedBox(width: 5),
                                 StyledIconButton(
                                   icon: 'pencil',
                                   onTap: () {},
-                                  backgroundColor: NexusColors.accentColorLight,
-                                  iconColor: NexusColors.primaryColorLight,
+                                  backgroundColor: NexusColors.accentColor,
+                                  iconColor: NexusColors.isDark
+                                      ? Colors.white
+                                      : NexusColors.primaryColorLight,
                                 ),
                                 const Spacer(),
                                 StyledIconButton(
@@ -460,8 +483,10 @@ class _ContentScreenState extends State<ContentScreen> {
                                     contentScreenBloc
                                         .add(ToggleLikeDislike(isLiked: true));
                                   },
-                                  backgroundColor: NexusColors.accentColorLight,
-                                  iconColor: NexusColors.primaryColorLight,
+                                  backgroundColor: NexusColors.accentColor,
+                                  iconColor: NexusColors.isDark
+                                      ? Colors.white
+                                      : NexusColors.primaryColorLight,
                                 ),
                                 const SizedBox(width: 5),
                                 StyledIconButton(
@@ -469,11 +494,15 @@ class _ContentScreenState extends State<ContentScreen> {
                                       ? 'dislike'
                                       : 'dislike-filled',
                                   onTap: () {
-                                    contentScreenBloc
-                                        .add(ToggleLikeDislike(isLiked: false));
+                                    contentScreenBloc.add(
+                                      ToggleLikeDislike(isLiked: false),
+                                    );
                                   },
-                                  backgroundColor: NexusColors.accentColorLight,
-                                  iconColor: NexusColors.primaryColorLight,
+                                  backgroundColor: NexusColors.accentColor,
+                                  // COLOR: FIX
+                                  iconColor: NexusColors.isDark
+                                      ? Colors.white
+                                      : NexusColors.primaryColorLight,
                                 ),
                               ],
                             ),
@@ -489,7 +518,7 @@ class _ContentScreenState extends State<ContentScreen> {
               // been put at the end to act as a sticky header
               Container(
                 height: 95,
-                color: Colors.white,
+                color: NexusColors.backgroundColor,
                 child: Column(
                   children: [
                     Center(

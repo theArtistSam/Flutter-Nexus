@@ -43,27 +43,31 @@ class _ContentConfigureTabsState extends State<ContentConfigureTabs> {
               // width: 100,
               decoration: ShapeDecoration(
                 // color: Colors.redAccent,
-                color: NexusColors.accentColorLight,
+                color: NexusColors.accentColor,
                 shape: SmoothRectangleBorder(
-                    borderRadius: SmoothBorderRadius(
-                        cornerRadius: 15, cornerSmoothing: 0.8)),
+                  borderRadius: SmoothBorderRadius(
+                      cornerRadius: 15, cornerSmoothing: 0.8),
+                ),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: Row(
                   children: [
                     tab(
-                        selectedIndex: 0,
-                        index: state.index,
-                        text: widget.tabsText[0]),
+                      selectedIndex: 0,
+                      index: state.index,
+                      text: widget.tabsText[0],
+                    ),
                     tab(
-                        selectedIndex: 1,
-                        index: state.index,
-                        text: widget.tabsText[1]),
+                      selectedIndex: 1,
+                      index: state.index,
+                      text: widget.tabsText[1],
+                    ),
                     tab(
-                        selectedIndex: 2,
-                        index: state.index,
-                        text: widget.tabsText[2]),
+                      selectedIndex: 2,
+                      index: state.index,
+                      text: widget.tabsText[2],
+                    ),
                   ],
                 ),
               ),
@@ -85,25 +89,26 @@ class _ContentConfigureTabsState extends State<ContentConfigureTabs> {
           child: Container(
             decoration: ShapeDecoration(
               color: index == selectedIndex
-                  ? NexusColors.primaryColorLight
-                  : NexusColors.accentColorLight,
+                  ? NexusColors.primaryColor
+                  : NexusColors.accentColor,
               shape: SmoothRectangleBorder(
                   borderRadius: SmoothBorderRadius(
                       cornerRadius: 10, cornerSmoothing: 0.8)),
             ),
             child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Center(
-                  child: StyledText(
-                    text: text,
-                    color: index == selectedIndex
-                        ? NexusColors.textColorLight
-                        : NexusColors.textColorDark,
-                    fontWeight: index == selectedIndex
-                        ? FontWeight.w600
-                        : FontWeight.w500,
-                  ),
-                )),
+              padding: const EdgeInsets.all(10.0),
+              child: Center(
+                child: StyledText(
+                  text: text,
+                  color: index == selectedIndex
+                      ? NexusColors.textColorLight
+                      : NexusColors.textColor,
+                  fontWeight: index == selectedIndex
+                      ? FontWeight.w600
+                      : FontWeight.w500,
+                ),
+              ),
+            ),
           ),
         ),
       );

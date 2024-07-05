@@ -46,7 +46,7 @@ class _StyledTabsState extends State<StyledTabs> {
             bool isLeftSelected = state.isLeftSelected;
             return Container(
               decoration: ShapeDecoration(
-                color: NexusColors.accentColorLight,
+                color: NexusColors.accentColor,
                 shape: SmoothRectangleBorder(
                     borderRadius: SmoothBorderRadius(
                         cornerRadius: 15, cornerSmoothing: 0.8)),
@@ -70,8 +70,8 @@ class _StyledTabsState extends State<StyledTabs> {
                         child: Container(
                           decoration: ShapeDecoration(
                             color: isLeftSelected
-                                ? NexusColors.primaryColorLight
-                                : NexusColors.accentColorLight,
+                                ? NexusColors.primaryColor
+                                : NexusColors.accentColor,
                             shape: SmoothRectangleBorder(
                                 borderRadius: SmoothBorderRadius(
                                     cornerRadius: 10, cornerSmoothing: 0.8)),
@@ -83,7 +83,7 @@ class _StyledTabsState extends State<StyledTabs> {
                                   text: widget.leftTabText,
                                   color: isLeftSelected
                                       ? NexusColors.textColorLight
-                                      : NexusColors.textColorDark,
+                                      : NexusColors.textColor,
                                   fontWeight: isLeftSelected
                                       ? FontWeight.w600
                                       : FontWeight.w500,
@@ -104,8 +104,8 @@ class _StyledTabsState extends State<StyledTabs> {
                         child: Container(
                           decoration: ShapeDecoration(
                             color: !isLeftSelected
-                                ? NexusColors.primaryColorLight
-                                : NexusColors.accentColorLight,
+                                ? NexusColors.primaryColor
+                                : NexusColors.accentColor,
                             shape: SmoothRectangleBorder(
                                 borderRadius: SmoothBorderRadius(
                                     cornerRadius: 10, cornerSmoothing: 0.8)),
@@ -117,7 +117,7 @@ class _StyledTabsState extends State<StyledTabs> {
                                   text: widget.rightTabText,
                                   color: !isLeftSelected
                                       ? NexusColors.textColorLight
-                                      : NexusColors.textColorDark,
+                                      : NexusColors.textColor,
                                   fontWeight: !isLeftSelected
                                       ? FontWeight.w600
                                       : FontWeight.w500,

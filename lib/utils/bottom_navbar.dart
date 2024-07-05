@@ -90,18 +90,23 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 preferredWidgetSize: Size.fromHeight(56 + bottomPadding),
                 controller: controller,
                 child: BottomBarCreative(
-                  highlightStyle: const HighlightStyle(
-                    background: Colors.white,
+                  highlightStyle: HighlightStyle(
+                    background: NexusColors.backgroundColor,
                   ),
                   pad: 1,
                   top: 5,
                   bottom: 0,
                   items: navbarItems(index: state.index),
-                  backgroundColor: Colors.white,
-                  color: Colors.black,
-                  colorSelected: NexusColors.primaryColorLight,
+                  backgroundColor: NexusColors.backgroundColor,
+                  color: NexusColors.secondaryTextColor,
+                  // COLOR: FIX
+                  colorSelected: NexusColors.isDark
+                      ? Colors.white
+                      : NexusColors.primaryColorLight,
                   titleStyle: GoogleFonts.poppins(
-                      fontSize: 11, fontWeight: FontWeight.w500),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                  ),
                   indexSelected: state.index,
                   onTap: (int index) => _changeTab(index, state, bottomPadding),
                 ),
@@ -124,7 +129,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
             index == 0
                 ? 'assets/icons/home-filled.svg'
                 : 'assets/icons/home.svg',
-            color: index == 0 ? NexusColors.primaryColorLight : Colors.black,
+            // COLOR: FIX
+            color: index == 0
+                ? NexusColors.isDark
+                    ? Colors.white
+                    : NexusColors.primaryColorLight
+                : NexusColors.secondaryTextColor,
             height: 24,
           ),
           title: 'Home',
@@ -134,7 +144,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
             index == 1
                 ? 'assets/icons/library-filled.svg'
                 : 'assets/icons/library.svg',
-            color: index == 1 ? NexusColors.primaryColorLight : Colors.black,
+            color: index == 1
+                ? NexusColors.isDark
+                    ? Colors.white
+                    : NexusColors.primaryColorLight
+                : NexusColors.secondaryTextColor,
             height: 24,
           ),
           title: 'Library',
@@ -143,7 +157,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
           icon: SvgPicture.asset(
             'assets/icons/sparkle.svg',
             height: 32,
-            color: NexusColors.primaryColorLight,
+            // COLOR: FIX
+            color: NexusColors.isDark
+                ? Colors.white
+                : NexusColors.primaryColorLight,
           ),
           title: 'AI',
         ),
@@ -152,7 +169,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
             index == 3
                 ? 'assets/icons/community-filled.svg'
                 : 'assets/icons/community.svg',
-            color: index == 3 ? NexusColors.primaryColorLight : Colors.black,
+            color: index == 3
+                ? NexusColors.isDark
+                    ? Colors.white
+                    : NexusColors.primaryColorLight
+                : NexusColors.secondaryTextColor,
             height: 24,
           ),
           title: 'Community',
@@ -167,7 +188,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 shape: BoxShape.circle,
                 border: index == 4
                     ? Border.all(
-                        color: NexusColors.primaryColorLight,
+                        // COLOR: FIX
+                        color: NexusColors.isDark
+                            ? Colors.white
+                            : NexusColors.primaryColorLight,
                         width: 2,
                       )
                     : null,

@@ -12,6 +12,7 @@ import 'package:nexus/blocs/home_screen_bloc/bloc/home_screen_bloc.dart';
 import 'package:nexus/models/content_model.dart';
 import 'package:nexus/screens/content/content_screen.dart';
 import 'package:nexus/screens/home/widgets/content_upload_tile.dart';
+import 'package:nexus/screens/settings/settings_screen.dart';
 import 'package:nexus/utils/enums.dart';
 import 'package:nexus/widgets/content_tile.dart';
 import 'package:nexus/screens/home/widgets/guide_tile.dart';
@@ -66,14 +67,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return BlocProvider(
       create: (context) => homeScreenBloc,
       child: Scaffold(
-        backgroundColor: NexusColors.accentColorLight,
+        backgroundColor: NexusColors.accentColor,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight + 5),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: AppBar(
               surfaceTintColor: Colors.transparent,
-              backgroundColor: NexusColors.accentColorLight,
+              backgroundColor: NexusColors.accentColor,
               automaticallyImplyLeading: false,
               leading: InkWell(
                 borderRadius: BorderRadius.circular(5),
@@ -91,19 +92,23 @@ class _HomeScreenState extends State<HomeScreen> {
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  StyledText(text: 'Dunn Oliver', fontSize: 18),
+                  StyledText(
+                    text: 'Dunn Oliver',
+                    fontSize: 18,
+                    color: NexusColors.textColor,
+                  ),
                   Row(
                     children: [
                       StyledText(
                         text: 'Premium Account',
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: NexusColors.secondaryTextColorDark,
+                        color: NexusColors.secondaryTextColor,
                       ),
                       const SizedBox(width: 8),
                       SvgPicture.asset(
                         'assets/icons/small-arrow-right.svg',
-                        color: NexusColors.secondaryTextColorDark,
+                        color: NexusColors.secondaryTextColor,
                         height: 12,
                       )
                     ],
@@ -114,27 +119,34 @@ class _HomeScreenState extends State<HomeScreen> {
                 StyledIconButton(
                   icon: 'notification',
                   onTap: () {},
-                  backgroundColor: Colors.white,
-                  iconColor: Colors.black,
+                  backgroundColor: NexusColors.backgroundColor,
+                  // COLOR: FIX
+                  iconColor: NexusColors.isDark ? Colors.white : Colors.black,
                 ),
                 const SizedBox(width: 10),
                 StyledIconButton(
-                    icon: 'menu',
-                    onTap: () {
-                      // _toggleTheme(isDarkMode ? ThemeMode.dark : ThemeMode.light);
-                    }),
+                  icon: 'menu',
+                  backgroundColor: NexusColors.primaryColor,
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (builder) => const SettingsScreen()));
+                    // _toggleTheme(isDarkMode ? ThemeMode.dark : ThemeMode.light);
+                  },
+                ),
               ],
             ),
           ),
         ),
         body: Container(
-          decoration: const ShapeDecoration(
-            color: Colors.white,
-            shape: SmoothRectangleBorder(
+          decoration: ShapeDecoration(
+            color: NexusColors.backgroundColor,
+            shape: const SmoothRectangleBorder(
               borderRadius: SmoothBorderRadius.only(
-                  topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
-                  topRight:
-                      SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8)),
+                topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
+                topRight: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
+              ),
             ),
           ),
           child: Padding(
@@ -167,16 +179,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Expanded(
                         child: StyledIconTile(
-                            icon: 'translate-filled',
-                            text: 'Translate',
-                            onTap: () => {}),
+                          icon: 'translate-filled',
+                          text: 'Translate',
+                          onTap: () => {},
+                        ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: StyledIconTile(
-                            icon: 'book-filled',
-                            text: 'Summarize',
-                            onTap: () => {}),
+                          icon: 'book-filled',
+                          text: 'Summarize',
+                          onTap: () => {},
+                        ),
                       ),
                     ],
                   ),
@@ -187,12 +201,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                     child: Row(
                       children: [
-                        StyledText(text: 'Recent Content', fontSize: 20),
+                        StyledText(
+                          text: 'Recent Content',
+                          fontSize: 20,
+                          color: NexusColors.textColor,
+                        ),
                         const Spacer(),
                         SvgPicture.asset(
                           'assets/icons/small-arrow-right.svg',
                           height: 18,
-                          color: Colors.black45,
+                          color: NexusColors.secondaryTextColor,
                         )
                       ],
                     ),

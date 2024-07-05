@@ -6,13 +6,14 @@ import 'package:nexus/widgets/styled_text.dart';
 
 // ignore: must_be_immutable
 class StyledButton extends StatelessWidget {
-  StyledButton(
-      {super.key,
-      required this.text,
-      required this.onTap,
-      this.isBordered = false,
-      this.isDeleteable = false,
-      this.icon});
+  StyledButton({
+    super.key,
+    required this.text,
+    required this.onTap,
+    this.isBordered = false,
+    this.isDeleteable = false,
+    this.icon,
+  });
 
   String text;
   VoidCallback onTap;
@@ -29,7 +30,7 @@ class StyledButton extends StatelessWidget {
     } else if (isDeleteable) {
       return const BorderSide(color: NexusColors.warningColor, width: 2);
     }
-    return const BorderSide(color: NexusColors.primaryColorLight, width: 2);
+    return BorderSide(color: NexusColors.primaryColor, width: 2);
   }
 
   Color color() {
@@ -38,7 +39,7 @@ class StyledButton extends StatelessWidget {
     } else if (isDeleteable) {
       return NexusColors.warningColor;
     }
-    return NexusColors.primaryColorLight;
+    return NexusColors.primaryColor;
   }
 
   @override

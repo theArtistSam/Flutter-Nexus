@@ -62,42 +62,50 @@ class _LibraryScreenState extends State<LibraryScreen> {
     return BlocProvider(
       create: (context) => libraryScreenBloc,
       child: Scaffold(
-          backgroundColor: NexusColors.accentColorLight,
+          backgroundColor: NexusColors.accentColor,
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(kToolbarHeight + 5),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: AppBar(
                 surfaceTintColor: Colors.transparent,
-                backgroundColor: NexusColors.accentColorLight,
+                backgroundColor: NexusColors.accentColor,
                 leadingWidth: 30,
                 leading: SvgPicture.asset(
                   'assets/icons/library-filled.svg',
-                  color: NexusColors.primaryColorLight,
+                  color: NexusColors.primaryColor,
                 ),
-                title: StyledText(text: 'Library', fontSize: 24),
+                title: StyledText(
+                  text: 'Library',
+                  fontSize: 24,
+                  color: NexusColors.textColor,
+                ),
                 actions: [
                   StyledIconButton(
-                      icon: 'search',
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (builder) => const SearchScreenn()));
-                      }),
+                    icon: 'search',
+                    backgroundColor: NexusColors.primaryColor,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (builder) => const SearchScreenn(),
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
           ),
           body: Container(
-            decoration: const ShapeDecoration(
-              color: Colors.white,
-              shape: SmoothRectangleBorder(
+            decoration: ShapeDecoration(
+              color: NexusColors.backgroundColor,
+              shape: const SmoothRectangleBorder(
                 borderRadius: SmoothBorderRadius.only(
-                    topLeft:
-                        SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
-                    topRight:
-                        SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8)),
+                  topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
+                  topRight:
+                      SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
+                ),
               ),
             ),
             child: Padding(
@@ -105,9 +113,10 @@ class _LibraryScreenState extends State<LibraryScreen> {
               child: Column(
                 children: [
                   StyledTabs(
-                      leftTabText: 'Folders',
-                      rightTabText: 'Content',
-                      changeState: toggleView),
+                    leftTabText: 'Folders',
+                    rightTabText: 'Content',
+                    changeState: toggleView,
+                  ),
                   const SizedBox(
                     height: 15,
                   ),

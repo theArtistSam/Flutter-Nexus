@@ -47,42 +47,52 @@ class _FolderScreenState extends State<FolderScreen> {
     return BlocProvider(
       create: (context) => folderScreenBloc,
       child: Scaffold(
-        backgroundColor: NexusColors.accentColorLight,
+        backgroundColor: NexusColors.accentColor,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight + 5),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: AppBar(
               surfaceTintColor: Colors.transparent,
-              backgroundColor: NexusColors.accentColorLight,
+              backgroundColor: NexusColors.accentColor,
               leadingWidth: 30,
               leading: Transform.scale(
                 scale: 1,
                 child: StyledIconButton(
-                    icon: 'back-arrow',
-                    backgroundColor: NexusColors.accentColorLight,
-                    iconColor: NexusColors.primaryColorLight,
-                    onTap: () => Navigator.pop(context)),
+                  icon: 'back-arrow',
+                  backgroundColor: NexusColors.accentColor,
+                  // COLOR: FIX
+                  iconColor: NexusColors.isDark
+                      ? Colors.white
+                      : NexusColors.primaryColorLight,
+                  onTap: () => Navigator.pop(context),
+                ),
               ),
-              title: StyledText(text: widget.folder.title ?? '', fontSize: 24),
+              title: StyledText(
+                text: widget.folder.title ?? '',
+                fontSize: 24,
+                color: NexusColors.textColor,
+              ),
               actions: [
                 StyledIconButton(
-                    icon: 'menu',
-                    onTap: () {
-                      showModalBottomSheet(
-                        isScrollControlled: true,
-                        context: context,
-                        builder: (context) => const FolderBottomSheet(),
-                      );
-                    }),
+                  icon: 'menu',
+                  backgroundColor: NexusColors.primaryColor,
+                  onTap: () {
+                    showModalBottomSheet(
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) => const FolderBottomSheet(),
+                    );
+                  },
+                ),
               ],
             ),
           ),
         ),
         body: Container(
-          decoration: const ShapeDecoration(
-            color: Colors.white,
-            shape: SmoothRectangleBorder(
+          decoration: ShapeDecoration(
+            color: NexusColors.backgroundColor,
+            shape: const SmoothRectangleBorder(
               borderRadius: SmoothBorderRadius.only(
                   topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
                   topRight:

@@ -32,7 +32,10 @@ class StyledTextfield extends StatelessWidget {
             icon != null
                 ? SvgPicture.asset(
                     'assets/icons/$icon.svg',
-                    color: NexusColors.primaryColorLight,
+                    // COLOR: FIX
+                    color: NexusColors.isDark
+                        ? Colors.white54
+                        : NexusColors.primaryColorLight,
                   )
                 : const SizedBox(),
             Expanded(
@@ -50,7 +53,10 @@ class StyledTextfield extends StatelessWidget {
                   hintStyle: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: NexusColors.primaryColorLight,
+                    // COLOR: FIX
+                    color: NexusColors.isDark
+                        ? Colors.white54
+                        : NexusColors.primaryColorLight,
                   ),
                 ),
                 style: GoogleFonts.poppins(

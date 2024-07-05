@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class NexusColors {
+  static bool isDark = false;
+
   static const primaryColorLight = Color(0XFF2A4E8F);
   static const backgroundColorLight = Color(0XFFFFFFFF);
   static const accentColorLight = Color(0XFFF4F6F9);
@@ -20,6 +22,16 @@ class NexusColors {
   static const accentColorDark = Color(0XFF0A0A0A);
   static const textColorDark = Colors.black;
   static const secondaryTextColorDark = Colors.black45;
+
+  // Main colors to be used with in the app
+  static Color get primaryColor =>
+      isDark ? primaryColorDark : primaryColorLight;
+  static Color get backgroundColor =>
+      isDark ? backgroundColorDark : backgroundColorLight;
+  static Color get accentColor => isDark ? accentColorDark : accentColorLight;
+  static Color get textColor => isDark ? textColorLight : textColorDark;
+  static Color get secondaryTextColor =>
+      isDark ? secondaryTextColorLight : secondaryTextColorDark;
 }
 
 class NexusThemes {

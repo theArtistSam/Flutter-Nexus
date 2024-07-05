@@ -48,24 +48,31 @@ class _SearchScreennState extends State<SearchScreenn> {
     return BlocProvider(
       create: (context) => searchScreenBloc,
       child: Scaffold(
-        backgroundColor: NexusColors.accentColorLight,
+        backgroundColor: NexusColors.accentColor,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight + 5),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: AppBar(
               surfaceTintColor: Colors.transparent,
-              backgroundColor: NexusColors.accentColorLight,
+              backgroundColor: NexusColors.accentColor,
               leadingWidth: 30,
               leading: Transform.scale(
                 scale: 1,
                 child: StyledIconButton(
                     icon: 'back-arrow',
-                    backgroundColor: NexusColors.accentColorLight,
-                    iconColor: NexusColors.primaryColorLight,
+                    backgroundColor: NexusColors.accentColor,
+                    // COLOR: FIX
+                    iconColor: NexusColors.isDark
+                        ? Colors.white
+                        : NexusColors.primaryColorLight,
                     onTap: () => Navigator.pop(context)),
               ),
-              title: StyledText(text: 'Search', fontSize: 24),
+              title: StyledText(
+                text: 'Search',
+                fontSize: 24,
+                color: NexusColors.textColor,
+              ),
               // actions: [
               //   StyledIconButton(icon: 'menu', onTap: () {}),
               // ],
@@ -73,13 +80,13 @@ class _SearchScreennState extends State<SearchScreenn> {
           ),
         ),
         body: Container(
-          decoration: const ShapeDecoration(
-            color: Colors.white,
-            shape: SmoothRectangleBorder(
+          decoration: ShapeDecoration(
+            color: NexusColors.backgroundColor,
+            shape: const SmoothRectangleBorder(
               borderRadius: SmoothBorderRadius.only(
-                  topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
-                  topRight:
-                      SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8)),
+                topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
+                topRight: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
+              ),
             ),
           ),
           child: Padding(

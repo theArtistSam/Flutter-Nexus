@@ -72,14 +72,15 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
           child: Wrap(
             children: [
               Container(
-                decoration: const ShapeDecoration(
-                  color: Colors.white,
-                  shape: SmoothRectangleBorder(
+                decoration: ShapeDecoration(
+                  color: NexusColors.backgroundColor,
+                  shape: const SmoothRectangleBorder(
                     borderRadius: SmoothBorderRadius.only(
-                        topLeft: SmoothRadius(
-                            cornerRadius: 20, cornerSmoothing: 0.8),
-                        topRight: SmoothRadius(
-                            cornerRadius: 20, cornerSmoothing: 0.8)),
+                      topLeft:
+                          SmoothRadius(cornerRadius: 20, cornerSmoothing: 0.8),
+                      topRight:
+                          SmoothRadius(cornerRadius: 20, cornerSmoothing: 0.8),
+                    ),
                   ),
                 ),
                 child: Padding(
@@ -93,8 +94,9 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                           width: 60,
                           height: 5,
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: NexusColors.borderColor),
+                            borderRadius: BorderRadius.circular(20),
+                            color: NexusColors.borderColor,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 15),
@@ -147,7 +149,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
             onTap: onTap,
             child: Ink(
               decoration: ShapeDecoration(
-                color: NexusColors.accentColorLight,
+                color: NexusColors.accentColor,
                 shape: SmoothRectangleBorder(
                   borderRadius:
                       SmoothBorderRadius(cornerRadius: 10, cornerSmoothing: .8),
@@ -160,13 +162,19 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                   children: [
                     SvgPicture.asset(
                       'assets/icons/cancel.svg',
-                      color: NexusColors.primaryColorLight,
+                      // COLOR: FIX
+                      color: NexusColors.isDark
+                          ? Colors.white
+                          : NexusColors.primaryColorLight,
                     ),
                     StyledText(
                       text: tagTitle ?? '',
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: NexusColors.primaryColorLight,
+                      // COLOR: FIX
+                      color: NexusColors.isDark
+                          ? Colors.white
+                          : NexusColors.primaryColorLight,
                     ),
                     const SizedBox(
                       width: 10,
@@ -312,7 +320,11 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
             ],
           ),
           const SizedBox(height: 20),
-          StyledText(text: 'Content Title', fontSize: 18),
+          StyledText(
+            text: 'Content Title',
+            fontSize: 18,
+            color: NexusColors.textColor,
+          ),
           const SizedBox(height: 10),
           StyledTextfield(
             icon: null,
@@ -321,7 +333,11 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
             maxlines: 5,
           ),
           const SizedBox(height: 20),
-          StyledText(text: 'Select Folder', fontSize: 18),
+          StyledText(
+            text: 'Select Folder',
+            fontSize: 18,
+            color: NexusColors.textColor,
+          ),
           const SizedBox(height: 10),
           Container(
             width: double.infinity,
@@ -378,6 +394,8 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
             height: 50,
             color: NexusColors.dividerColor,
           ),
+
+          // TODO: FIX STYLED BUTTON
           StyledButton(
             text: 'Delete content',
             onTap: () async {

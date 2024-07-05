@@ -16,13 +16,13 @@ class ContentConfigureBottomSheet extends StatelessWidget {
     return Wrap(
       children: [
         Container(
-          decoration: const ShapeDecoration(
-            color: Colors.white,
-            shape: SmoothRectangleBorder(
+          decoration: ShapeDecoration(
+            color: NexusColors.backgroundColor,
+            shape: const SmoothRectangleBorder(
               borderRadius: SmoothBorderRadius.only(
-                  topLeft: SmoothRadius(cornerRadius: 20, cornerSmoothing: 0.8),
-                  topRight:
-                      SmoothRadius(cornerRadius: 20, cornerSmoothing: 0.8)),
+                topLeft: SmoothRadius(cornerRadius: 20, cornerSmoothing: 0.8),
+                topRight: SmoothRadius(cornerRadius: 20, cornerSmoothing: 0.8),
+              ),
             ),
           ),
           child: Padding(
@@ -47,11 +47,14 @@ class ContentConfigureBottomSheet extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: SvgPicture.asset(
                       'assets/icons/small-arrow-down.svg',
-                      color: Colors.black,
+                      color: NexusColors.textColor,
                     ),
                   ),
                   // value: dropdownValue,
-                  hint: StyledText(text: 'Summarization Length'),
+                  hint: StyledText(
+                    text: 'Summarization Length',
+                    color: NexusColors.textColor,
+                  ),
                   items: <String>['Standard Length', 'Custom Length']
                       .map((String value) {
                     return DropdownMenuItem<String>(
@@ -80,7 +83,10 @@ class ContentConfigureBottomSheet extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              StyledText(text: 'Summarization Style'),
+              StyledText(
+                text: 'Summarization Style',
+                color: NexusColors.textColor,
+              ),
               const SizedBox(
                 height: 10,
               ),
