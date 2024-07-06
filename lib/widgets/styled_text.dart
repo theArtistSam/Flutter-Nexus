@@ -4,13 +4,14 @@ import 'package:nexus/utils/constants.dart';
 
 // ignore: must_be_immutable
 class StyledText extends StatelessWidget {
-  StyledText(
-      {super.key,
-      required this.text,
-      this.fontSize = 16,
-      this.fontWeight = FontWeight.w600,
-      this.color = NexusColors.textColorDark,
-      this.align = TextAlign.left});
+  StyledText({
+    super.key,
+    required this.text,
+    this.fontSize = 16,
+    this.fontWeight = FontWeight.w600,
+    this.color = NexusColors.textColorDark,
+    this.align = TextAlign.left,
+  });
 
   String text;
   double fontSize;

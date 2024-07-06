@@ -21,7 +21,7 @@ class NexusColors {
   // static const primaryColorDark = Color(0XFF1D385C);
   static const primaryColorDark = Color(0XFF27457D);
   static const backgroundColorDark = Color(0XFF13151b);
-  static const accentColorDark = Color(0XFF1B2539);
+  static const accentColorDark = Color(0XFF2c2d32);
   // static const accentColorDark = Color(0XFF151C29);
   static const textColorDark = Colors.black;
   static const secondaryTextColorDark = Colors.black45;
