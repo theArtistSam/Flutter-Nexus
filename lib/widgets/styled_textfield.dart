@@ -21,10 +21,14 @@ class StyledTextfield extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: ShapeDecoration(
-          shape: SmoothRectangleBorder(
-              side: const BorderSide(width: 2, color: NexusColors.borderColor),
-              borderRadius:
-                  SmoothBorderRadius(cornerRadius: 15, cornerSmoothing: .8))),
+        shape: SmoothRectangleBorder(
+          side: const BorderSide(width: 2, color: NexusColors.borderColor),
+          borderRadius: SmoothBorderRadius(
+            cornerRadius: 15,
+            cornerSmoothing: .8,
+          ),
+        ),
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
         child: Row(

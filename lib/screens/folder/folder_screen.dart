@@ -47,20 +47,26 @@ class _FolderScreenState extends State<FolderScreen> {
     return BlocProvider(
       create: (context) => folderScreenBloc,
       child: Scaffold(
-        backgroundColor: NexusColors.accentColor,
+        backgroundColor: NexusColors.isDark
+            ? const Color(0XFF0A0A0A)
+            : NexusColors.accentColorLight,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight + 5),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: AppBar(
               surfaceTintColor: Colors.transparent,
-              backgroundColor: NexusColors.accentColor,
+              backgroundColor: NexusColors.isDark
+                  ? const Color(0XFF0A0A0A)
+                  : NexusColors.accentColorLight,
               leadingWidth: 30,
               leading: Transform.scale(
                 scale: 1,
                 child: StyledIconButton(
                   icon: 'back-arrow',
-                  backgroundColor: NexusColors.accentColor,
+                  backgroundColor: NexusColors.isDark
+                      ? const Color(0XFF0A0A0A)
+                      : NexusColors.accentColorLight,
                   // COLOR: FIX
                   iconColor: NexusColors.isDark
                       ? Colors.white
@@ -94,9 +100,9 @@ class _FolderScreenState extends State<FolderScreen> {
             color: NexusColors.backgroundColor,
             shape: const SmoothRectangleBorder(
               borderRadius: SmoothBorderRadius.only(
-                  topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
-                  topRight:
-                      SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8)),
+                topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
+                topRight: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
+              ),
             ),
           ),
           child: Padding(

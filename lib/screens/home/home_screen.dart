@@ -67,14 +67,19 @@ class _HomeScreenState extends State<HomeScreen> {
     return BlocProvider(
       create: (context) => homeScreenBloc,
       child: Scaffold(
-        backgroundColor: NexusColors.accentColor,
+        // COLOR: FIX
+        backgroundColor: NexusColors.isDark
+            ? const Color(0XFF0A0A0A)
+            : NexusColors.accentColorLight,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight + 5),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: AppBar(
               surfaceTintColor: Colors.transparent,
-              backgroundColor: NexusColors.accentColor,
+              backgroundColor: NexusColors.isDark
+                  ? const Color(0XFF0A0A0A)
+                  : NexusColors.accentColorLight,
               automaticallyImplyLeading: false,
               leading: InkWell(
                 borderRadius: BorderRadius.circular(5),

@@ -62,174 +62,176 @@ class _LibraryScreenState extends State<LibraryScreen> {
     return BlocProvider(
       create: (context) => libraryScreenBloc,
       child: Scaffold(
-          backgroundColor: NexusColors.accentColor,
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(kToolbarHeight + 5),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: AppBar(
-                surfaceTintColor: Colors.transparent,
-                backgroundColor: NexusColors.accentColor,
-                leadingWidth: 30,
-                leading: SvgPicture.asset(
-                  'assets/icons/library-filled.svg',
-                  color: NexusColors.primaryColor,
+        backgroundColor: NexusColors.isDark
+            ? const Color(0XFF0A0A0A)
+            : NexusColors.accentColorLight,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight + 5),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: AppBar(
+              surfaceTintColor: Colors.transparent,
+              backgroundColor: NexusColors.isDark
+                  ? const Color(0XFF0A0A0A)
+                  : NexusColors.accentColorLight,
+              leadingWidth: 30,
+              leading: SvgPicture.asset(
+                'assets/icons/library-filled.svg',
+                color: NexusColors.primaryColor,
+              ),
+              title: StyledText(
+                text: 'Library',
+                fontSize: 24,
+                color: NexusColors.textColor,
+              ),
+              actions: [
+                StyledIconButton(
+                  icon: 'search',
+                  backgroundColor: NexusColors.primaryColor,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (builder) => const SearchScreenn(),
+                      ),
+                    );
+                  },
                 ),
-                title: StyledText(
-                  text: 'Library',
-                  fontSize: 24,
-                  color: NexusColors.textColor,
-                ),
-                actions: [
-                  StyledIconButton(
-                    icon: 'search',
-                    backgroundColor: NexusColors.primaryColor,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (builder) => const SearchScreenn(),
-                        ),
-                      );
-                    },
-                  ),
-                ],
+              ],
+            ),
+          ),
+        ),
+        body: Container(
+          decoration: ShapeDecoration(
+            color: NexusColors.backgroundColor,
+            shape: const SmoothRectangleBorder(
+              borderRadius: SmoothBorderRadius.only(
+                topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
+                topRight: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
               ),
             ),
           ),
-          body: Container(
-            decoration: ShapeDecoration(
-              color: NexusColors.backgroundColor,
-              shape: const SmoothRectangleBorder(
-                borderRadius: SmoothBorderRadius.only(
-                  topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
-                  topRight:
-                      SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+            child: Column(
+              children: [
+                StyledTabs(
+                  leftTabText: 'Folders',
+                  rightTabText: 'Content',
+                  changeState: toggleView,
                 ),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-              child: Column(
-                children: [
-                  StyledTabs(
-                    leftTabText: 'Folders',
-                    rightTabText: 'Content',
-                    changeState: toggleView,
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  BlocBuilder<LibraryScreenBloc, LibraryScreenState>(
-                    builder: (context, state) {
-                      if (state is LibraryScreenInitial) {
-                        bool isLeftSelected = state.isLeftSelected;
-                        Stream<List<ContentModel>> contentList = state.contents;
-                        List<FolderModel> folderList = state.folders;
-                        LibraryStatus status = state.status;
+                const SizedBox(
+                  height: 15,
+                ),
+                BlocBuilder<LibraryScreenBloc, LibraryScreenState>(
+                  builder: (context, state) {
+                    if (state is LibraryScreenInitial) {
+                      bool isLeftSelected = state.isLeftSelected;
+                      Stream<List<ContentModel>> contentList = state.contents;
+                      List<FolderModel> folderList = state.folders;
+                      LibraryStatus status = state.status;
 
-                        if (status == LibraryStatus.success) {
-                          if (isLeftSelected) {
-                            return Expanded(
-                              child: MasonryGridView.count(
-                                controller: widget.controller,
-                                // padding: const EdgeInsets.only(top: 15),
-                                crossAxisCount: gridCount(),
-                                crossAxisSpacing: 15, //
-                                mainAxisSpacing: 15,
-                                itemCount: folderList.length + 1,
-                                itemBuilder: (context, index) {
-                                  if (index == 0) {
-                                    return StyledIconTile(
-                                      icon: 'add-folder-filled',
-                                      text: 'Create Folder',
-                                      onTap: () => {},
-                                    );
-                                  }
+                      if (status == LibraryStatus.success) {
+                        if (isLeftSelected) {
+                          return Expanded(
+                            child: MasonryGridView.count(
+                              controller: widget.controller,
+                              // padding: const EdgeInsets.only(top: 15),
+                              crossAxisCount: gridCount(),
+                              crossAxisSpacing: 15, //
+                              mainAxisSpacing: 15,
+                              itemCount: folderList.length + 1,
+                              itemBuilder: (context, index) {
+                                if (index == 0) {
                                   return StyledIconTile(
-                                    icon: FolderIcons.icons[index - 1],
-                                    text: folderList[index - 1].title ?? '',
-                                    isPrimary: false,
-                                    onTap: () {
+                                    icon: 'add-folder-filled',
+                                    text: 'Create Folder',
+                                    onTap: () => {},
+                                  );
+                                }
+                                return StyledIconTile(
+                                  icon: FolderIcons.icons[index - 1],
+                                  text: folderList[index - 1].title ?? '',
+                                  isPrimary: false,
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (builder) => FolderScreen(
+                                          folder: folderList[index - 1],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          );
+                        }
+                        return StreamBuilder<List<ContentModel>>(
+                          stream: contentList,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                  child: Text('Error: ${snapshot.error}'));
+                            } else if (!snapshot.hasData ||
+                                snapshot.data!.isEmpty) {
+                              return const Center(
+                                  child: Text('No content available'));
+                            }
+
+                            List<ContentModel> contentList = snapshot.data!;
+
+                            return Expanded(
+                              child: ListView.separated(
+                                // shrinkWrap: true,
+                                // physics: const NeverScrollableScrollPhysics(),
+                                controller: widget.controller,
+                                itemCount: contentList.length,
+                                separatorBuilder:
+                                    (BuildContext context, int index) {
+                                  return const SizedBox(height: 15);
+                                },
+                                itemBuilder: (BuildContext context, int index) {
+                                  ContentModel content = contentList[index];
+                                  return ContentTile(
+                                    title: content.title ?? '',
+                                    thumbnail: content.thumbnail ?? '',
+                                    date: content.dateUpdated ?? '',
+                                    icon: content.type ?? '',
+                                    onTap: () => {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (builder) => FolderScreen(
-                                            folder: folderList[index - 1],
-                                          ),
+                                          builder: (builder) =>
+                                              ContentScreen(content: content),
                                         ),
-                                      );
+                                      )
                                     },
                                   );
                                 },
                               ),
                             );
-                          }
-                          return StreamBuilder<List<ContentModel>>(
-                            stream: contentList,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const Center(
-                                    child: CircularProgressIndicator());
-                              } else if (snapshot.hasError) {
-                                return Center(
-                                    child: Text('Error: ${snapshot.error}'));
-                              } else if (!snapshot.hasData ||
-                                  snapshot.data!.isEmpty) {
-                                return const Center(
-                                    child: Text('No content available'));
-                              }
-
-                              List<ContentModel> contentList = snapshot.data!;
-
-                              return Expanded(
-                                child: ListView.separated(
-                                  // shrinkWrap: true,
-                                  // physics: const NeverScrollableScrollPhysics(),
-                                  controller: widget.controller,
-                                  itemCount: contentList.length,
-                                  separatorBuilder:
-                                      (BuildContext context, int index) {
-                                    return const SizedBox(height: 15);
-                                  },
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    ContentModel content = contentList[index];
-                                    return ContentTile(
-                                      title: content.title ?? '',
-                                      thumbnail: content.thumbnail ?? '',
-                                      date: content.dateUpdated ?? '',
-                                      icon: content.type ?? '',
-                                      onTap: () => {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (builder) =>
-                                                ContentScreen(content: content),
-                                          ),
-                                        )
-                                      },
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                          );
-                        } else if (status == LibraryStatus.loading) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
+                          },
+                        );
+                      } else if (status == LibraryStatus.loading) {
+                        return const Center(child: CircularProgressIndicator());
                       }
-                      return const SizedBox(
-                        child: Text('Something went wrong'),
-                      );
-                    },
-                  ),
-                ],
-              ),
+                    }
+                    return const SizedBox(
+                      child: Text('Something went wrong'),
+                    );
+                  },
+                ),
+              ],
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 }

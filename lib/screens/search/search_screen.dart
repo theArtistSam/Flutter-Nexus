@@ -48,20 +48,26 @@ class _SearchScreennState extends State<SearchScreenn> {
     return BlocProvider(
       create: (context) => searchScreenBloc,
       child: Scaffold(
-        backgroundColor: NexusColors.accentColor,
+        backgroundColor: NexusColors.isDark
+            ? const Color(0XFF0A0A0A)
+            : NexusColors.accentColorLight,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight + 5),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: AppBar(
               surfaceTintColor: Colors.transparent,
-              backgroundColor: NexusColors.accentColor,
+              backgroundColor: NexusColors.isDark
+                  ? const Color(0XFF0A0A0A)
+                  : NexusColors.accentColorLight,
               leadingWidth: 30,
               leading: Transform.scale(
                 scale: 1,
                 child: StyledIconButton(
                     icon: 'back-arrow',
-                    backgroundColor: NexusColors.accentColor,
+                    backgroundColor: NexusColors.isDark
+                        ? const Color(0XFF0A0A0A)
+                        : NexusColors.accentColorLight,
                     // COLOR: FIX
                     iconColor: NexusColors.isDark
                         ? Colors.white

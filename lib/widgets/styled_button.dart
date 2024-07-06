@@ -48,15 +48,20 @@ class StyledButton extends StatelessWidget {
       decoration: ShapeDecoration(
         color: color(),
         shape: SmoothRectangleBorder(
-            side: borderSide(),
-            borderRadius:
-                SmoothBorderRadius(cornerRadius: 13, cornerSmoothing: 0.8)),
+          side: borderSide(),
+          borderRadius: SmoothBorderRadius(
+            cornerRadius: 13,
+            cornerSmoothing: 0.8,
+          ),
+        ),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius:
-              SmoothBorderRadius(cornerRadius: 11, cornerSmoothing: 0.8),
+          borderRadius: SmoothBorderRadius(
+            cornerRadius: 11,
+            cornerSmoothing: 0.8,
+          ),
           onTap: onTap,
           child: SizedBox(
             child: Padding(
@@ -75,11 +80,12 @@ class StyledButton extends StatelessWidget {
                       : const SizedBox(),
                   SizedBox(width: icon != null ? 10 : 0),
                   StyledText(
-                      text: text,
-                      // fontSize: 14,
-                      color: isBordered
-                          ? NexusColors.textColorDark
-                          : NexusColors.textColorLight)
+                    text: text,
+                    // fontSize: 14,
+                    color: isBordered
+                        ? NexusColors.textColorDark
+                        : NexusColors.textColorLight,
+                  )
                 ],
               ),
             ),

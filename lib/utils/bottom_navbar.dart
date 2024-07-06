@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hidable/hidable.dart';
 import 'package:nexus/blocs/navbar_bloc/bloc/navbar_bloc.dart';
 import 'package:nexus/screens/chat/chat_screen.dart';
+import 'package:nexus/screens/community/community_screen.dart';
 import 'package:nexus/screens/home/home_screen.dart';
 import 'package:nexus/screens/home/widgets/content_upload_tile.dart';
 import 'package:nexus/screens/library/library_screen.dart';
@@ -45,11 +46,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
   }
 
   List<Widget> _pages({ScrollController? controller}) {
-    List<Widget> pages = [
+    final pages = [
       HomeScreen(controller: controller ?? ScrollController()),
       LibraryScreen(controller: controller ?? ScrollController()),
       const SizedBox(), // Empty screen
-      Center(child: StyledText(text: 'Community')),
+      CommunityScreen(controller: controller ?? ScrollController()),
       Center(child: StyledText(text: 'Profile'))
     ];
     return pages;
