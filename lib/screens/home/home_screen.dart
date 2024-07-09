@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     // context.read<HomeScreenBloc>().add(LoadContent());
     homeScreenBloc = HomeScreenBloc();
-    homeScreenBloc.add(LoadContent());
+    homeScreenBloc.add(FetchContent());
     super.initState();
   }
 
@@ -152,9 +152,14 @@ class _HomeScreenState extends State<HomeScreen> {
               color: NexusColors.backgroundColor,
               shape: const SmoothRectangleBorder(
                 borderRadius: SmoothBorderRadius.only(
-                  topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
-                  topRight:
-                      SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
+                  topLeft: SmoothRadius(
+                    cornerRadius: 35,
+                    cornerSmoothing: 0.8,
+                  ),
+                  topRight: SmoothRadius(
+                    cornerRadius: 35,
+                    cornerSmoothing: 0.8,
+                  ),
                 ),
               ),
             ),
@@ -243,14 +248,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
                             return const Center(
-                                child: CircularProgressIndicator());
+                              child: CircularProgressIndicator(),
+                            );
                           } else if (snapshot.hasError) {
                             return Center(
-                                child: Text('Error: ${snapshot.error}'));
+                              child: Text('Error: ${snapshot.error}'),
+                            );
                           } else if (!snapshot.hasData ||
                               snapshot.data!.isEmpty) {
                             return const Center(
-                                child: Text('No content available'));
+                              child: Text('No content available'),
+                            );
                           }
 
                           List<ContentModel> contentList = snapshot.data!;
@@ -274,8 +282,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (builder) =>
-                                          ContentScreen(content: content),
+                                      builder: (builder) => ContentScreen(
+                                        content: content,
+                                      ),
                                     ),
                                   )
                                 },

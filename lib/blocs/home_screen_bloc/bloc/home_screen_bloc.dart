@@ -11,11 +11,11 @@ part 'home_screen_state.dart';
 
 class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
   HomeScreenBloc() : super(HomeScreenInitial()) {
-    on<LoadContent>(loadContent);
+    on<FetchContent>(fetchContent);
   }
 
-  FutureOr<void> loadContent(
-      LoadContent event, Emitter<HomeScreenState> emit) async {
+  FutureOr<void> fetchContent(
+      FetchContent event, Emitter<HomeScreenState> emit) async {
     // Check if the current state is HomeScreenLoadContent
     final currentState = state as HomeScreenInitial;
 

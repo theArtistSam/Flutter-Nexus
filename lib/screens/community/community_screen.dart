@@ -3,7 +3,10 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:nexus/blocs/community_bloc/bloc/community_bloc.dart';
+import 'package:nexus/models/post_model.dart';
 import 'package:nexus/screens/settings/settings_screen.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/styled_button.dart';
@@ -21,191 +24,240 @@ class CommunityScreen extends StatefulWidget {
 }
 
 class _CommunityScreenState extends State<CommunityScreen> {
+  late CommunityBloc communityBloc;
+  @override
+  void initState() {
+    communityBloc = CommunityBloc();
+    communityBloc.add(FetchPosts());
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    communityBloc.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final height = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      backgroundColor: NexusColors.isDark
-          ? const Color(0XFF0A0A0A)
-          : NexusColors.accentColorLight,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight + 5),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: AppBar(
-            surfaceTintColor: Colors.transparent,
-            backgroundColor: NexusColors.isDark
-                ? const Color(0XFF0A0A0A)
-                : NexusColors.accentColorLight,
-            leadingWidth: 30,
-            leading: SvgPicture.asset(
-              'assets/icons/community-filled.svg',
-              color: NexusColors.primaryColor,
-            ),
-            title: StyledText(
-              text: 'Community',
-              fontSize: 24,
-              color: NexusColors.textColor,
-            ),
-            actions: [
-              StyledIconButton(
-                icon: 'menu',
-                backgroundColor: NexusColors.primaryColor,
-                onTap: () {},
+    return BlocProvider(
+      create: (context) => communityBloc,
+      child: Scaffold(
+        backgroundColor: NexusColors.isDark
+            ? const Color(0XFF0A0A0A)
+            : NexusColors.accentColorLight,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight + 5),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: AppBar(
+              surfaceTintColor: Colors.transparent,
+              backgroundColor: NexusColors.isDark
+                  ? const Color(0XFF0A0A0A)
+                  : NexusColors.accentColorLight,
+              leadingWidth: 30,
+              leading: SvgPicture.asset(
+                'assets/icons/community-filled.svg',
+                color: NexusColors.primaryColor,
               ),
-            ],
+              title: StyledText(
+                text: 'Community',
+                fontSize: 24,
+                color: NexusColors.textColor,
+              ),
+              actions: [
+                StyledIconButton(
+                  icon: 'menu',
+                  backgroundColor: NexusColors.primaryColor,
+                  onTap: () {},
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-      body: SingleChildScrollView(
-        controller: widget.controller,
-        child: Column(
-          children: [
-            Container(
-              decoration: ShapeDecoration(
-                color: NexusColors.backgroundColor,
-                shape: const SmoothRectangleBorder(
-                  borderRadius: SmoothBorderRadius.only(
-                    topLeft: SmoothRadius(
-                      cornerRadius: 35,
-                      cornerSmoothing: 0.8,
-                    ),
-                    topRight: SmoothRadius(
-                      cornerRadius: 35,
-                      cornerSmoothing: 0.8,
-                    ),
-                    bottomLeft: SmoothRadius(
-                      cornerRadius: 0,
-                      cornerSmoothing: 0.8,
-                    ),
-                    bottomRight: SmoothRadius(
-                      cornerRadius: 0,
-                      cornerSmoothing: 0.8,
-                    ),
-                  ),
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                // !GUIDES
-                child: ClipRRect(
-                  borderRadius: const SmoothBorderRadius.all(
-                    SmoothRadius(
-                      cornerRadius: 15,
-                      cornerSmoothing: 0.8,
-                    ),
-                  ),
-                  child: SizedBox(
-                    height: 150,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 5,
-                      separatorBuilder: (BuildContext context, int index) =>
-                          const SizedBox(width: 10),
-                      itemBuilder: (BuildContext context, int index) {
-                        return guideTileCommunity(
-                          image: 'guide',
-                          title: 'Community',
-                          isNew: index == 0 ? true : false,
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 15),
-            Container(
-              color: NexusColors.backgroundColor,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 15,
-                ),
-                child: Row(
-                  children: [
-                    ClipOval(
-                      child: Image.asset(
-                        'assets/images/profile-picture.png',
-                        fit: BoxFit.cover,
-                        width: 50,
-                        height: 50,
+        body: SingleChildScrollView(
+          controller: widget.controller,
+          child: Column(
+            children: [
+              Container(
+                decoration: ShapeDecoration(
+                  color: NexusColors.backgroundColor,
+                  shape: const SmoothRectangleBorder(
+                    borderRadius: SmoothBorderRadius.only(
+                      topLeft: SmoothRadius(
+                        cornerRadius: 35,
+                        cornerSmoothing: 0.8,
+                      ),
+                      topRight: SmoothRadius(
+                        cornerRadius: 35,
+                        cornerSmoothing: 0.8,
+                      ),
+                      bottomLeft: SmoothRadius(
+                        cornerRadius: 0,
+                        cornerSmoothing: 0.8,
+                      ),
+                      bottomRight: SmoothRadius(
+                        cornerRadius: 0,
+                        cornerSmoothing: 0.8,
                       ),
                     ),
-                    const SizedBox(
-                      width: 10,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  // !GUIDES
+                  child: ClipRRect(
+                    borderRadius: const SmoothBorderRadius.all(
+                      SmoothRadius(
+                        cornerRadius: 15,
+                        cornerSmoothing: 0.8,
+                      ),
                     ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          showModalBottomSheet(
-                            isScrollControlled: true,
-                            context: context,
-                            builder: (context) => createPostBottomSheet(
-                              height: height,
-                            ),
+                    child: SizedBox(
+                      height: 150,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: 5,
+                        separatorBuilder: (BuildContext context, int index) =>
+                            const SizedBox(width: 10),
+                        itemBuilder: (BuildContext context, int index) {
+                          return guideTileCommunity(
+                            image: 'guide',
+                            title: 'Community',
+                            isNew: index == 0 ? true : false,
                           );
                         },
-                        child: Container(
-                          decoration: ShapeDecoration(
-                            shape: SmoothRectangleBorder(
-                              side: const BorderSide(
-                                width: 2,
-                                color: NexusColors.borderColor,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+              Container(
+                color: NexusColors.backgroundColor,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 15,
+                  ),
+                  child: Row(
+                    children: [
+                      ClipOval(
+                        child: Image.asset(
+                          'assets/images/profile-picture.png',
+                          fit: BoxFit.cover,
+                          width: 50,
+                          height: 50,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet(
+                              isScrollControlled: true,
+                              context: context,
+                              builder: (context) => createPostBottomSheet(
+                                height: height,
                               ),
-                              borderRadius: SmoothBorderRadius(
-                                cornerRadius: 15,
-                                cornerSmoothing: .8,
+                            );
+                          },
+                          child: Container(
+                            decoration: ShapeDecoration(
+                              shape: SmoothRectangleBorder(
+                                side: const BorderSide(
+                                  width: 2,
+                                  color: NexusColors.borderColor,
+                                ),
+                                borderRadius: SmoothBorderRadius(
+                                  cornerRadius: 15,
+                                  cornerSmoothing: .8,
+                                ),
                               ),
                             ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 10),
-                            child: Row(
-                              children: [
-                                StyledText(
-                                  text: 'Share your thoughts ...',
-                                  // COLOR: FIX
-                                  color: NexusColors.isDark
-                                      ? Colors.white54
-                                      : NexusColors.primaryColor,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                const Spacer(),
-                                SvgPicture.asset(
-                                  'assets/icons/gallery-add.svg',
-                                  color: NexusColors.isDark
-                                      ? Colors.white54
-                                      : NexusColors.primaryColor,
-                                )
-                              ],
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
+                              child: Row(
+                                children: [
+                                  StyledText(
+                                    text: 'Share your thoughts ...',
+                                    // COLOR: FIX
+                                    color: NexusColors.isDark
+                                        ? Colors.white54
+                                        : NexusColors.primaryColor,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  const Spacer(),
+                                  SvgPicture.asset(
+                                    'assets/icons/gallery-add.svg',
+                                    color: NexusColors.isDark
+                                        ? Colors.white54
+                                        : NexusColors.primaryColor,
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 15),
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: 3,
-              separatorBuilder: (BuildContext context, int index) =>
-                  const SizedBox(height: 15),
-              itemBuilder: (BuildContext context, int index) {
-                return post(height: height, context: context);
-              },
-            ),
-            const SizedBox(
-              height: 25,
-            ),
-          ],
+              const SizedBox(height: 15),
+              BlocBuilder<CommunityBloc, CommunityState>(
+                builder: (context, state) {
+                  Stream<List<PostModel>> posts =
+                      (state as CommunityInitial).posts;
+
+                  return StreamBuilder<List<PostModel>>(
+                    stream: posts,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text('Error: ${snapshot.error}'),
+                        );
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(
+                          child: Text('No content available'),
+                        );
+                      }
+                      List<PostModel> postList = snapshot.data!;
+
+                      return ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: postList.length,
+                        separatorBuilder: (BuildContext context, int index) =>
+                            const SizedBox(height: 15),
+                        itemBuilder: (BuildContext context, int index) {
+                          PostModel postModel = postList[index];
+                          print(postModel.toString());
+                          return post(
+                              height: height,
+                              context: context,
+                              post: postModel);
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
+              const SizedBox(
+                height: 25,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -310,7 +362,7 @@ guideTileCommunity({
       ),
     );
 
-post({context, height}) => Container(
+post({context, height, required PostModel post}) => Container(
       color: NexusColors.backgroundColor,
       child: Container(
         decoration: ShapeDecoration(
@@ -354,7 +406,9 @@ post({context, height}) => Container(
                       ),
                       const Spacer(),
                       StyledText(
-                        text: 'December 14, 2024',
+                        text: DateTimeConversion.formattedTime(
+                          datetime: post.dateCreated!,
+                        ),
                         fontSize: 12,
                         color: NexusColors.textColor.withOpacity(.5),
                         fontWeight: FontWeight.w500,
@@ -363,6 +417,7 @@ post({context, height}) => Container(
                   ),
                   const SizedBox(height: 10),
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Stack(
                         children: [
@@ -373,8 +428,8 @@ post({context, height}) => Container(
                                 cornerSmoothing: 0.8,
                               ),
                             ),
-                            child: Image.asset(
-                              'assets/images/content.png',
+                            child: Image.network(
+                              post.images?[0] ?? '',
                               fit: BoxFit.cover,
                               width: double.infinity,
                             ),
@@ -400,7 +455,7 @@ post({context, height}) => Container(
                                   vertical: 5,
                                 ),
                                 child: StyledText(
-                                  text: '+5 More',
+                                  text: '+${post.images?.length ?? 0} More',
                                   color: NexusColors.primaryColor,
                                   fontSize: 12,
                                 ),
@@ -411,8 +466,7 @@ post({context, height}) => Container(
                       ),
                       const SizedBox(height: 10),
                       StyledText(
-                        text:
-                            "This app is amazing, i was even able to generate summary from my handwriting. that's pretty much cool tho!",
+                        text: post.description ?? '',
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                         color: NexusColors.textColor,
@@ -452,7 +506,7 @@ post({context, height}) => Container(
                                 onTap: () {},
                               ),
                               StyledText(
-                                text: '12K',
+                                text: '${post.totalLikes}',
                                 fontSize: 14,
                                 color: NexusColors.isDark
                                     ? Colors.white
@@ -472,13 +526,14 @@ post({context, height}) => Container(
                                   showModalBottomSheet(
                                     isScrollControlled: true,
                                     context: context,
-                                    builder: (context) =>
-                                        commentBottomSheet(height: height),
+                                    builder: (context) => commentBottomSheet(
+                                      height: height,
+                                    ),
                                   );
                                 },
                               ),
                               StyledText(
-                                text: '23',
+                                text: '${post.totalComments}',
                                 fontSize: 14,
                                 color: NexusColors.textColor.withOpacity(.5),
                                 fontWeight: FontWeight.w500,
@@ -494,7 +549,7 @@ post({context, height}) => Container(
                                 onTap: () {},
                               ),
                               StyledText(
-                                text: '34',
+                                text: '${post.totalShares}',
                                 fontSize: 14,
                                 color: NexusColors.textColor.withOpacity(.5),
                                 fontWeight: FontWeight.w500,

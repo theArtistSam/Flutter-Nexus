@@ -8,4 +8,4 @@ sealed class HomeScreenEvent extends Equatable {
 }
 
 // ignore: camel_case_types
-class LoadContent extends HomeScreenEvent {}
+class FetchContent extends HomeScreenEvent {}
