@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -76,16 +75,22 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                   color: NexusColors.backgroundColor,
                   shape: const SmoothRectangleBorder(
                     borderRadius: SmoothBorderRadius.only(
-                      topLeft:
-                          SmoothRadius(cornerRadius: 20, cornerSmoothing: 0.8),
-                      topRight:
-                          SmoothRadius(cornerRadius: 20, cornerSmoothing: 0.8),
+                      topLeft: SmoothRadius(
+                        cornerRadius: 20,
+                        cornerSmoothing: 0.8,
+                      ),
+                      topRight: SmoothRadius(
+                        cornerRadius: 20,
+                        cornerSmoothing: 0.8,
+                      ),
                     ),
                   ),
                 ),
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 15,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -118,11 +123,13 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                                 ? editBottomSheetContent(
                                     content: state.content ?? widget.content,
                                     bottomPadding: bottomPadding,
-                                    folders: widget.folders)
+                                    folders: widget.folders,
+                                  )
                                 : tagsBottomSheetContent(
                                     content: state.content ?? widget.content,
                                     onTap: () {},
-                                    bottomPadding: bottomPadding);
+                                    bottomPadding: bottomPadding,
+                                  );
                           } else {
                             return const SizedBox();
                           }

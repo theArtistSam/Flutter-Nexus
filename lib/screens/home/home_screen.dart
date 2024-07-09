@@ -134,50 +134,64 @@ class _HomeScreenState extends State<HomeScreen> {
                   backgroundColor: NexusColors.primaryColor,
                   onTap: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (builder) => const SettingsScreen()));
-                    // _toggleTheme(isDarkMode ? ThemeMode.dark : ThemeMode.light);
+                      context,
+                      MaterialPageRoute(
+                        builder: (builder) => const SettingsScreen(),
+                      ),
+                    );
                   },
                 ),
               ],
             ),
           ),
         ),
-        body: Container(
-          decoration: ShapeDecoration(
-            color: NexusColors.backgroundColor,
-            shape: const SmoothRectangleBorder(
-              borderRadius: SmoothBorderRadius.only(
-                topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
-                topRight: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
+        body: SingleChildScrollView(
+          controller: widget.controller,
+          child: Container(
+            decoration: ShapeDecoration(
+              color: NexusColors.backgroundColor,
+              shape: const SmoothRectangleBorder(
+                borderRadius: SmoothBorderRadius.only(
+                  topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
+                  topRight:
+                      SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
+                ),
               ),
             ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
-            child: SingleChildScrollView(
-              controller: widget.controller,
+            child: Padding(
+              padding:
+                  const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CarouselSlider(
-                    options: CarouselOptions(
-                        height: 170, autoPlay: true, viewportFraction: 1),
-                    items: [1, 2, 3, 4, 5].map((i) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 5.0),
-                            child: GuideTile(
+                  ClipSmoothRect(
+                    radius: SmoothBorderRadius(
+                      cornerRadius: 15,
+                      cornerSmoothing: 0.8,
+                    ),
+                    child: CarouselSlider(
+                      options: CarouselOptions(
+                        height: 170,
+                        autoPlay: true,
+                        viewportFraction: 1,
+                      ),
+                      items: [1, 2, 3, 4, 5].map((i) {
+                        return Builder(
+                          builder: (BuildContext context) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 5.0,
+                              ),
+                              child: GuideTile(
                                 image: 'image',
                                 title: 'title',
-                                onTap: () => {}),
-                          );
-                        },
-                      );
-                    }).toList(),
+                                onTap: () => {},
+                              ),
+                            );
+                          },
+                        );
+                      }).toList(),
+                    ),
                   ),
                   const SizedBox(height: 15),
                   Row(
@@ -200,25 +214,22 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   const SizedBox(height: 15),
-                  GestureDetector(
-                    onTap: () {
-                      // TODO: Tap to navigate to the content library   section
-                    },
-                    child: Row(
-                      children: [
-                        StyledText(
-                          text: 'Recent Content',
-                          fontSize: 20,
-                          color: NexusColors.textColor,
-                        ),
-                        const Spacer(),
-                        SvgPicture.asset(
-                          'assets/icons/small-arrow-right.svg',
-                          height: 18,
-                          color: NexusColors.secondaryTextColor,
-                        )
-                      ],
-                    ),
+                  Row(
+                    children: [
+                      StyledText(
+                        text: 'Recent Content',
+                        fontSize: 20,
+                        color: NexusColors.textColor,
+                      ),
+                      const Spacer(),
+                      StyledIconButton(
+                        icon: 'small-arrow-right',
+                        iconColor: NexusColors.textColor.withOpacity(.5),
+                        height: 18,
+                        backgroundColor: NexusColors.backgroundColor,
+                        onTap: () {},
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 10),
                   BlocBuilder<HomeScreenBloc, HomeScreenState>(
@@ -274,7 +285,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                       );
                     },
-                  )
+                  ),
+                  const SizedBox(
+                    height: 25,
+                  ),
                 ],
               ),
             ),

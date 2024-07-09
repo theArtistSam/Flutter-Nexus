@@ -6,12 +6,13 @@ import 'package:nexus/utils/constants.dart';
 
 // ignore: must_be_immutable
 class StyledTextfield extends StatelessWidget {
-  StyledTextfield(
-      {super.key,
-      required this.icon,
-      required this.hintText,
-      required this.controller,
-      this.maxlines = 1});
+  StyledTextfield({
+    super.key,
+    this.icon,
+    required this.hintText,
+    required this.controller,
+    this.maxlines = 1,
+  });
 
   String? icon;
   String hintText;

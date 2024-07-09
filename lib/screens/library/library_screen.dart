@@ -227,6 +227,9 @@ class _LibraryScreenState extends State<LibraryScreen> {
                     );
                   },
                 ),
+                const SizedBox(
+                  height: 25,
+                ),
               ],
             ),
           ),

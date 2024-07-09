@@ -354,10 +354,15 @@ class _BottomNavBarState extends State<BottomNavBar> {
               color: Colors.white,
               shape: SmoothRectangleBorder(
                 borderRadius: SmoothBorderRadius.only(
-                    topLeft:
-                        SmoothRadius(cornerRadius: 20, cornerSmoothing: 0.8),
-                    topRight:
-                        SmoothRadius(cornerRadius: 20, cornerSmoothing: 0.8)),
+                  topLeft: SmoothRadius(
+                    cornerRadius: 20,
+                    cornerSmoothing: 0.8,
+                  ),
+                  topRight: SmoothRadius(
+                    cornerRadius: 20,
+                    cornerSmoothing: 0.8,
+                  ),
+                ),
               ),
             ),
             child: Padding(
@@ -367,8 +372,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   width: 60,
                   height: 5,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: NexusColors.borderColor),
+                    borderRadius: BorderRadius.circular(20),
+                    color: NexusColors.borderColor,
+                  ),
                 ),
                 const SizedBox(height: 15),
                 StyledTabs(
@@ -395,13 +401,22 @@ class _BottomNavBarState extends State<BottomNavBar> {
                         }),
                     const Spacer(),
                     ContentUploadTile(
-                        icon: 'audio', text: 'Audio', onTap: () => {}),
+                      icon: 'audio',
+                      text: 'Audio',
+                      onTap: () => {},
+                    ),
                     const Spacer(),
                     ContentUploadTile(
-                        icon: 'image', text: 'Image', onTap: () => {}),
+                      icon: 'image',
+                      text: 'Image',
+                      onTap: () => {},
+                    ),
                     const Spacer(),
                     ContentUploadTile(
-                        icon: 'document', text: 'Document', onTap: () => {}),
+                      icon: 'document',
+                      text: 'Document',
+                      onTap: () => {},
+                    ),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -415,8 +430,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 StyledButton(
                   text: 'Live chat with AI',
                   onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (builder) => ChatScreen()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (builder) => const ChatScreen()));
                   },
                   icon: 'message-filled',
                 ),

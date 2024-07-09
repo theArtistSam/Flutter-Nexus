@@ -144,7 +144,8 @@ class _ContentScreenState extends State<ContentScreen> {
                           const Spacer(),
                           StyledIconButton(
                             icon: 'pencil-filled',
-                            onTap: () => {
+                            height: 20,
+                            onTap: () {
                               showModalBottomSheet(
                                   isScrollControlled: true,
                                   context: context,
@@ -163,7 +164,7 @@ class _ContentScreenState extends State<ContentScreen> {
                                           },
                                         ),
                                       ) // Add actual content
-                                  )
+                                  );
                             },
                             padding: 11.5,
                             backgroundColor: Colors.black26,
@@ -297,13 +298,14 @@ class _ContentScreenState extends State<ContentScreen> {
         ),
       );
 
-  contentTile(
-          {isOpen,
-          openTitle,
-          closeTitle,
-          text,
-          onTap,
-          isTranslation = false}) =>
+  contentTile({
+    isOpen,
+    openTitle,
+    closeTitle,
+    text,
+    onTap,
+    isTranslation = false,
+  }) =>
       Material(
         color: Colors.transparent,
         child: InkWell(
@@ -356,8 +358,8 @@ class _ContentScreenState extends State<ContentScreen> {
                                 // COLOR: FIX
                                 color: NexusColors.isDark
                                     ? Colors.white
-                                    : NexusColors.primaryColorLight,
-                                height: 2,
+                                    : NexusColors.textColor,
+                                height: 2.1,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -370,7 +372,7 @@ class _ContentScreenState extends State<ContentScreen> {
                               // COLOR: FIX
                               color: NexusColors.isDark
                                   ? Colors.white
-                                  : NexusColors.primaryColorLight,
+                                  : NexusColors.textColor,
                             )
                       : const SizedBox(),
                 ],
@@ -471,6 +473,7 @@ class _ContentScreenState extends State<ContentScreen> {
                                 StyledIconButton(
                                   icon: 'pencil',
                                   onTap: () {},
+                                  height: 20,
                                   backgroundColor: NexusColors.accentColor,
                                   iconColor: NexusColors.isDark
                                       ? Colors.white
@@ -526,8 +529,9 @@ class _ContentScreenState extends State<ContentScreen> {
                         width: 60,
                         height: 5,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: NexusColors.borderColor),
+                          borderRadius: BorderRadius.circular(20),
+                          color: NexusColors.borderColor,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 15),

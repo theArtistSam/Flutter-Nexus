@@ -95,49 +95,55 @@ class _FolderScreenState extends State<FolderScreen> {
             ),
           ),
         ),
-        body: Container(
-          decoration: ShapeDecoration(
-            color: NexusColors.backgroundColor,
-            shape: const SmoothRectangleBorder(
-              borderRadius: SmoothBorderRadius.only(
-                topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
-                topRight: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
+        body: SingleChildScrollView(
+          child: Container(
+            decoration: ShapeDecoration(
+              color: NexusColors.backgroundColor,
+              shape: const SmoothRectangleBorder(
+                borderRadius: SmoothBorderRadius.only(
+                  topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
+                  topRight:
+                      SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
+                ),
               ),
             ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-            child: Column(children: [
-              // StyledTextfield(
-              //     icon: 'search',
-              //     hintText: 'Search ${widget.folderName}...'),
-              // const Divider(
-              //   color: NexusColors.dividerColor,
-              //   height: 30,
-              // ),
-              BlocBuilder<FolderScreenBloc, FolderScreenState>(
-                builder: (context, state) {
-                  Stream<List<ContentModel>> contents =
-                      (state as FolderScreenInitial).folderContents;
+            child: Padding(
+              padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+              child: Column(children: [
+                // StyledTextfield(
+                //     icon: 'search',
+                //     hintText: 'Search ${widget.folderName}...'),
+                // const Divider(
+                //   color: NexusColors.dividerColor,
+                //   height: 30,
+                // ),
+                BlocBuilder<FolderScreenBloc, FolderScreenState>(
+                  builder: (context, state) {
+                    Stream<List<ContentModel>> contents =
+                        (state as FolderScreenInitial).folderContents;
 
-                  return StreamBuilder<List<ContentModel>>(
-                    stream: contents,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return const Center(
-                            child: Text('No content available'));
-                      }
+                    return StreamBuilder<List<ContentModel>>(
+                      stream: contents,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(
+                              child: Text('Error: ${snapshot.error}'));
+                        } else if (!snapshot.hasData ||
+                            snapshot.data!.isEmpty) {
+                          return const Center(
+                              child: Text('No content available'));
+                        }
 
-                      List<ContentModel> contentList = snapshot.data!;
+                        List<ContentModel> contentList = snapshot.data!;
 
-                      return Expanded(
-                        child: ListView.separated(
-                          // shrinkWrap: true,
-                          // physics: const NeverScrollableScrollPhysics(),
+                        // ! use Expanded if want to use the following
+                        return ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: contentList.length,
                           separatorBuilder: (BuildContext context, int index) {
                             return const SizedBox(height: 15);
@@ -160,13 +166,13 @@ class _FolderScreenState extends State<FolderScreen> {
                               },
                             );
                           },
-                        ),
-                      );
-                    },
-                  );
-                },
-              )
-            ]),
+                        );
+                      },
+                    );
+                  },
+                )
+              ]),
+            ),
           ),
         ),
       ),

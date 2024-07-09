@@ -36,12 +36,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     services.SystemChrome.setSystemUIOverlayStyle(
       const services.SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          // statusBarIconBrightness: Brightness.light,
-          systemNavigationBarColor: Colors.transparent,
-          systemNavigationBarDividerColor:
-              Colors.transparent // Set the desired background color
-          ),
+        statusBarColor: Colors.transparent,
+        // statusBarIconBrightness: Brightness.light,
+        systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarDividerColor:
+            Colors.transparent, // Set the desired background color
+      ),
     );
 
     services.SystemChrome.setEnabledSystemUIMode(
