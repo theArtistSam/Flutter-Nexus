@@ -70,7 +70,7 @@ class StyledTextfield extends StatelessWidget {
                   color: NexusColors.primaryColorLight,
                 ),
                 onChanged: (value) {
-                  // Handle text changes
+                  controller.text = value;
                 },
               ),
             ),

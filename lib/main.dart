@@ -16,7 +16,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Create an env file to hide that
+  // !Create an env file to hide that
   await Firebase.initializeApp(
       options: const FirebaseOptions(
     apiKey: 'AIzaSyA-Kcgm4RmMydrKt-VzRsNCyWx9ZJYnHD8',

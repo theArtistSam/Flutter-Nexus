@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nexus/models/content_model.dart';
 import 'package:nexus/models/user_model.dart';
+import 'package:nexus/repositories/comment_repository.dart';
 import 'package:nexus/repositories/community_repository.dart';
 import 'package:nexus/repositories/content_repository.dart';
 import 'package:nexus/repositories/user_repository.dart';
@@ -20,8 +21,9 @@ class _DatabaseStubState extends State<DatabaseStub> {
     // _usersFuture = UserRepository().getAllUsers();
     // _contentsFuture = ContentRepository().getAllContents();
     // ContentRepository().addContents();
-    CommunityRepository().addPosts();
+    // CommunityRepository().addPosts();
     // CommunityRepository().getAllPosts();
+    CommentRepository().addCommments();
   }
 
   @override

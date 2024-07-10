@@ -16,7 +16,6 @@ class PremiumUserModel extends UserModel {
     String? profilePic,
     String? backgroundPic,
     String? biography,
-    Community? community,
     Guides? guides,
     AppCustomization? appCustomization,
     this.billingInfos,
@@ -33,7 +32,6 @@ class PremiumUserModel extends UserModel {
           profilePic: profilePic,
           backgroundPic: backgroundPic,
           biography: biography,
-          community: community,
           guides: guides,
           appCustomization: appCustomization,
         );

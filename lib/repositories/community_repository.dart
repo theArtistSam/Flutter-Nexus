@@ -26,6 +26,80 @@ class CommunityRepository {
     });
   }
 
+  Future<void> likePost(
+      {required String postId, required String userId}) async {
+    try {
+      // Get a reference to the Firestore document
+      DocumentReference postRef =
+          FirebaseFirestore.instance.collection('posts').doc(postId);
+
+      // Update the document, adding the userId to the liked_by array
+      await postRef.update({
+        'liked_by': FieldValue.arrayUnion([userId]),
+        'total_likes': FieldValue.increment(1),
+      });
+
+      print("Post liked successfully");
+    } catch (e) {
+      print("Failed to like post: $e");
+    }
+  }
+
+  Future<void> dislikePost(
+      {required String postId, required String userId}) async {
+    try {
+      // Get a reference to the Firestore document
+      DocumentReference postRef =
+          FirebaseFirestore.instance.collection('posts').doc(postId);
+
+      // Update the document, removing the userId from the liked_by array
+      await postRef.update({
+        'liked_by': FieldValue.arrayRemove([userId]),
+        'total_likes': FieldValue.increment(-1),
+      });
+
+      print("Post disliked successfully");
+    } catch (e) {
+      print("Failed to dislike post: $e");
+    }
+  }
+
+  Future<void> savePost(
+      {required String postId, required String userId}) async {
+    try {
+      // Get a reference to the Firestore document
+      DocumentReference postRef =
+          FirebaseFirestore.instance.collection('posts').doc(postId);
+
+      // Update the document, adding the userId to the saved_by array
+      await postRef.update({
+        'saved_by': FieldValue.arrayUnion([userId]),
+      });
+
+      print("Post saved successfully");
+    } catch (e) {
+      print("Failed to like post: $e");
+    }
+  }
+
+  Future<void> unsavePost(
+      {required String postId, required String userId}) async {
+    try {
+      // Get a reference to the Firestore document
+      DocumentReference postRef =
+          FirebaseFirestore.instance.collection('posts').doc(postId);
+
+      // Update the document, removing the userId from the saved_by array
+      await postRef.update({
+        'saved_by': FieldValue.arrayRemove([userId]),
+      });
+
+      print("Post unsaved successfully");
+    } catch (e) {
+      print("Failed to dislike post: $e");
+    }
+  }
+
   Future<void> addPosts() async {
     List<PostModel> posts = [
       PostModel(
@@ -39,13 +113,6 @@ class CommunityRepository {
         totalShares: 2,
         permissions: Permissions(isPrivate: false),
         likedBy: ["user_2", "user_3"],
-        comments: [
-          Comments(
-              userId: "user_4",
-              text: "Great post!",
-              isLiked: true,
-              totalLikes: 2),
-        ],
       ),
       PostModel(
         postId: "post_2",
@@ -58,13 +125,6 @@ class CommunityRepository {
         totalShares: 1,
         permissions: Permissions(isPrivate: false),
         likedBy: ["user_1", "user_3"],
-        comments: [
-          Comments(
-              userId: "user_5",
-              text: "Nice one!",
-              isLiked: true,
-              totalLikes: 1),
-        ],
       ),
       PostModel(
         postId: "post_3",
@@ -77,13 +137,6 @@ class CommunityRepository {
         totalShares: 3,
         permissions: Permissions(isPrivate: true),
         likedBy: ["user_1", "user_2", "user_4"],
-        comments: [
-          Comments(
-              userId: "user_6",
-              text: "Love this!",
-              isLiked: true,
-              totalLikes: 3),
-        ],
       ),
       PostModel(
         postId: "post_4",
@@ -96,7 +149,6 @@ class CommunityRepository {
         totalShares: 0,
         permissions: Permissions(isPrivate: false),
         likedBy: ["user_3"],
-        comments: [],
       ),
       PostModel(
         postId: "post_5",
@@ -109,10 +161,6 @@ class CommunityRepository {
         totalShares: 5,
         permissions: Permissions(isPrivate: true),
         likedBy: ["user_1", "user_2", "user_3", "user_4"],
-        comments: [
-          Comments(
-              userId: "user_2", text: "Awesome!", isLiked: true, totalLikes: 4),
-        ],
       ),
       PostModel(
         postId: "post_6",
@@ -125,14 +173,6 @@ class CommunityRepository {
         totalShares: 3,
         permissions: Permissions(isPrivate: false),
         likedBy: ["user_5"],
-        comments: [
-          Comments(
-            userId: "user_1",
-            text: "Very helpful, thanks!",
-            isLiked: true,
-            totalLikes: 2,
-          ),
-        ],
       ),
       PostModel(
         postId: "post_7",
@@ -145,13 +185,6 @@ class CommunityRepository {
         totalShares: 2,
         permissions: Permissions(isPrivate: true),
         likedBy: ["user_3", "user_6"],
-        comments: [
-          Comments(
-              userId: "user_5",
-              text: "Interesting perspective.",
-              isLiked: true,
-              totalLikes: 1),
-        ],
       ),
       PostModel(
         postId: "post_8",
@@ -164,13 +197,6 @@ class CommunityRepository {
         totalShares: 1,
         permissions: Permissions(isPrivate: false),
         likedBy: ["user_1", "user_7"],
-        comments: [
-          Comments(
-              userId: "user_3",
-              text: "Cool post!",
-              isLiked: true,
-              totalLikes: 2),
-        ],
       ),
       PostModel(
         postId: "post_9",
@@ -183,13 +209,6 @@ class CommunityRepository {
         totalShares: 4,
         permissions: Permissions(isPrivate: true),
         likedBy: ["user_2", "user_8"],
-        comments: [
-          Comments(
-              userId: "user_4",
-              text: "Thanks for sharing.",
-              isLiked: true,
-              totalLikes: 3),
-        ],
       ),
       PostModel(
         postId: "post_10",
@@ -202,13 +221,6 @@ class CommunityRepository {
         totalShares: 2,
         permissions: Permissions(isPrivate: false),
         likedBy: ["user_9", "user_1"],
-        comments: [
-          Comments(
-              userId: "Bd4umkyLqOLnMpdOLZ0E6",
-              text: "Great content!",
-              isLiked: true,
-              totalLikes: 2),
-        ],
       ),
     ];
 

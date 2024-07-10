@@ -238,7 +238,10 @@ class _ContentScreenState extends State<ContentScreen> {
 
                       // contentType: isDocument
                       contentIconButton(
-                          'View complete document', 'sticky-note', () {}),
+                        'View complete document',
+                        'sticky-note',
+                        () {},
+                      ),
 
                       const SizedBox(
                         height: 10,

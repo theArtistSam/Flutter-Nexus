@@ -8,7 +8,6 @@ class UserModel {
   String? profilePic;
   String? backgroundPic;
   String? biography;
-  Community? community;
   Guides? guides;
   AppCustomization? appCustomization;
 
@@ -22,7 +21,6 @@ class UserModel {
       this.profilePic,
       this.backgroundPic,
       this.biography,
-      this.community,
       this.guides,
       this.appCustomization});
 
@@ -38,9 +36,6 @@ class UserModel {
     profilePic = json['profile_pic'];
     backgroundPic = json['background_pic'];
     biography = json['biography'];
-    community = json['community'] != null
-        ? Community.fromJson(json['community'])
-        : null;
     guides = json['guides'] != null ? Guides.fromJson(json['guides']) : null;
     appCustomization = json['app_customization'] != null
         ? AppCustomization.fromJson(json['app_customization'])
@@ -60,9 +55,6 @@ class UserModel {
     data['profile_pic'] = profilePic;
     data['background_pic'] = backgroundPic;
     data['biography'] = biography;
-    if (community != null) {
-      data['community'] = community!.toJson();
-    }
     if (guides != null) {
       data['guides'] = guides!.toJson();
     }
@@ -92,24 +84,25 @@ class AccountStatus {
   }
 }
 
-class Community {
-  List<String>? posts;
-  List<String>? savedPosts;
+// ! for not not required!
+// class Community {
+//   List<String>? posts;
+//   List<String>? savedPosts;
 
-  Community({this.posts, this.savedPosts});
+//   Community({this.posts, this.savedPosts});
 
-  Community.fromJson(Map<String, dynamic> json) {
-    posts = json['posts'].cast<String>();
-    savedPosts = json['saved_posts'].cast<String>();
-  }
+//   Community.fromJson(Map<String, dynamic> json) {
+//     posts = json['posts'].cast<String>();
+//     savedPosts = json['saved_posts'].cast<String>();
+//   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['posts'] = posts;
-    data['saved_posts'] = savedPosts;
-    return data;
-  }
-}
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = <String, dynamic>{};
+//     data['posts'] = posts;
+//     data['saved_posts'] = savedPosts;
+//     return data;
+//   }
+// }
 
 class Guides {
   List<String>? viewedGuides;

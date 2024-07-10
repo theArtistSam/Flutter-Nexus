@@ -11,20 +11,21 @@ class PostModel {
   int? _totalShares;
   Permissions? _permissions;
   List<String>? _likedBy;
-  List<Comments>? _comments;
+  List<String>? _savedBy;
 
-  PostModel(
-      {String? postId,
-      String? userId,
-      String? description,
-      String? dateCreated,
-      List<String>? images,
-      int? totalLikes,
-      int? totalComments,
-      int? totalShares,
-      Permissions? permissions,
-      List<String>? likedBy,
-      List<Comments>? comments}) {
+  PostModel({
+    String? postId,
+    String? userId,
+    String? description,
+    String? dateCreated,
+    List<String>? images,
+    int? totalLikes,
+    int? totalComments,
+    int? totalShares,
+    Permissions? permissions,
+    List<String>? likedBy,
+    List<String>? savedBy,
+  }) {
     if (postId != null) {
       _postId = postId;
     }
@@ -55,8 +56,8 @@ class PostModel {
     if (likedBy != null) {
       _likedBy = likedBy;
     }
-    if (comments != null) {
-      _comments = comments;
+    if (savedBy != null) {
+      _savedBy = savedBy;
     }
   }
 
@@ -80,8 +81,8 @@ class PostModel {
   set permissions(Permissions? permissions) => _permissions = permissions;
   List<String>? get likedBy => _likedBy;
   set likedBy(List<String>? likedBy) => _likedBy = likedBy;
-  List<Comments>? get comments => _comments;
-  set comments(List<Comments>? comments) => _comments = comments;
+  List<String>? get savedBy => _savedBy;
+  set savedBy(List<String>? savedBy) => _savedBy = savedBy;
 
   PostModel.fromJson(Map<String, dynamic> json) {
     _postId = json['post_id'];
@@ -96,12 +97,7 @@ class PostModel {
         ? Permissions.fromJson(json['permissions'])
         : null;
     _likedBy = json['liked_by'].cast<String>();
-    if (json['comments'] != null) {
-      _comments = <Comments>[];
-      json['comments'].forEach((v) {
-        _comments!.add(Comments.fromJson(v));
-      });
-    }
+    _savedBy = json['saved_by'].cast<String>();
   }
 
   Map<String, dynamic> toJson() {
@@ -118,9 +114,8 @@ class PostModel {
       data['permissions'] = _permissions!.toJson();
     }
     data['liked_by'] = _likedBy;
-    if (_comments != null) {
-      data['comments'] = _comments!.map((v) => v.toJson()).toList();
-    }
+    data['saved_by'] = _savedBy;
+
     return data;
   }
 }
@@ -172,53 +167,6 @@ class Permissions {
     data['comment_allowed'] = _commentAllowed;
     data['like_allowed'] = _likeAllowed;
     data['share_allowed'] = _shareAllowed;
-    return data;
-  }
-}
-
-class Comments {
-  String? _userId;
-  String? _text;
-  bool? _isLiked;
-  int? _totalLikes;
-
-  Comments({String? userId, String? text, bool? isLiked, int? totalLikes}) {
-    if (userId != null) {
-      _userId = userId;
-    }
-    if (text != null) {
-      _text = text;
-    }
-    if (isLiked != null) {
-      _isLiked = isLiked;
-    }
-    if (totalLikes != null) {
-      _totalLikes = totalLikes;
-    }
-  }
-
-  String? get userId => _userId;
-  set userId(String? userId) => _userId = userId;
-  String? get text => _text;
-  set text(String? text) => _text = text;
-  bool? get isLiked => _isLiked;
-  set isLiked(bool? isLiked) => _isLiked = isLiked;
-  int? get totalLikes => _totalLikes;
-  set totalLikes(int? totalLikes) => _totalLikes = totalLikes;
-
-  Comments.fromJson(Map<String, dynamic> json) {
-    _userId = json['userId'];
-    _text = json['text'];
-    _isLiked = json['is_liked'];
-    _totalLikes = json['total_likes'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['userId'] = _userId;
-    data['text'] = _text;
-    data['is_liked'] = _isLiked;
-    data['total_likes'] = _totalLikes;
     return data;
   }
 }

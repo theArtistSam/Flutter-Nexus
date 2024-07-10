@@ -66,8 +66,9 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
       create: (context) => editBottomSheetBloc,
       child: SingleChildScrollView(
         child: Padding(
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
           child: Wrap(
             children: [
               Container(
@@ -194,10 +195,11 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
         ),
       );
 
-  tagsBottomSheetContent(
-          {onTap,
-          required double bottomPadding,
-          required ContentModel content}) =>
+  tagsBottomSheetContent({
+    onTap,
+    required double bottomPadding,
+    required ContentModel content,
+  }) =>
       Column(
         children: [
           Row(

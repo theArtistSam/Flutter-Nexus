@@ -193,7 +193,9 @@ class _ChatScreenState extends State<ChatScreen> {
                         {
                           extractiveModelBloc.add(
                             FetchModelResult(
-                                text: controller.text, senteces: 'medium'),
+                              text: controller.text,
+                              senteces: 'medium',
+                            ),
                           ),
                           chatScreenBloc.add(
                             NewChatSummary(
