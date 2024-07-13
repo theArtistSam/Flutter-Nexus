@@ -1,9 +1,13 @@
 import 'package:figma_squircle/figma_squircle.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:nexus/blocs/support_bloc/bloc/support_bloc.dart';
 import 'package:nexus/models/support_model.dart';
+import 'package:nexus/screens/support/widgets/category_bottom_sheet.dart';
 import 'package:nexus/utils/constants.dart';
+import 'package:nexus/widgets/styled_button.dart';
 import 'package:nexus/widgets/styled_icon_button.dart';
 import 'package:nexus/widgets/styled_text.dart';
 
@@ -30,35 +34,63 @@ class _SupportScreenState extends State<SupportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return BlocProvider(
       create: (context) => supportBloc,
       child: Scaffold(
-        backgroundColor: NexusColors.accentColorLight,
+        // COLOR: FIX
+        backgroundColor: NexusColors.isDark
+            ? const Color(0XFF0A0A0A)
+            : NexusColors.accentColorLight,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight + 5),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: AppBar(
               surfaceTintColor: Colors.transparent,
-              backgroundColor: NexusColors.accentColorLight,
+              // COLOR: FIX
+              backgroundColor: NexusColors.isDark
+                  ? const Color(0XFF0A0A0A)
+                  : NexusColors.accentColorLight,
               leadingWidth: 30,
               leading: Transform.scale(
                 scale: 1,
                 child: StyledIconButton(
-                    icon: 'back-arrow',
-                    backgroundColor: NexusColors.accentColorLight,
-                    iconColor: NexusColors.primaryColorLight,
-                    onTap: () => Navigator.pop(context)),
+                  icon: 'back-arrow',
+                  backgroundColor: NexusColors.isDark
+                      ? const Color(0XFF0A0A0A)
+                      : NexusColors.accentColorLight,
+                  // COLOR: FIX
+                  iconColor: NexusColors.isDark
+                      ? Colors.white
+                      : NexusColors.primaryColorLight,
+                  onTap: () => Navigator.pop(context),
+                ),
               ),
-              title: StyledText(text: 'Support', fontSize: 24),
+              title: StyledText(
+                text: 'Support',
+                color: NexusColors.textColor,
+                fontSize: 24,
+              ),
               actions: [
                 StyledIconButton(
                   isBordered: true,
-                  backgroundColor: NexusColors.accentColor,
-                  iconColor: NexusColors.primaryColor,
+                  backgroundColor: NexusColors.isDark
+                      ? const Color(0XFF0A0A0A)
+                      : NexusColors.accentColor,
+                  // COLOR: FIX
+                  iconColor: NexusColors.isDark
+                      ? Colors.white
+                      : NexusColors.primaryColor,
                   padding: 6,
                   icon: 'plus',
-                  onTap: () {},
+                  onTap: () {
+                    showModalBottomSheet(
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) => const CategoryBottomSheet(),
+                    );
+                  },
                 ),
               ],
             ),
@@ -66,9 +98,10 @@ class _SupportScreenState extends State<SupportScreen> {
         ),
         body: SingleChildScrollView(
           child: Container(
-            decoration: const ShapeDecoration(
-              color: Colors.white,
-              shape: SmoothRectangleBorder(
+            height: height,
+            decoration: ShapeDecoration(
+              color: NexusColors.backgroundColor,
+              shape: const SmoothRectangleBorder(
                 borderRadius: SmoothBorderRadius.only(
                   topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
                   topRight: SmoothRadius(

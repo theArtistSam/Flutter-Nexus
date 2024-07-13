@@ -58,6 +58,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: AppBar(
               surfaceTintColor: Colors.transparent,
+              // COLOR: FIX
               backgroundColor: NexusColors.isDark
                   ? const Color(0XFF0A0A0A)
                   : NexusColors.accentColorLight,

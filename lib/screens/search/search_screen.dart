@@ -64,15 +64,16 @@ class _SearchScreennState extends State<SearchScreenn> {
               leading: Transform.scale(
                 scale: 1,
                 child: StyledIconButton(
-                    icon: 'back-arrow',
-                    backgroundColor: NexusColors.isDark
-                        ? const Color(0XFF0A0A0A)
-                        : NexusColors.accentColorLight,
-                    // COLOR: FIX
-                    iconColor: NexusColors.isDark
-                        ? Colors.white
-                        : NexusColors.primaryColorLight,
-                    onTap: () => Navigator.pop(context)),
+                  icon: 'back-arrow',
+                  backgroundColor: NexusColors.isDark
+                      ? const Color(0XFF0A0A0A)
+                      : NexusColors.accentColorLight,
+                  // COLOR: FIX
+                  iconColor: NexusColors.isDark
+                      ? Colors.white
+                      : NexusColors.primaryColorLight,
+                  onTap: () => Navigator.pop(context),
+                ),
               ),
               title: StyledText(
                 text: 'Search',
