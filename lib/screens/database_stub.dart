@@ -4,6 +4,7 @@ import 'package:nexus/models/user_model.dart';
 import 'package:nexus/repositories/comment_repository.dart';
 import 'package:nexus/repositories/community_repository.dart';
 import 'package:nexus/repositories/content_repository.dart';
+import 'package:nexus/repositories/support_repository.dart';
 import 'package:nexus/repositories/user_repository.dart';
 
 class DatabaseStub extends StatefulWidget {
@@ -23,7 +24,8 @@ class _DatabaseStubState extends State<DatabaseStub> {
     // ContentRepository().addContents();
     // CommunityRepository().addPosts();
     // CommunityRepository().getAllPosts();
-    CommentRepository().addCommments();
+    // CommentRepository().addCommments();
+    SupportRepository().addIssues();
   }
 
   @override

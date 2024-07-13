@@ -10,6 +10,7 @@ class StyledIconButton extends StatelessWidget {
     super.key,
     this.backgroundColor = NexusColors.primaryColorLight,
     this.iconColor = Colors.white,
+    this.isBordered = false,
     this.padding = 9,
     this.height = 24,
     required this.icon,
@@ -19,10 +20,10 @@ class StyledIconButton extends StatelessWidget {
   String icon;
   Color backgroundColor;
   Color iconColor;
+  bool isBordered;
   double padding;
-  VoidCallback onTap;
   double height;
-  // void Function(int index)? setSelectedIndex;
+  VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +34,12 @@ class StyledIconButton extends StatelessWidget {
         onTap: onTap,
         child: Ink(
           decoration: BoxDecoration(
+            border: isBordered
+                ? Border.all(
+                    color: NexusColors.borderColor,
+                    width: 2,
+                  )
+                : null,
             shape: BoxShape.circle,
             color: backgroundColor,
           ),
