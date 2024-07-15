@@ -416,7 +416,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                     ),
                     const Spacer(),
                     StyledText(
-                      text: DateTimeConversion.formattedTime(
+                      text: DateTimeConversion.formattedDate(
                         datetime: post.dateCreated!,
                       ),
                       fontSize: 12,

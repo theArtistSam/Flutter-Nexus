@@ -1,10 +1,12 @@
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nexus/blocs/support_bloc/bloc/support_bloc.dart';
 import 'package:nexus/models/support_model.dart';
+import 'package:nexus/screens/support/support_chat_screen.dart';
 import 'package:nexus/screens/support/widgets/category_bottom_sheet.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/styled_button.dart';
@@ -29,6 +31,7 @@ class _SupportScreenState extends State<SupportScreen> {
 
   @override
   void dispose() {
+    super.dispose();
     supportBloc.close();
   }
 
@@ -144,7 +147,19 @@ class _SupportScreenState extends State<SupportScreen> {
                             const SizedBox(height: 15),
                         itemBuilder: (BuildContext context, int index) {
                           SupportModel supportModel = issuesList[index];
-                          return supportTile(issue: supportModel);
+                          return supportTile(
+                            issue: supportModel,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (builder) => SupportChatScreen(
+                                    issue: supportModel,
+                                  ),
+                                ),
+                              );
+                            },
+                          );
                         },
                       );
                     },
@@ -158,10 +173,15 @@ class _SupportScreenState extends State<SupportScreen> {
     );
   }
 
-  supportTile({required SupportModel issue}) {
-    String lastMessageTime = DateTimeConversion.formattedTime(
-        datetime: issue.conversation!.last.timeStamp!);
-    String lastMessage = issue.conversation!.last.text!;
+  supportTile({required SupportModel issue, required VoidCallback onTap}) {
+    String lastMessageTime = DateTimeConversion.getTime(
+      datetime: issue.conversation!.last.timeStamp!,
+    );
+
+    bool isMessage = issue.conversation!.last.messageType == 'text';
+    String lastMessage =
+        isMessage ? issue.conversation!.last.text! : '🖼️ Sent an image*';
+
     // ! use this for selection redering profile picture and
     // ! user name for the tile
     String senderId = issue.conversation!.last.senderId!;
@@ -177,150 +197,153 @@ class _SupportScreenState extends State<SupportScreen> {
       return const Color(0xFFF29339);
     }
 
-    return Stack(
-      children: [
-        Column(
-          children: [
-            Container(
-              decoration: ShapeDecoration(
-                color: NexusColors.accentColor,
-                shape: const SmoothRectangleBorder(
-                  borderRadius: SmoothBorderRadius.all(
-                    SmoothRadius(
-                      cornerRadius: 12,
-                      cornerSmoothing: 0.8,
-                    ),
-                  ),
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  top: 10,
-                  bottom: 30,
-                  left: 10,
-                  right: 10,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        ClipOval(
-                          child: Image.asset(
-                            'assets/images/profile-picture.png',
-                            width: 30,
-                            height: 30,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        StyledText(
-                          text: senderId == 'bpReSCGFYZY9k1TuuCdW'
-                              ? 'Admin'
-                              : 'Dunn Oliver',
-                          fontSize: 16,
-                          color: NexusColors.textColor,
-                        ),
-                        const Spacer(),
-                        StyledText(
-                          text: lastMessageTime,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: NexusColors.textColor.withOpacity(.5),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 5),
-                    StyledText(
-                      text: lastMessage,
-                      fontSize: 14,
-                      color: NexusColors.textColor,
-                      fontWeight: FontWeight.w500,
-                    )
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            )
-          ],
-        ),
-        Positioned(
-          left: 10,
-          bottom: 0,
-          child: Row(
+    return GestureDetector(
+      onTap: onTap,
+      child: Stack(
+        children: [
+          Column(
             children: [
               Container(
-                decoration: BoxDecoration(
+                decoration: ShapeDecoration(
                   color: NexusColors.accentColor,
-                  border: Border.all(
-                    color: NexusColors.backgroundColor,
-                    width: 2,
-                  ),
-                  borderRadius: const SmoothBorderRadius.all(
-                    SmoothRadius(
-                      cornerRadius: 100,
-                      cornerSmoothing: .8,
+                  shape: const SmoothRectangleBorder(
+                    borderRadius: SmoothBorderRadius.all(
+                      SmoothRadius(
+                        cornerRadius: 12,
+                        cornerSmoothing: 0.8,
+                      ),
                     ),
                   ),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 10,
+                  padding: const EdgeInsets.only(
+                    top: 10,
+                    bottom: 30,
+                    left: 10,
+                    right: 10,
                   ),
-                  child: Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Row(
+                        children: [
+                          ClipOval(
+                            child: Image.asset(
+                              'assets/images/profile-picture.png',
+                              width: 30,
+                              height: 30,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          StyledText(
+                            text: senderId == 'bpReSCGFYZY9k1TuuCdW'
+                                ? 'Admin'
+                                : 'Dunn Oliver',
+                            fontSize: 16,
+                            color: NexusColors.textColor,
+                          ),
+                          const Spacer(),
+                          StyledText(
+                            text: lastMessageTime,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: NexusColors.textColor.withOpacity(.5),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
                       StyledText(
-                          text: issue.issueStatus!,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          // COLOR: FIX
-                          color: issueColor(issue.issueStatus!))
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(width: 5),
-              Container(
-                decoration: BoxDecoration(
-                  color: NexusColors.accentColor,
-                  border: Border.all(
-                    color: NexusColors.backgroundColor,
-                    width: 2,
-                  ),
-                  borderRadius: const SmoothBorderRadius.all(
-                    SmoothRadius(
-                      cornerRadius: 100,
-                      cornerSmoothing: .8,
-                    ),
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 10,
-                  ),
-                  child: Row(
-                    children: [
-                      StyledText(
-                        text: issue.issueCategory ?? '',
+                        text: lastMessage,
                         fontSize: 14,
+                        color: NexusColors.textColor,
                         fontWeight: FontWeight.w500,
-                        // COLOR: FIX
-                        color: NexusColors.isDark
-                            ? Colors.white
-                            : NexusColors.primaryColor,
                       )
                     ],
                   ),
                 ),
               ),
+              const SizedBox(
+                height: 20,
+              )
             ],
           ),
-        ),
-      ],
+          Positioned(
+            left: 10,
+            bottom: 0,
+            child: Row(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: NexusColors.accentColor,
+                    border: Border.all(
+                      color: NexusColors.backgroundColor,
+                      width: 2,
+                    ),
+                    borderRadius: const SmoothBorderRadius.all(
+                      SmoothRadius(
+                        cornerRadius: 100,
+                        cornerSmoothing: .8,
+                      ),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
+                    child: Row(
+                      children: [
+                        StyledText(
+                            text: issue.issueStatus!,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            // COLOR: FIX
+                            color: issueColor(issue.issueStatus!))
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 5),
+                Container(
+                  decoration: BoxDecoration(
+                    color: NexusColors.accentColor,
+                    border: Border.all(
+                      color: NexusColors.backgroundColor,
+                      width: 2,
+                    ),
+                    borderRadius: const SmoothBorderRadius.all(
+                      SmoothRadius(
+                        cornerRadius: 100,
+                        cornerSmoothing: .8,
+                      ),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
+                    child: Row(
+                      children: [
+                        StyledText(
+                          text: issue.issueCategory ?? '',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          // COLOR: FIX
+                          color: NexusColors.isDark
+                              ? Colors.white
+                              : NexusColors.primaryColor,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

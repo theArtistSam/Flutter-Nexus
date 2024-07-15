@@ -17,35 +17,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: NexusColors.backgroundColor,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            StyledIconButton(
-              icon: 'back-arrow',
-              onTap: () => Navigator.pop(context),
-            ),
-            Switch(
-              value: NexusColors.isDark,
-              onChanged: (isDark) {
-                print(isDark);
-                setState(() {
-                  NexusColors.isDark = isDark;
-                });
-              },
-            ),
-            StyledButton(
-              text: 'Support',
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (builder) => const SupportScreen(),
-                  ),
-                );
-              },
-            )
-          ],
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              StyledIconButton(
+                icon: 'back-arrow',
+                onTap: () => Navigator.pop(context),
+              ),
+              Switch(
+                value: NexusColors.isDark,
+                onChanged: (isDark) {
+                  print(isDark);
+                  setState(() {
+                    NexusColors.isDark = isDark;
+                  });
+                },
+              ),
+              StyledButton(
+                text: 'Support',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (builder) => const SupportScreen(),
+                    ),
+                  );
+                },
+              )
+            ],
+          ),
         ),
       ),
     );

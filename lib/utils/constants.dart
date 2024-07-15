@@ -17,6 +17,11 @@ class NexusColors {
   static const warningColor = Color(0XFFB50202);
   static const dividerColor = Color(0xFFEBEEF4);
 
+  // Issue Colors
+  static const resolvedColor = Color(0xFF2B9F03);
+  static const closedColor = Color(0xFFB50202);
+  static const pendingColor = Color(0xFFF29339);
+
   // static const primaryColorDark = Color(0XFFFFFFFF);
   // static const primaryColorDark = Color(0XFF1D385C);
   static const primaryColorDark = Color(0XFF27457D);
@@ -76,10 +81,33 @@ class NexusColors {
 // }
 
 class DateTimeConversion {
-  static String formattedTime({required String datetime}) {
+  static String formattedDate({required String datetime}) {
     DateTime dateTime = DateTime.parse(datetime);
     String formattedDate = DateFormat('MMMM dd, yyyy').format(dateTime);
     return formattedDate;
+  }
+
+  static String formattedTime({required String datetime}) {
+    DateTime dateTime = DateTime.parse(datetime);
+    String formattedTime = DateFormat('hh:mm a')
+        .format(dateTime)
+        .toUpperCase(); // Ensuring AM/PM is in uppercase
+    return formattedTime;
+  }
+
+  static String getTime({required String datetime}) {
+    DateTime messageTime = DateTime.parse(datetime); // Parse string to DateTime
+
+    DateTime now = DateTime.now();
+    Duration difference = now.difference(messageTime);
+
+    String lastMessageTime;
+    if (difference.inHours < 24) {
+      lastMessageTime = DateTimeConversion.formattedTime(datetime: datetime);
+    } else {
+      lastMessageTime = DateTimeConversion.formattedDate(datetime: datetime);
+    }
+    return lastMessageTime;
   }
 }
 

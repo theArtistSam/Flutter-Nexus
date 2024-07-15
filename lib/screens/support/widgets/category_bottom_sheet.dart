@@ -137,10 +137,11 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet> {
     );
   }
 
-  categoryTile(
-          {required IssueModel issue,
-          required VoidCallback onTap,
-          required bool isSelected}) =>
+  categoryTile({
+    required IssueModel issue,
+    required VoidCallback onTap,
+    required bool isSelected,
+  }) =>
       Material(
         color: Colors.transparent,
         child: InkWell(

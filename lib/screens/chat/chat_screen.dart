@@ -58,162 +58,162 @@ class _ChatScreenState extends State<ChatScreen> {
         BlocProvider<ExtractiveModelBloc>.value(value: extractiveModelBloc),
       ],
       child: Scaffold(
-          backgroundColor: NexusColors.accentColorLight,
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(kToolbarHeight + 5),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: AppBar(
-                surfaceTintColor: Colors.transparent,
-                backgroundColor: NexusColors.accentColorLight,
-                leadingWidth: 30,
-                leading: Transform.scale(
-                  scale: 1,
-                  child: StyledIconButton(
-                      icon: 'back-arrow',
-                      backgroundColor: NexusColors.accentColorLight,
-                      iconColor: NexusColors.primaryColorLight,
-                      onTap: () => Navigator.pop(context)),
-                ),
-                title: StyledText(text: 'Chat with AI', fontSize: 24),
-                actions: [
-                  StyledIconButton(
-                    icon: 'menu',
-                    onTap: () {
-                      showModalBottomSheet(
-                          isScrollControlled: true,
-                          context: context,
-                          builder: (context) =>
-                              const ContentConfigureBottomSheet() // Add actual content
-                          );
-                    },
-                  ),
-                ],
+        backgroundColor: NexusColors.accentColorLight,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight + 5),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: AppBar(
+              surfaceTintColor: Colors.transparent,
+              backgroundColor: NexusColors.accentColorLight,
+              leadingWidth: 30,
+              leading: Transform.scale(
+                scale: 1,
+                child: StyledIconButton(
+                    icon: 'back-arrow',
+                    backgroundColor: NexusColors.accentColorLight,
+                    iconColor: NexusColors.primaryColorLight,
+                    onTap: () => Navigator.pop(context)),
               ),
-            ),
-          ),
-          body: Container(
-            decoration: const ShapeDecoration(
-              color: Colors.white,
-              shape: SmoothRectangleBorder(
-                borderRadius: SmoothBorderRadius.only(
-                    topLeft:
-                        SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
-                    topRight:
-                        SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8)),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-              child: Column(
-                children: [
-                  StyledTabs(
-                    leftTabText: 'Translate',
-                    rightTabText: 'Summarize',
-                    changeState: toggleView,
-                    // isLeftSelected: false,
-                  ),
-                  const SizedBox(height: 15),
-                  BlocListener<ExtractiveModelBloc, ExtractiveModelState>(
-                    listener: (context, state) {
-                      if (state is ExtractiveModelInitial &&
-                          state.status == ModelStatus.success) {
-                        chatScreenBloc.add(
-                          NewChatSummary(
-                            chat: ChatModel(
-                                user: 'ai',
-                                message: state.message,
-                                type: 'summarization'),
-                          ),
+              title: StyledText(text: 'Chat with AI', fontSize: 24),
+              actions: [
+                StyledIconButton(
+                  icon: 'menu',
+                  onTap: () {
+                    showModalBottomSheet(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (context) =>
+                            const ContentConfigureBottomSheet() // Add actual content
                         );
-                      }
-                      // ADD AN ELSE IN CASE OF ERROR
-                      // REMOVE PREVIOUS ADDED ITEM
-                    },
-                    child: BlocBuilder<ChatScreenBloc, ChatScreenState>(
-                      builder: (context, state) {
-                        if (state is ChatScreenInitial) {
-                          bool isLeftSelected = state.isLeftSelected;
-                          List<ChatModel> chatList = isLeftSelected
-                              ? state.translations
-                              : state.summaries;
-                          return coversation(
-                              isTranslation: isLeftSelected, chatList: chatList
-                              // userChat:
-                              //     "What were they eating? It didn't taste like anything she had ever eaten before and although she was famished, she didn't dare ask. She knew the answer would be one she didn't want to hear.",
-                              // aiChat: isLeftSelected
-                              //     ? "وہ کیا کھا رہے تھے؟ اس کا ذائقہ ایسا نہیں تھا جو اس نے پہلے کبھی کھایا ہو اور اگرچہ وہ بھوکی تھی، اس نے پوچھنے کی ہمت نہیں کی۔ وہ جانتی تھی کہ جواب وہی ہوگا جو وہ سننا نہیں چاہتی تھی۔"
-                              //     : "What were they eating? It didn't taste like anything she had ever eaten before and although she was famished");
-                              );
-                        }
-                        return const SizedBox();
-                      },
-                    ),
-                  ),
-                  const SizedBox(
-                    // 190
-                    height: 116,
-                  )
-                ],
-              ),
-            ),
-          ),
-          bottomSheet: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  offset: const Offset(0, 0), // x, y values
-                  blurRadius: 25,
-                  spreadRadius: 10,
+                  },
                 ),
               ],
             ),
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + bottomPadding),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: StyledTextfield(
-                      icon: null,
-                      maxlines: 5,
-                      // FOR NOW LET"S KEEP IT SUMMARIZE
-                      hintText: 'Write text to summarize',
-                      controller: controller,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  StyledIconButton(
-                    icon: 'arrow-up',
-                    backgroundColor: NexusColors.primaryColorLight,
-                    onTap: () => {
-                      if (controller.text.isNotEmpty)
-                        {
-                          extractiveModelBloc.add(
-                            FetchModelResult(
-                              text: controller.text,
-                              senteces: 'medium',
-                            ),
-                          ),
-                          chatScreenBloc.add(
-                            NewChatSummary(
-                              chat: ChatModel(
-                                user: 'user',
-                                message: controller.text,
-                                type: 'summarization',
-                              ),
-                            ),
-                          ),
-                          controller.clear()
-                        }
-                    },
-                  )
-                ],
-              ),
+          ),
+        ),
+        body: Container(
+          decoration: const ShapeDecoration(
+            color: Colors.white,
+            shape: SmoothRectangleBorder(
+              borderRadius: SmoothBorderRadius.only(
+                  topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
+                  topRight:
+                      SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8)),
             ),
-          )),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+            child: Column(
+              children: [
+                StyledTabs(
+                  leftTabText: 'Translate',
+                  rightTabText: 'Summarize',
+                  changeState: toggleView,
+                  // isLeftSelected: false,
+                ),
+                const SizedBox(height: 15),
+                BlocListener<ExtractiveModelBloc, ExtractiveModelState>(
+                  listener: (context, state) {
+                    if (state is ExtractiveModelInitial &&
+                        state.status == ModelStatus.success) {
+                      chatScreenBloc.add(
+                        NewChatSummary(
+                          chat: ChatModel(
+                              user: 'ai',
+                              message: state.message,
+                              type: 'summarization'),
+                        ),
+                      );
+                    }
+                    // ADD AN ELSE IN CASE OF ERROR
+                    // REMOVE PREVIOUS ADDED ITEM
+                  },
+                  child: BlocBuilder<ChatScreenBloc, ChatScreenState>(
+                    builder: (context, state) {
+                      if (state is ChatScreenInitial) {
+                        bool isLeftSelected = state.isLeftSelected;
+                        List<ChatModel> chatList = isLeftSelected
+                            ? state.translations
+                            : state.summaries;
+                        return coversation(
+                            isTranslation: isLeftSelected, chatList: chatList
+                            // userChat:
+                            //     "What were they eating? It didn't taste like anything she had ever eaten before and although she was famished, she didn't dare ask. She knew the answer would be one she didn't want to hear.",
+                            // aiChat: isLeftSelected
+                            //     ? "وہ کیا کھا رہے تھے؟ اس کا ذائقہ ایسا نہیں تھا جو اس نے پہلے کبھی کھایا ہو اور اگرچہ وہ بھوکی تھی، اس نے پوچھنے کی ہمت نہیں کی۔ وہ جانتی تھی کہ جواب وہی ہوگا جو وہ سننا نہیں چاہتی تھی۔"
+                            //     : "What were they eating? It didn't taste like anything she had ever eaten before and although she was famished");
+                            );
+                      }
+                      return const SizedBox();
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  // 190
+                  height: 116,
+                )
+              ],
+            ),
+          ),
+        ),
+        bottomSheet: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                offset: const Offset(0, 0), // x, y values
+                blurRadius: 25,
+                spreadRadius: 10,
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + bottomPadding),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: StyledTextfield(
+                    icon: null,
+                    maxlines: 5,
+                    // FOR NOW LET"S KEEP IT SUMMARIZE
+                    hintText: 'Write text to summarize',
+                    controller: controller,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                StyledIconButton(
+                  icon: 'arrow-up',
+                  backgroundColor: NexusColors.primaryColorLight,
+                  onTap: () => {
+                    if (controller.text.isNotEmpty)
+                      {
+                        extractiveModelBloc.add(
+                          FetchModelResult(
+                            text: controller.text,
+                            senteces: 'medium',
+                          ),
+                        ),
+                        chatScreenBloc.add(
+                          NewChatSummary(
+                            chat: ChatModel(
+                              user: 'user',
+                              message: controller.text,
+                              type: 'summarization',
+                            ),
+                          ),
+                        ),
+                        controller.clear()
+                      }
+                  },
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -249,7 +249,11 @@ class _ChatScreenState extends State<ChatScreen> {
         ],
       );
 
-  aiChat({required chat, isTranslation = true}) => Row(
+  aiChat({
+    required chat,
+    isTranslation = true,
+  }) =>
+      Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
@@ -293,8 +297,10 @@ class _ChatScreenState extends State<ChatScreen> {
         ],
       );
 
-  coversation(
-          {required bool isTranslation, required List<ChatModel> chatList}) =>
+  coversation({
+    required bool isTranslation,
+    required List<ChatModel> chatList,
+  }) =>
       Expanded(
         child: ListView.separated(
           padding: const EdgeInsets.only(top: 15),

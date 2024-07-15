@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nexus/models/support_model.dart';
 
@@ -19,6 +21,58 @@ class SupportRepository {
         return SupportModel.fromJson(data);
       }).toList();
     });
+  }
+
+  Stream<List<Message>> getConversation({required String documentId}) {
+    // Access the specific document in the 'support' collection using the documentId
+    DocumentReference docRef = _firestore.collection('support').doc(documentId);
+
+    // Convert the document snapshot stream into a stream of List<Message>
+    return docRef.snapshots().map((documentSnapshot) {
+      if (documentSnapshot.exists) {
+        // Extract the conversation field from the document data
+        Map<String, dynamic> data =
+            documentSnapshot.data() as Map<String, dynamic>;
+        SupportModel supportModel = SupportModel.fromJson(data);
+
+        // Return the conversation list if it exists, otherwise return an empty list
+        return supportModel.conversation ?? [];
+      } else {
+        // If the document does not exist, return an empty list
+        return [];
+      }
+    });
+  }
+
+  Future<void> addMessage({
+    required String message,
+    required String documentId,
+    required String senderId,
+  }) async {
+    try {
+      DocumentReference docRef =
+          FirebaseFirestore.instance.collection('support').doc(documentId);
+
+      Message newMessage = Message(
+        senderId: senderId,
+        timeStamp: DateTime.now().toString(),
+        messageType: 'text',
+        text: message,
+        status: Status(
+          isSent: true,
+          isSeen: false,
+        ),
+      );
+
+      // Update the document, adding the userId to the liked_by array
+      await docRef.update({
+        'conversation': FieldValue.arrayUnion([newMessage.toJson()]),
+      });
+
+      print('Added successfully');
+    } catch (e) {
+      print('Error getting users: $e');
+    }
   }
 
   SupportModel supportCollection() {
