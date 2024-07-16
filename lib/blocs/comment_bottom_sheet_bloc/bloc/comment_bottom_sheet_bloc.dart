@@ -39,16 +39,11 @@ class CommentBottomSheetBloc
     LikeComment event,
     Emitter<CommentBottomSheetState> emit,
   ) async {
-    final currentState = state as CommentBottomSheetInitial;
-
     try {
       await CommentRepository().likeComment(
           postId: event.postId,
           userId: event.userId,
           commentId: event.commentId);
-      // Simply re-render the screen
-      emit(currentState.copyWith(comments: currentState.comments));
-
       print('LIKED THE COMMENT ... ');
     } catch (e) {
       print("SHIT FAILED TO LIKE THE COMMENT...");
@@ -60,16 +55,12 @@ class CommentBottomSheetBloc
     DislikeComment event,
     Emitter<CommentBottomSheetState> emit,
   ) async {
-    final currentState = state as CommentBottomSheetInitial;
-
     try {
       await CommentRepository().dislikeComment(
         postId: event.postId,
         userId: event.userId,
         commentId: event.commentId,
       );
-      // Simply re-render the screen
-      emit(currentState.copyWith(comments: currentState.comments));
 
       print('DISLIKED THE COMMENT ... ');
     } catch (e) {
@@ -82,17 +73,12 @@ class CommentBottomSheetBloc
     AddComment event,
     Emitter<CommentBottomSheetState> emit,
   ) async {
-    final currentState = state as CommentBottomSheetInitial;
-
     try {
       await CommentRepository().addComment(
         postId: event.postId,
         userId: event.userId,
         text: event.text,
       );
-      // Simply re-render the screen
-      emit(currentState.copyWith(comments: currentState.comments));
-
       print('ADDED THE COMMENT ... ');
     } catch (e) {
       print("SHIT FAILED TO ADD THE COMMENT...");

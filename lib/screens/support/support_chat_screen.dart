@@ -50,6 +50,17 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
     }
   }
 
+  Color _issueColor({required String issueStatus}) {
+    switch (issueStatus) {
+      case 'Closed':
+        return NexusColors.closedColor;
+      case 'Pending':
+        return NexusColors.pendingColor;
+      default:
+        return NexusColors.resolvedColor;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double bottomPadding = MediaQuery.of(context).padding.bottom;
@@ -98,16 +109,12 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
               ),
               title: Row(
                 children: [
-                  InkWell(
-                    borderRadius: BorderRadius.circular(5),
-                    onTap: () {}, // Handle tap on leading widget
-                    child: ClipOval(
-                      child: Image.asset(
-                        'assets/images/profile-picture.png',
-                        width: 40,
-                        height: 40,
-                        fit: BoxFit.cover,
-                      ),
+                  ClipOval(
+                    child: Image.asset(
+                      'assets/images/profile-picture.png',
+                      width: 40,
+                      height: 40,
+                      fit: BoxFit.cover,
                     ),
                   ),
                   const SizedBox(
@@ -124,10 +131,11 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
                       Row(
                         children: [
                           StyledText(
-                            text: 'Pending',
+                            text: widget.issue.issueStatus!,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: const Color(0xFFF29339),
+                            color: _issueColor(
+                                issueStatus: widget.issue.issueStatus!),
                           ),
                         ],
                       ),
@@ -150,6 +158,7 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
                   icon: 'folder-minus',
                   onTap: () {
                     // *See if it can be fixed!
+                    // *Still couldn't figure out
                     supportChatBloc
                         .add(FetchMessages(documentId: widget.issue.issueId!));
 
@@ -190,7 +199,7 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
             ),
             child: Padding(
               padding: const EdgeInsets.only(
-                top: 5,
+                top: 20,
                 bottom: 85,
                 right: 20,
                 left: 20,
@@ -231,15 +240,11 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
                             const SizedBox(height: 5),
                         itemBuilder: (BuildContext context, int index) {
                           Message message = messageList[index];
-                          bool isFirst = index == 0;
                           bool isLast = index == messageList.length - 1;
                           String adminId = 'bpReSCGFYZY9k1TuuCdW';
 
                           // *Render admin tile
                           bool isAdmin = messageList[index].senderId == adminId;
-                          // *if prev message is from admin then user is first
-                          bool isUserFirst = isFirst ||
-                              messageList[index - 1].senderId == adminId;
                           // *if next message is from admin then user is last
                           bool isUserLast = isLast ||
                               messageList[index + 1].senderId == adminId;
@@ -248,13 +253,11 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
                             return adminChat(
                               message: message,
                               isLast: !isUserLast || isLast,
-                              isFirst: !isUserFirst || isFirst,
                             );
                           }
                           return userChat(
                             message: message,
                             isLast: isUserLast || isLast,
-                            isFirst: isUserFirst || isFirst,
                           );
                         },
                       );
@@ -265,68 +268,71 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
             ),
           ),
         ),
-        bottomSheet: Container(
-          decoration: BoxDecoration(
-            color: NexusColors.backgroundColor,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                offset: const Offset(0, 0), // x, y values
-                blurRadius: 25,
-                spreadRadius: 10,
-              ),
-            ],
-          ),
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(15, 10, 15, 10 + bottomPadding),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                StyledIconButton(
-                  isBordered: true,
-                  backgroundColor: NexusColors.backgroundColor,
-                  // COLOR: FIX
-                  iconColor: NexusColors.isDark
-                      ? Colors.white
-                      : NexusColors.primaryColor,
-                  // padding: 6,
-                  height: 20,
-                  icon: 'gallery-add',
-                  onTap: () {},
+        bottomSheet: widget.issue.issueStatus == 'Pending'
+            ? Container(
+                decoration: BoxDecoration(
+                  color: NexusColors.backgroundColor,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      offset: const Offset(0, 0), // x, y values
+                      blurRadius: 25,
+                      spreadRadius: 10,
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: StyledTextfield(
-                    maxlines: 3,
-                    // FOR NOW LET"S KEEP IT SUMMARIZE
-                    hintText: 'Describe your issue..',
-                    controller: textEditingController,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                StyledIconButton(
-                  icon: 'arrow-up',
-                  backgroundColor: textEditingController.text.isEmpty
-                      ? NexusColors.primaryColor.withOpacity(0.5)
-                      : NexusColors.primaryColor,
-                  onTap: () {
-                    if (textEditingController.text.isNotEmpty) {
-                      String message = textEditingController.text.trim();
-                      supportChatBloc.add(
-                        SendMessage(
-                          message: message,
-                          documentId: widget.issue.issueId!,
-                          senderId: widget.issue.userId!,
+                child: Padding(
+                    padding:
+                        EdgeInsets.fromLTRB(15, 10, 15, 10 + bottomPadding),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        StyledIconButton(
+                          isBordered: true,
+                          backgroundColor: NexusColors.backgroundColor,
+                          // COLOR: FIX
+                          iconColor: NexusColors.isDark
+                              ? Colors.white
+                              : NexusColors.primaryColor,
+                          // padding: 6,
+                          height: 20,
+                          icon: 'gallery-add',
+                          onTap: () {},
                         ),
-                      );
-                      textEditingController.text = '';
-                    }
-                  },
-                )
-              ],
-            ),
-          ),
-        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: StyledTextfield(
+                            maxlines: 3,
+                            // FOR NOW LET"S KEEP IT SUMMARIZE
+                            hintText: 'Describe your issue..',
+                            controller: textEditingController,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        StyledIconButton(
+                          icon: 'arrow-up',
+                          backgroundColor: textEditingController.text.isEmpty
+                              ? NexusColors.primaryColor.withOpacity(0.5)
+                              : NexusColors.primaryColor,
+                          onTap: () {
+                            if (textEditingController.text.isNotEmpty) {
+                              String message =
+                                  textEditingController.text.trim();
+                              supportChatBloc.add(
+                                SendMessage(
+                                  message: message,
+                                  documentId: widget.issue.issueId!,
+                                  senderId: widget.issue.userId!,
+                                ),
+                              );
+                              textEditingController.text = '';
+                            }
+                          },
+                        )
+                      ],
+                    )),
+              )
+            : const SizedBox(),
       ),
     );
   }
@@ -334,20 +340,18 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
   adminChat({
     required Message message,
     required bool isLast,
-    required bool isFirst,
   }) {
     String status = message.status!.isSeen == true ? 'Seen' : 'Sent';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: isFirst ? 15 : 0),
         Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            isFirst
+            isLast
                 ? Padding(
-                    padding: const EdgeInsets.only(right: 10.0),
+                    padding: const EdgeInsets.only(right: 10.0, bottom: 27),
                     child: ClipOval(
                       child: Image.asset(
                         'assets/images/profile-picture.png',
@@ -415,6 +419,7 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
             ),
           ],
         ),
+        SizedBox(height: isLast ? 15 : 0),
       ],
     );
   }
@@ -422,16 +427,14 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
   userChat({
     required Message message,
     required bool isLast,
-    required bool isFirst,
   }) {
     String status = message.status!.isSeen == true ? 'Seen' : 'Sent';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        SizedBox(height: isFirst ? 15 : 0),
         Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Expanded(
               child: Column(
@@ -486,9 +489,9 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
                 ],
               ),
             ),
-            isFirst
+            isLast
                 ? Padding(
-                    padding: const EdgeInsets.only(left: 10.0),
+                    padding: const EdgeInsets.only(left: 10.0, bottom: 27),
                     child: ClipOval(
                       child: Image.asset(
                         'assets/images/profile-picture.png',
@@ -503,6 +506,7 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
                   ),
           ],
         ),
+        SizedBox(height: isLast ? 15 : 0)
       ],
     );
   }
@@ -571,8 +575,13 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
                           } else if (!snapshot.hasData ||
                               snapshot.data!.isEmpty) {
                             print("StreamBuilder no data");
-                            return const Center(
-                                child: Text('No content available'));
+                            return Center(
+                              child: StyledText(
+                                text: 'No content available',
+                                fontSize: 14,
+                                color: NexusColors.textColor,
+                              ),
+                            );
                           }
 
                           List<Message> conversation = snapshot.data!;
@@ -585,8 +594,14 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
                               "Filtered imageList length: ${imageList.length}");
 
                           if (imageList.isEmpty) {
-                            return const Center(
-                                child: Text('No images available'));
+                            return Center(
+                              child: StyledText(
+                                text: 'No images available',
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: NexusColors.secondaryTextColor,
+                              ),
+                            );
                           }
 
                           return MasonryGridView.count(

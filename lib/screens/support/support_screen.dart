@@ -147,6 +147,7 @@ class _SupportScreenState extends State<SupportScreen> {
                             const SizedBox(height: 15),
                         itemBuilder: (BuildContext context, int index) {
                           SupportModel supportModel = issuesList[index];
+                          print(issuesList.length);
                           return supportTile(
                             issue: supportModel,
                             onTap: () {
@@ -177,10 +178,14 @@ class _SupportScreenState extends State<SupportScreen> {
     String lastMessageTime = DateTimeConversion.getTime(
       datetime: issue.conversation!.last.timeStamp!,
     );
-
+    bool isNewIssue = issue.conversation!.isEmpty;
     bool isMessage = issue.conversation!.last.messageType == 'text';
     String lastMessage =
         isMessage ? issue.conversation!.last.text! : '🖼️ Sent an image*';
+
+    if (isNewIssue) {
+      lastMessage = 'New issue*';
+    }
 
     // ! use this for selection redering profile picture and
     // ! user name for the tile
@@ -209,7 +214,7 @@ class _SupportScreenState extends State<SupportScreen> {
                   shape: const SmoothRectangleBorder(
                     borderRadius: SmoothBorderRadius.all(
                       SmoothRadius(
-                        cornerRadius: 12,
+                        cornerRadius: 15,
                         cornerSmoothing: 0.8,
                       ),
                     ),
@@ -217,10 +222,10 @@ class _SupportScreenState extends State<SupportScreen> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.only(
-                    top: 10,
+                    top: 12,
                     bottom: 30,
-                    left: 10,
-                    right: 10,
+                    left: 12,
+                    right: 12,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

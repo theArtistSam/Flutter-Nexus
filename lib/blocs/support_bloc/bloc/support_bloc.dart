@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -17,10 +18,13 @@ class SupportBloc extends Bloc<SupportEvent, SupportState> {
     final currentState = state as SupportInitial;
 
     try {
-      Stream<List<SupportModel>> issuesList =
-          SupportRepository().getAllIssues();
-      emit(currentState.copyWith(issues: issuesList));
+      Stream<List<SupportModel>> issuesList = SupportRepository().getAllIssues(
+        queryBuilder: (query) {
+          return query.where('conversation', isNull: false);
+        },
+      );
 
+      emit(currentState.copyWith(issues: issuesList));
       print('LOADING ... ');
     } catch (e) {
       print("SHIT FAILED TO LOAD ISSUES...");

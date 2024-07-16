@@ -13,3 +13,9 @@ class SelectCategory extends CategoryBottomSheetEvent {
   final int index;
   const SelectCategory({required this.index});
 }
+
+class AddIssue extends CategoryBottomSheetEvent {
+  final String userId;
+  final String issueCategory;
+  const AddIssue({required this.userId, required this.issueCategory});
+}

@@ -4,7 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nexus/blocs/category_bottom_sheet_bloc/bloc/category_bottom_sheet_bloc.dart';
+import 'package:nexus/blocs/support_bloc/bloc/support_bloc.dart';
+import 'package:nexus/blocs/support_chat_bloc/bloc/support_chat_bloc.dart';
 import 'package:nexus/models/issue_model.dart';
+import 'package:nexus/repositories/support_repository.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/styled_button.dart';
 import 'package:nexus/widgets/styled_text.dart';
@@ -115,14 +118,28 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet> {
                   ),
                   StyledButton(
                     text: 'Proceed',
-                    onTap: () {
+                    onTap: () async {
                       final state = (categoryBottomSheetBloc.state
                           as CategoryBottomSheetInitial);
                       final int index = state.selectedIndex;
                       final issues = state.issues;
 
-                      // !Push to support chat screen
-                      print("$index ${issues[index].type}");
+                      // * Push to support chat screen
+                      // * PROVIDE THE USER ID HERE *
+                      bool issueStatus = await SupportRepository()
+                          .checkIssueStatus(userId: 'Bd4umkyLqOLnMpdOLZ0E');
+                      // ignore: use_build_context_synchronously
+                      if (!issueStatus) {
+                        categoryBottomSheetBloc.add(
+                          AddIssue(
+                            issueCategory: issues[index].type!,
+                            userId: 'Bd4umkyLqOLnMpdOLZ0E',
+                          ),
+                        );
+                        Navigator.pop(context);
+                      } else {
+                        print('AN ISSUE IS ALREADY PENDING');
+                      }
                     },
                   ),
                   SizedBox(
@@ -204,9 +221,9 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet> {
                   ),
                   StyledText(
                     text: issue.tagline!,
-                    fontSize: 12,
+                    fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: NexusColors.textColor.withOpacity(.5),
+                    color: NexusColors.secondaryTextColor,
                   ),
                 ],
               ),

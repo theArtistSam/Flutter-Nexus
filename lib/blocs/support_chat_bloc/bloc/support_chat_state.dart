@@ -11,14 +11,9 @@ sealed class SupportChatState extends Equatable {
 final class SupportChatInitial extends SupportChatState {
   Stream<List<Message>> conversation;
 
-  SupportChatInitial({
-    Stream<List<Message>>? conversation,
-  }) : conversation =
-            (conversation ?? const Stream.empty()).asBroadcastStream();
+  SupportChatInitial({this.conversation = const Stream.empty()});
 
-  SupportChatInitial copyWith({
-    Stream<List<Message>>? conversation,
-  }) {
+  SupportChatInitial copyWith({Stream<List<Message>>? conversation}) {
     return SupportChatInitial(
       conversation: conversation ?? this.conversation,
     );

@@ -21,9 +21,9 @@ class SupportChatBloc extends Bloc<SupportChatEvent, SupportChatState> {
     final currentState = state as SupportChatInitial;
 
     try {
-      Stream<List<Message>> messageList = SupportRepository()
-          .getConversation(documentId: event.documentId)
-          .asBroadcastStream();
+      Stream<List<Message>> messageList =
+          SupportRepository().getConversation(documentId: event.documentId);
+
       emit(currentState.copyWith(conversation: messageList));
 
       print('LOADING ... ');
@@ -35,18 +35,14 @@ class SupportChatBloc extends Bloc<SupportChatEvent, SupportChatState> {
 
   FutureOr<void> sendMessage(
       SendMessage event, Emitter<SupportChatState> emit) async {
-    final currentState = state as SupportChatInitial;
-
     try {
       await SupportRepository().addMessage(
         documentId: event.documentId,
         message: event.message,
         senderId: event.senderId,
       );
-
-      // Simply re-render the screen
-      emit(currentState.copyWith(conversation: currentState.conversation));
-
+      emit((state as SupportChatInitial)
+          .copyWith(conversation: (state as SupportChatInitial).conversation));
       print('SENT THE MESSAGE ... ');
     } catch (e) {
       print("SHIT FAILED TO SEND THE MESSAGE...");

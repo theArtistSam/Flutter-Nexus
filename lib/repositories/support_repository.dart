@@ -75,6 +75,60 @@ class SupportRepository {
     }
   }
 
+  Future<bool> checkIssueStatus({required String userId}) async {
+    try {
+      // Reference the 'support' collection
+      final collection = _firestore.collection('support');
+
+      // Query the collection for documents where 'userId' matches and 'issueCategory' is 'Pending'
+      final querySnapshot = await collection
+          .where('user_id', isEqualTo: userId)
+          .where('issue_status', isEqualTo: 'Pending')
+          .limit(1)
+          .get();
+
+      // Check if any documents match the query
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print('Some issue occurred: $e');
+      return false;
+    }
+  }
+
+  Future<void> addIssue({
+    required String userId,
+    required String issueCategory,
+  }) async {
+    try {
+      // hard-code value for now
+      final collection = _firestore.collection('support');
+
+      SupportModel issue = SupportModel(
+          userId: userId,
+          issueOpenedTime: DateTime.now().toString(),
+          issueCategory: issueCategory,
+          issueStatus: 'Pending',
+          conversation: [
+            Message(
+                senderId: 'bpReSCGFYZY9k1TuuCdW',
+                timeStamp: DateTime.now().toString(),
+                messageType: 'text',
+                text: 'Please describe this issue',
+                status: Status(
+                  isSent: true,
+                  isSeen: false,
+                ))
+          ]);
+
+      DocumentReference docRef = await collection.add(issue.toJson());
+      await docRef.update({'issue_id': docRef.id});
+
+      print('Added successfully');
+    } catch (e) {
+      print('Error getting users: $e');
+    }
+  }
+
   SupportModel supportCollection() {
     List<Message> conversation = [];
 
