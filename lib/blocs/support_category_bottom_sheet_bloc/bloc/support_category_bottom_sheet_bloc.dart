@@ -2,44 +2,45 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:nexus/models/issue_model.dart';
+import 'package:nexus/models/category_model.dart';
 import 'package:nexus/repositories/support_repository.dart';
 
-part 'category_bottom_sheet_event.dart';
-part 'category_bottom_sheet_state.dart';
+part 'support_category_bottom_sheet_event.dart';
+part 'support_category_bottom_sheet_state.dart';
 
-class CategoryBottomSheetBloc
-    extends Bloc<CategoryBottomSheetEvent, CategoryBottomSheetState> {
-  CategoryBottomSheetBloc() : super(const CategoryBottomSheetInitial()) {
-    on<FetchCategories>(fetchCategories);
-    on<SelectCategory>(selectCategory);
+class SupportCategoryBottomSheetBloc extends Bloc<
+    SupportCategoryBottomSheetEvent, SupportCategoryBottomSheetState> {
+  SupportCategoryBottomSheetBloc()
+      : super(const SupportCategoryBottomSheetInitial()) {
+    on<FetchIssueCategories>(fetchIssueCategories);
+    on<SelectIssueCategory>(selectIssueCategory);
     on<AddIssue>(addIssue);
   }
 
-  FutureOr<void> fetchCategories(
-      FetchCategories event, Emitter<CategoryBottomSheetState> emit) {
-    final currentState = state as CategoryBottomSheetInitial;
+  FutureOr<void> fetchIssueCategories(FetchIssueCategories event,
+      Emitter<SupportCategoryBottomSheetState> emit) {
+    final currentState = state as SupportCategoryBottomSheetInitial;
 
-    List<IssueModel> issues = [
-      IssueModel(
+    List<CategoryModel> issues = [
+      CategoryModel(
         icon: 'sparkle',
         type: 'AI Features',
         tagline:
             "Experiencing challenges with translation, transcription, or summarization?",
       ),
-      IssueModel(
+      CategoryModel(
         icon: 'community-filled',
         type: 'Community',
         tagline:
             "Encountering issues with posts, guides, or data within the community?",
       ),
-      IssueModel(
+      CategoryModel(
         icon: 'sparkle',
         type: 'Application',
         tagline:
             "Having trouble with folders, content, or general application usage?",
       ),
-      IssueModel(
+      CategoryModel(
         icon: 'pen',
         type: 'Custom',
         tagline:
@@ -49,14 +50,14 @@ class CategoryBottomSheetBloc
     emit(currentState.copyWith(issues: issues));
   }
 
-  FutureOr<void> selectCategory(
-      SelectCategory event, Emitter<CategoryBottomSheetState> emit) {
-    final currentState = state as CategoryBottomSheetInitial;
+  FutureOr<void> selectIssueCategory(SelectIssueCategory event,
+      Emitter<SupportCategoryBottomSheetState> emit) {
+    final currentState = state as SupportCategoryBottomSheetInitial;
     emit(currentState.copyWith(selectedIndex: event.index));
   }
 
   FutureOr<void> addIssue(
-      AddIssue event, Emitter<CategoryBottomSheetState> emit) async {
+      AddIssue event, Emitter<SupportCategoryBottomSheetState> emit) async {
     try {
       await SupportRepository().addIssue(
         userId: event.userId,

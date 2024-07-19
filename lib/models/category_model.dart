@@ -1,10 +1,10 @@
 // ignore_for_file: unnecessary_getters_setters
-class IssueModel {
+class CategoryModel {
   String? _icon;
   String? _type;
   String? _tagline;
 
-  IssueModel({String? icon, String? type, String? tagline}) {
+  CategoryModel({String? icon, String? type, String? tagline}) {
     if (icon != null) {
       _icon = icon;
     }
@@ -23,7 +23,7 @@ class IssueModel {
   String? get tagline => _tagline;
   set tagline(String? tagline) => _tagline = tagline;
 
-  IssueModel.fromJson(Map<String, dynamic> json) {
+  CategoryModel.fromJson(Map<String, dynamic> json) {
     _icon = json['icon'];
     _type = json['type'];
     _tagline = json['tagline'];

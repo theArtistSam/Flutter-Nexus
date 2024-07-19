@@ -24,7 +24,7 @@ class ExtractiveModelBloc
         as ExtractiveModelInitial; // You don't need to cast state as ExtractiveModelInitial, since it's already of type ExtractiveModelState
     try {
       final response = await extractiveModelRepository.sendRequest(
-          text: event.text, sentences: event.senteces);
+          text: event.text, length: event.senteces);
       emit(currentState.copyWith(
         status: ModelStatus.success,
         message: response.text,

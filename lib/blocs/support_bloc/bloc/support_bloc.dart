@@ -18,11 +18,8 @@ class SupportBloc extends Bloc<SupportEvent, SupportState> {
     final currentState = state as SupportInitial;
 
     try {
-      Stream<List<SupportModel>> issuesList = SupportRepository().getAllIssues(
-        queryBuilder: (query) {
-          return query.where('conversation', isNull: false);
-        },
-      );
+      Stream<List<SupportModel>> issuesList =
+          SupportRepository().getAllIssues();
 
       emit(currentState.copyWith(issues: issuesList));
       print('LOADING ... ');

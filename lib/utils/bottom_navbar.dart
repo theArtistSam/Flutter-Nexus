@@ -9,7 +9,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hidable/hidable.dart';
 import 'package:nexus/blocs/navbar_bloc/bloc/navbar_bloc.dart';
-import 'package:nexus/screens/chat/chat_screen.dart';
+import 'package:nexus/screens/chat/ai_chat_screen.dart';
 import 'package:nexus/screens/community/community_screen.dart';
 import 'package:nexus/screens/home/home_screen.dart';
 import 'package:nexus/screens/home/widgets/content_upload_tile.dart';
@@ -50,8 +50,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
       HomeScreen(controller: controller ?? ScrollController()),
       LibraryScreen(controller: controller ?? ScrollController()),
       const SizedBox(), // Empty screen
+      AIChatScreen(controller: controller ?? ScrollController()),
       CommunityScreen(controller: controller ?? ScrollController()),
-      Center(child: StyledText(text: 'Profile'))
     ];
     return pages;
   }
@@ -88,6 +88,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
               // resizeToAvoidBottomInset: true,
               body: _pages(controller: controller)[state.index],
               bottomNavigationBar: Hidable(
+                deltaFactor: 0.1,
+                enableOpacityAnimation: false,
                 preferredWidgetSize: Size.fromHeight(56 + bottomPadding),
                 controller: controller,
                 child: BottomBarCreative(
@@ -105,8 +107,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
                       ? Colors.white
                       : NexusColors.primaryColorLight,
                   titleStyle: GoogleFonts.poppins(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
                   ),
                   indexSelected: state.index,
                   onTap: (int index) => _changeTab(index, state, bottomPadding),
@@ -156,21 +158,33 @@ class _BottomNavBarState extends State<BottomNavBar> {
         ),
         TabItem(
           icon: SvgPicture.asset(
-            'assets/icons/sparkle.svg',
-            height: 32,
+            'assets/icons/sparkle-circle.svg',
+            height: 40,
             // COLOR: FIX
-            color: NexusColors.isDark
-                ? Colors.white
-                : NexusColors.primaryColorLight,
+            color: NexusColors.isDark ? Colors.white : NexusColors.primaryColor,
           ),
           title: 'AI',
         ),
         TabItem(
           icon: SvgPicture.asset(
             index == 3
+                ? 'assets/icons/message-filled.svg'
+                : 'assets/icons/message.svg',
+            color: index == 3
+                ? NexusColors.isDark
+                    ? Colors.white
+                    : NexusColors.primaryColorLight
+                : NexusColors.secondaryTextColor,
+            height: 24,
+          ),
+          title: 'AI Chat',
+        ),
+        TabItem(
+          icon: SvgPicture.asset(
+            index == 4
                 ? 'assets/icons/community-filled.svg'
                 : 'assets/icons/community.svg',
-            color: index == 3
+            color: index == 4
                 ? NexusColors.isDark
                     ? Colors.white
                     : NexusColors.primaryColorLight
@@ -179,40 +193,41 @@ class _BottomNavBarState extends State<BottomNavBar> {
           ),
           title: 'Community',
         ),
-        TabItem(
-          icon: SizedBox(
-            width: 24,
-            height: 24,
-            child: Container(
-              padding: const EdgeInsets.all(1.0), // Adjust padding as needed
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: index == 4
-                    ? Border.all(
-                        // COLOR: FIX
-                        color: NexusColors.isDark
-                            ? Colors.white
-                            : NexusColors.primaryColorLight,
-                        width: 2,
-                      )
-                    : null,
-              ),
-              child: ClipOval(
-                child: Image.asset(
-                  'assets/images/profile-picture.png',
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
-          title: 'Profile',
-        )
+        // TabItem(
+        //   icon: SizedBox(
+        //     width: 24,
+        //     height: 24,
+        //     child: Container(
+        //       padding: const EdgeInsets.all(1.0), // Adjust padding as needed
+        //       decoration: BoxDecoration(
+        //         shape: BoxShape.circle,
+        //         border: index == 4
+        //             ? Border.all(
+        //                 // COLOR: FIX
+        //                 color: NexusColors.isDark
+        //                     ? Colors.white
+        //                     : NexusColors.primaryColorLight,
+        //                 width: 2,
+        //               )
+        //             : null,
+        //       ),
+        //       child: ClipOval(
+        //         child: Image.asset(
+        //           'assets/images/profile-picture.png',
+        //           fit: BoxFit.cover,
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        //   title: 'Profile',
+        // )
       ];
 
-  Widget uploadingTile(
-          {required String image,
-          required String text,
-          required VoidCallback onTap}) =>
+  Widget uploadingTile({
+    required String image,
+    required String text,
+    required VoidCallback onTap,
+  }) =>
       Row(
         children: [
           Stack(
@@ -273,8 +288,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
     this.isLeftSelected = isLeftSelected;
   }
 
-  Widget uploadBottomSheet(
-          {required bool isLeftSelected, required double bottomPadding}) =>
+  Widget uploadBottomSheet({
+    required bool isLeftSelected,
+    required double bottomPadding,
+  }) =>
       Wrap(
         children: [
           Container(
@@ -347,7 +364,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
         ],
       );
 
-  Widget contentBottomSheet({required double bottomPadding}) => Wrap(
+  Widget contentBottomSheet({
+    required double bottomPadding,
+  }) =>
+      Wrap(
         children: [
           Container(
             decoration: const ShapeDecoration(
@@ -430,10 +450,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 StyledButton(
                   text: 'Live chat with AI',
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (builder) => const ChatScreen()));
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (builder) => const ChatScreen()));
                   },
                   icon: 'message-filled',
                 ),

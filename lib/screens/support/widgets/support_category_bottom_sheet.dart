@@ -3,45 +3,48 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:nexus/blocs/category_bottom_sheet_bloc/bloc/category_bottom_sheet_bloc.dart';
+import 'package:nexus/blocs/support_category_bottom_sheet_bloc/bloc/support_category_bottom_sheet_bloc.dart';
 import 'package:nexus/blocs/support_bloc/bloc/support_bloc.dart';
 import 'package:nexus/blocs/support_chat_bloc/bloc/support_chat_bloc.dart';
-import 'package:nexus/models/issue_model.dart';
+import 'package:nexus/models/category_model.dart';
 import 'package:nexus/repositories/support_repository.dart';
 import 'package:nexus/utils/constants.dart';
+import 'package:nexus/widgets/category_tile.dart';
 import 'package:nexus/widgets/styled_button.dart';
 import 'package:nexus/widgets/styled_text.dart';
 
-class CategoryBottomSheet extends StatefulWidget {
-  const CategoryBottomSheet({
+class SupportCategoryBottomSheet extends StatefulWidget {
+  const SupportCategoryBottomSheet({
     super.key,
   });
 
   @override
-  State<CategoryBottomSheet> createState() => _CategoryBottomSheetState();
+  State<SupportCategoryBottomSheet> createState() =>
+      _SupportCategoryBottomSheetState();
 }
 
-class _CategoryBottomSheetState extends State<CategoryBottomSheet> {
-  late CategoryBottomSheetBloc categoryBottomSheetBloc;
+class _SupportCategoryBottomSheetState
+    extends State<SupportCategoryBottomSheet> {
+  late SupportCategoryBottomSheetBloc supportCategoryBottomSheetBloc;
 
   @override
   void initState() {
-    categoryBottomSheetBloc = CategoryBottomSheetBloc();
-    categoryBottomSheetBloc.add(FetchCategories());
+    supportCategoryBottomSheetBloc = SupportCategoryBottomSheetBloc();
+    supportCategoryBottomSheetBloc.add(FetchIssueCategories());
 
     super.initState();
   }
 
   @override
   void dispose() {
-    categoryBottomSheetBloc.close();
+    supportCategoryBottomSheetBloc.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => categoryBottomSheetBloc,
+      create: (context) => supportCategoryBottomSheetBloc,
       child: Wrap(
         children: [
           Container(
@@ -87,11 +90,11 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet> {
                   ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height - 210,
-                    child: BlocBuilder<CategoryBottomSheetBloc,
-                        CategoryBottomSheetState>(
+                    child: BlocBuilder<SupportCategoryBottomSheetBloc,
+                        SupportCategoryBottomSheetState>(
                       builder: (context, state) {
                         final currentState =
-                            (state as CategoryBottomSheetInitial);
+                            (state as SupportCategoryBottomSheetInitial);
                         final issues = currentState.issues;
                         return ListView.separated(
                           itemCount: issues.length,
@@ -99,14 +102,16 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet> {
                               const SizedBox(height: 15),
                           itemBuilder: (BuildContext context, int index) {
                             final issue = issues[index];
-                            return categoryTile(
-                              issue: issue,
+                            return CategoryTile(
+                              title: issue.type!,
+                              tagline: issue.tagline!,
+                              icon: issue.icon!,
+                              isSelected: currentState.selectedIndex == index,
                               onTap: () {
-                                categoryBottomSheetBloc.add(
-                                  SelectCategory(index: index),
+                                supportCategoryBottomSheetBloc.add(
+                                  SelectIssueCategory(index: index),
                                 );
                               },
-                              isSelected: currentState.selectedIndex == index,
                             );
                           },
                         );
@@ -119,8 +124,8 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet> {
                   StyledButton(
                     text: 'Proceed',
                     onTap: () async {
-                      final state = (categoryBottomSheetBloc.state
-                          as CategoryBottomSheetInitial);
+                      final state = (supportCategoryBottomSheetBloc.state
+                          as SupportCategoryBottomSheetInitial);
                       final int index = state.selectedIndex;
                       final issues = state.issues;
 
@@ -130,7 +135,7 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet> {
                           .checkIssueStatus(userId: 'Bd4umkyLqOLnMpdOLZ0E');
                       // ignore: use_build_context_synchronously
                       if (!issueStatus) {
-                        categoryBottomSheetBloc.add(
+                        supportCategoryBottomSheetBloc.add(
                           AddIssue(
                             issueCategory: issues[index].type!,
                             userId: 'Bd4umkyLqOLnMpdOLZ0E',
@@ -153,82 +158,4 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet> {
       ),
     );
   }
-
-  categoryTile({
-    required IssueModel issue,
-    required VoidCallback onTap,
-    required bool isSelected,
-  }) =>
-      Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: const SmoothBorderRadius.all(
-            SmoothRadius(cornerRadius: 10, cornerSmoothing: 0.8),
-          ),
-          onTap: onTap,
-          child: Ink(
-            decoration: BoxDecoration(
-              color: NexusColors.accentColor,
-              border: isSelected
-                  ? Border.all(
-                      color: NexusColors.isDark
-                          ? Colors.white
-                          : NexusColors.primaryColor,
-                      width: 2,
-                    )
-                  : null,
-              borderRadius: const SmoothBorderRadius.all(
-                SmoothRadius(cornerRadius: 10, cornerSmoothing: 0.8),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SvgPicture.asset(
-                        'assets/icons/${issue.icon}.svg',
-                        height: 30,
-                        // COLOR: FIX
-                        color: NexusColors.isDark
-                            ? Colors.white
-                            : NexusColors.primaryColor,
-                      ),
-                      const Spacer(),
-                      isSelected
-                          ? SvgPicture.asset(
-                              'assets/icons/tick-circle.svg',
-                              // COLOR: FIX
-                              color: NexusColors.isDark
-                                  ? Colors.white
-                                  : NexusColors.primaryColor,
-                            )
-                          : const SizedBox(),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  StyledText(
-                    text: issue.type!,
-                    color: NexusColors.textColor,
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  StyledText(
-                    text: issue.tagline!,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: NexusColors.secondaryTextColor,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
 }

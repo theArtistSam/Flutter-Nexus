@@ -7,7 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:nexus/blocs/support_bloc/bloc/support_bloc.dart';
 import 'package:nexus/models/support_model.dart';
 import 'package:nexus/screens/support/support_chat_screen.dart';
-import 'package:nexus/screens/support/widgets/category_bottom_sheet.dart';
+import 'package:nexus/screens/support/widgets/support_category_bottom_sheet.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/styled_button.dart';
 import 'package:nexus/widgets/styled_icon_button.dart';
@@ -91,7 +91,7 @@ class _SupportScreenState extends State<SupportScreen> {
                     showModalBottomSheet(
                       isScrollControlled: true,
                       context: context,
-                      builder: (context) => const CategoryBottomSheet(),
+                      builder: (context) => const SupportCategoryBottomSheet(),
                     );
                   },
                 ),
@@ -101,7 +101,7 @@ class _SupportScreenState extends State<SupportScreen> {
         ),
         body: SingleChildScrollView(
           child: Container(
-            height: height,
+            // height: height - (kToolbarHeight + 5) - 60,
             decoration: ShapeDecoration(
               color: NexusColors.backgroundColor,
               shape: const SmoothRectangleBorder(

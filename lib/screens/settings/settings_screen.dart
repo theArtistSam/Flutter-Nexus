@@ -75,7 +75,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Column(
           children: [
             Container(
-              // height: height,
               decoration: ShapeDecoration(
                 color: NexusColors.backgroundColor,
                 shape: const SmoothRectangleBorder(
@@ -230,6 +229,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     settingTile(
                       icon: 'person-edit',
                       text: 'Manage account',
+                      onTap: () {},
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    settingTile(
+                      icon: 'support-message',
+                      text: 'Help & Support',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -238,14 +245,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                         );
                       },
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    settingTile(
-                      icon: 'support-message',
-                      text: 'Help & Support',
-                      onTap: () {},
                     ),
                   ],
                 ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nexus/models/content_model.dart';
 import 'package:nexus/models/user_model.dart';
+import 'package:nexus/repositories/chat_repository.dart';
 import 'package:nexus/repositories/comment_repository.dart';
 import 'package:nexus/repositories/community_repository.dart';
 import 'package:nexus/repositories/content_repository.dart';
@@ -25,7 +26,8 @@ class _DatabaseStubState extends State<DatabaseStub> {
     // CommunityRepository().addPosts();
     // CommunityRepository().getAllPosts();
     // CommentRepository().addCommments();
-    SupportRepository().addIssues();
+    // SupportRepository().addIssues();
+    AIChatRepository().addChatWithMessages();
   }
 
   @override

@@ -1,18 +1,47 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:nexus/models/extractive_model.dart';
 
 class ExtractiveModelRepository {
-  Future<ExtractiveModel> sendRequest(
-      {required String text, required String sentences}) async {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<String> _getEndpoint() async {
     try {
-      final uri = Uri.parse('http://192.168.43.231:8000/get-response/');
+      // Define the document reference
+      final docRef =
+          _firestore.collection('models').doc("FNJAQivoRd7ouJOcQesX");
+
+      // Retrieve the document snapshot
+      DocumentSnapshot docSnapshot = await docRef.get();
+
+      // Extract the endpoint field from the document snapshot
+      if (docSnapshot.exists) {
+        Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+        String endpoint = data['endpoint'];
+        return endpoint;
+      } else {
+        throw Exception('Document does not exist');
+      }
+    } catch (e) {
+      print('Error getting endpoint: $e');
+      return '';
+    }
+  }
+
+  Future<ExtractiveModel> sendRequest({
+    required String text,
+    required String length,
+  }) async {
+    try {
+      final endpoint = await _getEndpoint();
+      final uri = Uri.parse(endpoint);
       final headers = {'Content-Type': 'application/json'};
       final body = jsonEncode({
         "model_name": "Text_summarization",
-        "arguments": {"sentences": sentences},
+        "arguments": {"sentences": length},
         "text": text
       });
 
