@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nexus/models/chat_model.dart';
 import 'package:nexus/models/support_model.dart';
+import 'package:nexus/repositories/extractive_model_repository.dart';
 
 class AIChatRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -25,6 +26,90 @@ class AIChatRepository {
         return ChatModel.fromJson(data);
       }).toList();
     });
+  }
+
+  Future<void> toggleLike({
+    required int index,
+    required bool value,
+    required String userId,
+    required String documentId,
+  }) async {
+    try {
+      final docRef = _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('chat')
+          .doc(documentId);
+
+      // Get the document snapshot
+      DocumentSnapshot docSnapshot = await docRef.get();
+
+      if (docSnapshot.exists) {
+        // Get the conversation array
+        List<dynamic> conversation = docSnapshot['conversation'];
+
+        if (index >= 0 && index < conversation.length) {
+          // Update the specific message in the conversation array
+          conversation[index]['response_status']['is_liked'] = value;
+          conversation[index]['response_status']['is_disliked'] = false;
+
+          // Update the document in Firestore
+          await docRef.update({
+            'conversation': conversation,
+          });
+
+          print('Message updated successfully');
+        } else {
+          print('Invalid index');
+        }
+      } else {
+        print('Document LIKED does not exist');
+      }
+    } catch (e) {
+      print('Error updating message: $e');
+    }
+  }
+
+  Future<void> toggleDislike({
+    required int index,
+    required bool value,
+    required String userId,
+    required String documentId,
+  }) async {
+    try {
+      final docRef = _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('chat')
+          .doc(documentId);
+
+      // Get the document snapshot
+      DocumentSnapshot docSnapshot = await docRef.get();
+
+      if (docSnapshot.exists) {
+        // Get the conversation array
+        List<dynamic> conversation = docSnapshot['conversation'];
+
+        if (index >= 0 && index < conversation.length) {
+          // Update the specific message in the conversation array
+          conversation[index]['response_status']['is_disliked'] = value;
+          conversation[index]['response_status']['is_liked'] = false;
+
+          // Update the document in Firestore
+          await docRef.update({
+            'conversation': conversation,
+          });
+
+          print('Message DISLIKED updated successfully');
+        } else {
+          print('Invalid index');
+        }
+      } else {
+        print('Document does not exist');
+      }
+    } catch (e) {
+      print('Error updating message: $e');
+    }
   }
 
   Stream<List<Chat>> getConversation({required String documentId}) {
@@ -50,6 +135,40 @@ class AIChatRepository {
         return [];
       }
     });
+  }
+
+  Future<void> addChatMessage({
+    required String userId,
+    required String documentId,
+    required String text,
+    required String messageType,
+  }) async {
+    try {
+      // Define the collection reference
+      final DocumentReference docRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('chat')
+          .doc(documentId);
+
+      Chat message = Chat(
+        text: text,
+        messageType: messageType,
+        datetime: DateTime.now().toString(),
+        responseStatus: messageType == 'response'
+            ? ResponseStatus(isLiked: false, isDisliked: false)
+            : null,
+      );
+
+      // new add a new message to conversion field which is an array
+      await docRef.update({
+        'conversation': FieldValue.arrayUnion([message.toJson()]),
+      });
+
+      print("MESSAGE HAS BEEN ADDED");
+    } catch (e) {
+      print("NOT BEING ABLE TO ADD NEW Message $e");
+    }
   }
 
   Future<void> addChatWithMessages() async {

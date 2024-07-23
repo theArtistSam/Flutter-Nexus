@@ -23,9 +23,9 @@ class _SampleState extends State<Sample> {
       final text =
           docxToText(bytes.buffer.asUint8List()); // Use buffer.asUint8List()
 
-      ExtractiveModel output = await ExtractiveModelRepository()
-          .sendRequest(text: text, length: 'short');
-      outputText = output.text;
+      // ExtractiveModel output = await ExtractiveModelRepository()
+      //     .sendRequest(text: text, length: 'short');
+      // outputText = output.text;
       setState(() {
         extractedText = text;
       });
@@ -57,9 +57,9 @@ class _SampleState extends State<Sample> {
           .replaceAll(RegExp(r'\s+'), ' ')
           .trim();
 
-      ExtractiveModel output = await ExtractiveModelRepository()
-          .sendRequest(text: text, length: 'medium');
-      outputText = output.text;
+      // ExtractiveModel output = await ExtractiveModelRepository()
+      //     .sendRequest(text: text, length: 'medium');
+      // outputText = output.text;
 
       setState(() {
         extractedText = text;

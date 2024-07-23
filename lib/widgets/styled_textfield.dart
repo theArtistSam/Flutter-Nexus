@@ -23,7 +23,7 @@ class StyledTextfield extends StatelessWidget {
     return Container(
       decoration: ShapeDecoration(
         shape: SmoothRectangleBorder(
-          side: const BorderSide(width: 2, color: NexusColors.borderColor),
+          side: BorderSide(width: 2, color: NexusColors.borderColor),
           borderRadius: SmoothBorderRadius(
             cornerRadius: 15,
             cornerSmoothing: .8,
@@ -39,7 +39,7 @@ class StyledTextfield extends StatelessWidget {
                     'assets/icons/$icon.svg',
                     // COLOR: FIX
                     color: NexusColors.isDark
-                        ? Colors.white54
+                        ? Colors.white
                         : NexusColors.primaryColorLight,
                   )
                 : const SizedBox(),
@@ -60,14 +60,17 @@ class StyledTextfield extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                     // COLOR: FIX
                     color: NexusColors.isDark
-                        ? Colors.white54
+                        ? Colors.white
                         : NexusColors.primaryColorLight,
                   ),
                 ),
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: NexusColors.primaryColorLight,
+                  // COLOR: FIX
+                  color: NexusColors.isDark
+                      ? Colors.white
+                      : NexusColors.primaryColorLight,
                 ),
                 onChanged: (value) {},
               ),

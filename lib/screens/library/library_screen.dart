@@ -77,7 +77,10 @@ class _LibraryScreenState extends State<LibraryScreen> {
               leadingWidth: 30,
               leading: SvgPicture.asset(
                 'assets/icons/library-filled.svg',
-                color: NexusColors.primaryColor,
+                // COLOR: FIX
+                color: NexusColors.isDark
+                    ? Colors.white
+                    : NexusColors.primaryColor,
               ),
               title: StyledText(
                 text: 'Library',
@@ -86,8 +89,16 @@ class _LibraryScreenState extends State<LibraryScreen> {
               ),
               actions: [
                 StyledIconButton(
+                  isBordered: true,
+                  backgroundColor: NexusColors.isDark
+                      ? const Color(0XFF0A0A0A)
+                      : NexusColors.accentColor,
+                  // COLOR: FIX
+                  iconColor: NexusColors.isDark
+                      ? Colors.white
+                      : NexusColors.primaryColor,
+                  padding: 6,
                   icon: 'search',
-                  backgroundColor: NexusColors.primaryColor,
                   onTap: () {
                     Navigator.push(
                       context,
@@ -96,7 +107,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                       ),
                     );
                   },
-                ),
+                )
               ],
             ),
           ),
@@ -227,9 +238,9 @@ class _LibraryScreenState extends State<LibraryScreen> {
                     );
                   },
                 ),
-                const SizedBox(
-                  height: 25,
-                ),
+                // const SizedBox(
+                //   height: 25,
+                // ),
               ],
             ),
           ),

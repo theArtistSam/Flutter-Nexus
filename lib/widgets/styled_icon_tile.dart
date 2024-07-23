@@ -6,16 +6,20 @@ import 'package:nexus/widgets/styled_text.dart';
 
 // ignore: must_be_immutable
 class StyledIconTile extends StatelessWidget {
-  StyledIconTile(
-      {super.key,
-      required this.icon,
-      required this.text,
-      required this.onTap,
-      this.isPrimary = true});
-  String icon;
-  String text;
-  VoidCallback onTap;
-  bool isPrimary;
+  StyledIconTile({
+    super.key,
+    required this.icon,
+    required this.text,
+    required this.onTap,
+    this.isPrimary = true,
+    this.secondaryText,
+  });
+  final String icon;
+  final String text;
+  final String? secondaryText;
+  final VoidCallback onTap;
+  final bool isPrimary;
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -45,6 +49,14 @@ class StyledIconTile extends StatelessWidget {
                   color: isPrimary ? Colors.white : NexusColors.textColor,
                 ),
                 const SizedBox(height: 10),
+                secondaryText != null
+                    ? StyledText(
+                        text: secondaryText!,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: NexusColors.secondaryTextColorLight,
+                      )
+                    : const SizedBox(),
                 StyledText(
                   text: text,
                   color: isPrimary

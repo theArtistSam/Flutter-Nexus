@@ -54,8 +54,11 @@ class _AIChatScreenState extends State<AIChatScreen> {
                   : NexusColors.accentColorLight,
               leadingWidth: 30,
               leading: SvgPicture.asset(
-                'assets/icons/message-filled.svg',
-                color: NexusColors.primaryColor,
+                'assets/icons/message-filled-2.svg',
+                // COLOR: FIX
+                color: NexusColors.isDark
+                    ? Colors.white
+                    : NexusColors.primaryColor,
               ),
               title: StyledText(
                 text: 'AI Chat',

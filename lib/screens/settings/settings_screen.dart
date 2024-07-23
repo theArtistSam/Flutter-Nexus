@@ -274,9 +274,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 13,
-            horizontal: 20,
+          padding: const EdgeInsets.fromLTRB(
+            20,
+            13,
+            13,
+            13,
           ),
           child: Row(
             children: [
@@ -285,7 +287,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 color: NexusColors.secondaryTextColor,
               ),
               const SizedBox(
-                width: 15,
+                width: 12,
               ),
               StyledText(
                 text: text,
@@ -343,7 +345,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     color: NexusColors.secondaryTextColor,
                   ),
                   const SizedBox(
-                    width: 15,
+                    width: 12,
                   ),
                   StyledText(
                     text: text,

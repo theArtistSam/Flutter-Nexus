@@ -10,7 +10,7 @@ class StyledIconButton extends StatelessWidget {
     super.key,
     this.backgroundColor = NexusColors.primaryColorLight,
     this.iconColor = Colors.white,
-    this.borderColor = NexusColors.borderColor,
+    this.borderColor,
     this.isBordered = false,
     this.padding = 9,
     this.height = 24,
@@ -20,7 +20,7 @@ class StyledIconButton extends StatelessWidget {
 
   String icon;
   Color backgroundColor;
-  Color borderColor;
+  Color? borderColor;
   Color iconColor;
   bool isBordered;
   double padding;
@@ -38,7 +38,7 @@ class StyledIconButton extends StatelessWidget {
           decoration: BoxDecoration(
             border: isBordered
                 ? Border.all(
-                    color: borderColor,
+                    color: borderColor ?? NexusColors.borderColor,
                     width: 2,
                   )
                 : null,

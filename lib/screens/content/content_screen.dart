@@ -10,7 +10,7 @@ import 'package:nexus/models/folder_model.dart';
 import 'package:nexus/screens/content/widgets/content_configure_tabs.dart';
 import 'package:nexus/screens/content/widgets/edit_bottom_sheet.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/content_configure_bottomsheet.dart';
+import 'package:nexus/widgets/content_configure_bottom_sheet.dart';
 import 'package:nexus/widgets/content_tile.dart';
 import 'package:nexus/widgets/styled_button.dart';
 import 'package:nexus/widgets/styled_icon_button.dart';

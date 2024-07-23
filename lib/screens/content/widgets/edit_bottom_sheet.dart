@@ -256,10 +256,11 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
         ],
       );
 
-  editBottomSheetContent(
-          {required double bottomPadding,
-          required ContentModel content,
-          required List<FolderModel> folders}) =>
+  editBottomSheetContent({
+    required double bottomPadding,
+    required ContentModel content,
+    required List<FolderModel> folders,
+  }) =>
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -351,12 +352,15 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
           Container(
             width: double.infinity,
             decoration: ShapeDecoration(
-                // color: Colors.amber,
-                shape: SmoothRectangleBorder(
-                    side: const BorderSide(
-                        width: 2, color: NexusColors.borderColor),
-                    borderRadius: SmoothBorderRadius(
-                        cornerRadius: 15, cornerSmoothing: 0.8))),
+              // color: Colors.amber,
+              shape: SmoothRectangleBorder(
+                side: BorderSide(width: 2, color: NexusColors.borderColor),
+                borderRadius: SmoothBorderRadius(
+                  cornerRadius: 15,
+                  cornerSmoothing: 0.8,
+                ),
+              ),
+            ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: DropdownButtonHideUnderline(

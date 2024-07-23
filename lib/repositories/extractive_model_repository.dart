@@ -31,12 +31,73 @@ class ExtractiveModelRepository {
     }
   }
 
-  Future<ExtractiveModel> sendRequest({
+  Future<void> incrementUpVote() async {
+    try {
+      final docRef =
+          _firestore.collection('models').doc("FNJAQivoRd7ouJOcQesX");
+      // increment total_up_votes by 1
+      // Use FieldValue.increment to increase the total_up_votes by 1
+      await docRef.update({
+        'total_up_votes': FieldValue.increment(1),
+      });
+      print("INCREMENTED UPVOTE");
+    } catch (e) {
+      print("NOT BEING ABLE TO INCREMENT UPVOTE $e");
+    }
+  }
+
+  Future<void> incrementDownVote() async {
+    try {
+      final docRef =
+          _firestore.collection('models').doc("FNJAQivoRd7ouJOcQesX");
+      // increment total_up_votes by 1
+      // Use FieldValue.increment to increase the total_up_votes by 1
+      await docRef.update({
+        'total_down_votes': FieldValue.increment(1),
+      });
+      print("INCREMENTED DOWNVOTE");
+    } catch (e) {
+      print("NOT BEING ABLE TO INCREMENT DOWNVOTE $e");
+    }
+  }
+
+  Future<void> decrementUpVote() async {
+    try {
+      final docRef =
+          _firestore.collection('models').doc("FNJAQivoRd7ouJOcQesX");
+      // increment total_up_votes by 1
+      // Use FieldValue.increment to increase the total_up_votes by 1
+      await docRef.update({
+        'total_up_votes': FieldValue.increment(-1),
+      });
+      print("DECREMENTED UPVOTE");
+    } catch (e) {
+      print("NOT BEING ABLE TO DECREMENT UPVOTE $e");
+    }
+  }
+
+  Future<void> decrementDownVote() async {
+    try {
+      final docRef =
+          _firestore.collection('models').doc("FNJAQivoRd7ouJOcQesX");
+      // increment total_up_votes by 1
+      // Use FieldValue.increment to increase the total_up_votes by 1
+      await docRef.update({
+        'total_down_votes': FieldValue.increment(-1),
+      });
+      print("DECREMENTED DOWNVOTE");
+    } catch (e) {
+      print("NOT BEING ABLE TO DECREMENT DOWNVOTE $e");
+    }
+  }
+
+  Future<String> sendRequest({
     required String text,
     required String length,
   }) async {
     try {
       final endpoint = await _getEndpoint();
+
       final uri = Uri.parse(endpoint);
       final headers = {'Content-Type': 'application/json'};
       final body = jsonEncode({
@@ -46,11 +107,9 @@ class ExtractiveModelRepository {
       });
 
       final response = await http.post(uri, headers: headers, body: body);
-
       if (response.statusCode == 200) {
         final body = json.decode(response.body);
-        print(body.toString());
-        return ExtractiveModel.fromJson(body);
+        return body['text'];
       } else {
         throw Exception('Failed to load data: ${response.statusCode}');
       }

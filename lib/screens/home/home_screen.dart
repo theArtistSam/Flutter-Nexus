@@ -74,59 +74,56 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight + 5),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            padding: const EdgeInsets.only(left: 5.0, right: 20),
             child: AppBar(
               surfaceTintColor: Colors.transparent,
               backgroundColor: NexusColors.isDark
                   ? const Color(0XFF0A0A0A)
                   : NexusColors.accentColorLight,
-              automaticallyImplyLeading: false,
-              leading: InkWell(
-                borderRadius: BorderRadius.circular(5),
-                onTap: () {}, // Handle tap on leading widget
-                child: Transform.scale(
-                  scale: .85,
-                  child: ClipOval(
+              title: Row(
+                children: [
+                  ClipOval(
                     child: Image.asset(
                       'assets/images/profile-picture.png',
                       fit: BoxFit.cover,
+                      width: 50,
+                      height: 50,
                     ),
                   ),
-                ),
-              ),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  StyledText(
-                    text: 'Dunn Oliver',
-                    fontSize: 18,
-                    color: NexusColors.textColor,
+                  const SizedBox(
+                    width: 10,
                   ),
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       StyledText(
-                        text: 'Premium Account',
+                        text: 'Welcome,',
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                         color: NexusColors.secondaryTextColor,
                       ),
-                      const SizedBox(width: 8),
-                      SvgPicture.asset(
-                        'assets/icons/small-arrow-right.svg',
-                        color: NexusColors.secondaryTextColor,
-                        height: 12,
-                      )
+                      StyledText(
+                        text: 'Dunn Oliver 👋',
+                        fontSize: 18,
+                        color: NexusColors.textColor,
+                      ),
                     ],
                   ),
                 ],
               ),
               actions: [
                 StyledIconButton(
+                  isBordered: true,
+                  backgroundColor: NexusColors.isDark
+                      ? const Color(0XFF0A0A0A)
+                      : NexusColors.accentColor,
+                  // COLOR: FIX
+                  iconColor: NexusColors.isDark
+                      ? Colors.white
+                      : NexusColors.primaryColor,
+                  padding: 6,
                   icon: 'notification',
                   onTap: () {},
-                  backgroundColor: NexusColors.backgroundColor,
-                  // COLOR: FIX
-                  iconColor: NexusColors.isDark ? Colors.white : Colors.black,
                 ),
                 const SizedBox(width: 10),
                 StyledIconButton(
@@ -205,6 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: StyledIconTile(
                           icon: 'translate-filled',
                           text: 'Translate',
+                          secondaryText: 'AI Chat',
                           onTap: () => {},
                         ),
                       ),
@@ -213,6 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: StyledIconTile(
                           icon: 'book-filled',
                           text: 'Summarize',
+                          secondaryText: 'AI Chat',
                           onTap: () => {},
                         ),
                       ),

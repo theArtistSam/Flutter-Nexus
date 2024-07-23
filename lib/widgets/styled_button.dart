@@ -23,7 +23,7 @@ class StyledButton extends StatelessWidget {
 
   BorderSide borderSide() {
     if (isBordered) {
-      return const BorderSide(
+      return BorderSide(
         color: NexusColors.borderColor,
         width: 2,
       );

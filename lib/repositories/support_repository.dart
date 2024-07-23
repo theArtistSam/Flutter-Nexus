@@ -64,7 +64,6 @@ class SupportRepository {
         ),
       );
 
-      // Update the document, adding the userId to the liked_by array
       await docRef.update({
         'conversation': FieldValue.arrayUnion([newMessage.toJson()]),
       });

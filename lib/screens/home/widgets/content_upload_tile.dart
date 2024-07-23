@@ -21,10 +21,12 @@ class ContentUploadTile extends StatelessWidget {
           child: Container(
             decoration: ShapeDecoration(
               shape: SmoothRectangleBorder(
-                  side: const BorderSide(
-                      color: NexusColors.borderColor, width: 2),
-                  borderRadius: SmoothBorderRadius(
-                      cornerRadius: 15, cornerSmoothing: 0.8)),
+                side: BorderSide(color: NexusColors.borderColor, width: 2),
+                borderRadius: SmoothBorderRadius(
+                  cornerRadius: 15,
+                  cornerSmoothing: 0.8,
+                ),
+              ),
             ),
             child: Padding(
               padding: const EdgeInsets.all(18),

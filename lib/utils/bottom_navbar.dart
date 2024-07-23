@@ -93,9 +93,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 preferredWidgetSize: Size.fromHeight(56 + bottomPadding),
                 controller: controller,
                 child: BottomBarCreative(
-                  highlightStyle: HighlightStyle(
-                    background: NexusColors.backgroundColor,
-                  ),
+                  // backgroundSelected: NexusColors.accentColor,
+                  // highlightStyle: HighlightStyle(
+                  //     // background: NexusColors.backgroundColor,
+                  //     ),
                   pad: 1,
                   top: 5,
                   bottom: 0,
@@ -108,7 +109,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                       : NexusColors.primaryColorLight,
                   titleStyle: GoogleFonts.poppins(
                     fontSize: 10,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                   ),
                   indexSelected: state.index,
                   onTap: (int index) => _changeTab(index, state, bottomPadding),
@@ -130,8 +131,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
         TabItem(
           icon: SvgPicture.asset(
             index == 0
-                ? 'assets/icons/home-filled.svg'
-                : 'assets/icons/home.svg',
+                ? 'assets/icons/home-filled-2.svg'
+                : 'assets/icons/home-2.svg',
             // COLOR: FIX
             color: index == 0
                 ? NexusColors.isDark
@@ -158,18 +159,19 @@ class _BottomNavBarState extends State<BottomNavBar> {
         ),
         TabItem(
           icon: SvgPicture.asset(
-            'assets/icons/sparkle-circle.svg',
-            height: 40,
+            'assets/icons/add-circle.svg',
+            height: 50,
             // COLOR: FIX
-            color: NexusColors.isDark ? Colors.white : NexusColors.primaryColor,
+            // color: Colors.white,
+            color: NexusColors.isDark ? Colors.black : Colors.white,
           ),
-          title: 'AI',
+          // title: 'Upload',
         ),
         TabItem(
           icon: SvgPicture.asset(
             index == 3
-                ? 'assets/icons/message-filled.svg'
-                : 'assets/icons/message.svg',
+                ? 'assets/icons/message-filled-2.svg'
+                : 'assets/icons/message-2.svg',
             color: index == 3
                 ? NexusColors.isDark
                     ? Colors.white
@@ -182,8 +184,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
         TabItem(
           icon: SvgPicture.asset(
             index == 4
-                ? 'assets/icons/community-filled.svg'
-                : 'assets/icons/community.svg',
+                ? 'assets/icons/community-filled-2.svg'
+                : 'assets/icons/community-2.svg',
             color: index == 4
                 ? NexusColors.isDark
                     ? Colors.white

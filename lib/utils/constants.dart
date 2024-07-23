@@ -11,8 +11,8 @@ class NexusColors {
   static const accentColorLight = Color(0XFFF4F6F9);
   static const textColorLight = Colors.white;
   static const secondaryTextColorLight = Colors.white54;
+  static const borderColorLight = Color(0XFFCBD5E4);
 
-  static const borderColor = Color(0XFFCBD5E4);
   static const confirmColor = Color(0XFF2B9F03);
   static const warningColor = Color(0XFFB50202);
   static const dividerColor = Color(0xFFEBEEF4);
@@ -22,16 +22,15 @@ class NexusColors {
   static const closedColor = Color(0xFFB50202);
   static const pendingColor = Color(0xFFF29339);
 
-  // static const primaryColorDark = Color(0XFFFFFFFF);
-  // static const primaryColorDark = Color(0XFF1D385C);
   static const primaryColorDark = Color(0XFF27457D);
   static const backgroundColorDark = Color(0XFF13151b);
+  static const borderColorDark = accentColorDark;
   static const accentColorDark = Color(0XFF2c2d32);
-  // static const accentColorDark = Color(0XFF151C29);
   static const textColorDark = Colors.black;
   static const secondaryTextColorDark = Colors.black45;
 
   // Main colors to be used with in the app
+  static Color get borderColor => isDark ? borderColorDark : borderColorLight;
   static Color get primaryColor =>
       isDark ? primaryColorDark : primaryColorLight;
   static Color get backgroundColor =>
@@ -108,6 +107,38 @@ class DateTimeConversion {
       lastMessageTime = DateTimeConversion.formattedDate(datetime: datetime);
     }
     return lastMessageTime;
+  }
+
+  static String getChatTime({required String datetime}) {
+    DateTime messageTime = DateTime.parse(datetime); // Parse string to DateTime
+    DateTime now = DateTime.now();
+    Duration difference = now.difference(messageTime);
+
+    if (difference.inDays == 0) {
+      // If the difference is less than a day
+      return 'Today';
+    } else if (difference.inDays == 1) {
+      // If the difference is exactly one day
+      return 'Yesterday';
+    } else if (difference.inDays <= 7) {
+      // If the difference is within the last week
+      return DateFormat('EEEE')
+          .format(messageTime); // Returns the day of the week
+    } else {
+      // If the difference is more than a week
+      return DateFormat('MMMM d, yyyy')
+          .format(messageTime); // Returns the formatted date
+    }
+  }
+
+  static bool isDifferentDay({index, messageList, message}) {
+    String currentMessageTime = DateTimeConversion.getChatTime(
+      datetime: message.timeStamp,
+    );
+    String nextMessageTime = DateTimeConversion.getChatTime(
+      datetime: messageList[index - 1].timeStamp,
+    );
+    return currentMessageTime != nextMessageTime;
   }
 }
 

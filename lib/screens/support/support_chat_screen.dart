@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:nexus/blocs/support_chat_bloc/bloc/support_chat_bloc.dart';
 import 'package:nexus/models/support_model.dart';
 import 'package:nexus/utils/constants.dart';
+import 'package:nexus/widgets/datetime_tile.dart';
 import 'package:nexus/widgets/styled_icon_button.dart';
 import 'package:nexus/widgets/styled_text.dart';
 import 'package:nexus/widgets/styled_textfield.dart';
@@ -135,7 +136,8 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                             color: _issueColor(
-                                issueStatus: widget.issue.issueStatus!),
+                              issueStatus: widget.issue.issueStatus!,
+                            ),
                           ),
                         ],
                       ),
@@ -199,7 +201,7 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
             ),
             child: Padding(
               padding: const EdgeInsets.only(
-                top: 20,
+                top: 5,
                 bottom: 85,
                 right: 20,
                 left: 20,
@@ -249,15 +251,27 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
                           bool isUserLast = isLast ||
                               messageList[index + 1].senderId == adminId;
 
+                          bool isTimeStampRequired = index == 0 ||
+                              DateTimeConversion.isDifferentDay(
+                                index: index,
+                                messageList: messageList,
+                                message: message,
+                              );
+
+                          print("$isTimeStampRequired :: ${message.text}");
+
                           if (isAdmin) {
                             return adminChat(
                               message: message,
                               isLast: !isUserLast || isLast,
+                              isTimeStampRequired:
+                                  isTimeStampRequired && !isLast,
                             );
                           }
                           return userChat(
                             message: message,
                             isLast: isUserLast || isLast,
+                            isTimeStampRequired: isTimeStampRequired && !isLast,
                           );
                         },
                       );
@@ -340,12 +354,18 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
   adminChat({
     required Message message,
     required bool isLast,
+    required isTimeStampRequired,
   }) {
     String status = message.status!.isSeen == true ? 'Seen' : 'Sent';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        isTimeStampRequired
+            ? DatetimeTile(
+                time: message.timeStamp!,
+              )
+            : const SizedBox(),
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
@@ -427,12 +447,18 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
   userChat({
     required Message message,
     required bool isLast,
+    required isTimeStampRequired,
   }) {
     String status = message.status!.isSeen == true ? 'Seen' : 'Sent';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
+        isTimeStampRequired
+            ? DatetimeTile(
+                time: message.timeStamp!,
+              )
+            : const SizedBox(),
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
@@ -506,7 +532,7 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
                   ),
           ],
         ),
-        SizedBox(height: isLast ? 15 : 0)
+        SizedBox(height: isLast ? 15 : 0),
       ],
     );
   }

@@ -64,8 +64,11 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   : NexusColors.accentColorLight,
               leadingWidth: 30,
               leading: SvgPicture.asset(
-                'assets/icons/community-filled.svg',
-                color: NexusColors.primaryColor,
+                'assets/icons/community-filled-2.svg',
+                // COLOR: FIX
+                color: NexusColors.isDark
+                    ? Colors.white
+                    : NexusColors.primaryColor,
               ),
               title: StyledText(
                 text: 'Community',
@@ -174,7 +177,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                           child: Container(
                             decoration: ShapeDecoration(
                               shape: SmoothRectangleBorder(
-                                side: const BorderSide(
+                                side: BorderSide(
                                   width: 2,
                                   color: NexusColors.borderColor,
                                 ),
