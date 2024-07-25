@@ -71,3 +71,8 @@ class AddResponseMessage extends AiChatMessageEvent {
     required this.documentId,
   });
 }
+
+class DeleteAIChat extends AiChatMessageEvent {
+  final String chatId;
+  const DeleteAIChat({required this.chatId});
+}

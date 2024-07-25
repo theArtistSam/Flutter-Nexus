@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nexus/screens/support/support_screen.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styled_button.dart';
-import 'package:nexus/widgets/styled_icon_button.dart';
-import 'package:nexus/widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_widgets/styled_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -197,7 +197,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       height: 10,
                     ),
                     toggleTile(
-                      icon: 'community',
+                      icon: 'globe',
                       text: 'Community notifications',
                       onChanged: (isCommunity) {},
                     )

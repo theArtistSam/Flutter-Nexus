@@ -16,9 +16,9 @@ import 'package:nexus/screens/home/widgets/content_upload_tile.dart';
 import 'package:nexus/screens/library/library_screen.dart';
 import 'package:nexus/screens/test_screen.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styled_text.dart';
-import 'package:nexus/widgets/styled_button.dart';
-import 'package:nexus/widgets/styled_tabs.dart';
+import 'package:nexus/widgets/styled_widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_widgets/styled_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_tabs.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({Key? key}) : super(key: key);
@@ -184,8 +184,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
         TabItem(
           icon: SvgPicture.asset(
             index == 4
-                ? 'assets/icons/community-filled-2.svg'
-                : 'assets/icons/community-2.svg',
+                ? 'assets/icons/globe-filled.svg'
+                : 'assets/icons/globe.svg',
             color: index == 4
                 ? NexusColors.isDark
                     ? Colors.white

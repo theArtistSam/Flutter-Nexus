@@ -10,8 +10,8 @@ import 'package:nexus/models/category_model.dart';
 import 'package:nexus/repositories/support_repository.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/category_tile.dart';
-import 'package:nexus/widgets/styled_button.dart';
-import 'package:nexus/widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_widgets/styled_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 
 class SupportCategoryBottomSheet extends StatefulWidget {
   const SupportCategoryBottomSheet({

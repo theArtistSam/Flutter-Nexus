@@ -13,3 +13,8 @@ class SelectModelCategory extends ChatCategoryBottomSheetEvent {
   final int index;
   const SelectModelCategory({required this.index});
 }
+
+class AddAIChat extends ChatCategoryBottomSheetEvent {
+  final String chatType;
+  const AddAIChat({required this.chatType});
+}

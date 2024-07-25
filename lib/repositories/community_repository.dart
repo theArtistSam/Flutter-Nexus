@@ -9,9 +9,9 @@ class CommunityRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Stream<List<PostModel>> getAllPosts({Query Function(Query)? queryBuilder}) {
-    Query query = _firestore
-        .collection('posts')
-        .where("user_id", isEqualTo: "Bd4umkyLqOLnMpdOLZ0E");
+    Query query = _firestore.collection('posts');
+    // * use this for the profile section or smth like that
+    // .where("user_id", isEqualTo: "Bd4umkyLqOLnMpdOLZ0E");
 
     // Apply the optional query builder if provided
     if (queryBuilder != null) {
@@ -97,6 +97,19 @@ class CommunityRepository {
       print("Post unsaved successfully");
     } catch (e) {
       print("Failed to dislike post: $e");
+    }
+  }
+
+  Future<void> deletePost({required String postId}) async {
+    try {
+      // Define the collection reference
+      final DocumentReference docRef =
+          FirebaseFirestore.instance.collection('posts').doc(postId);
+
+      await docRef.delete();
+      print("POST DELETED SUCCESSFULLY");
+    } catch (e) {
+      print("CANNOT DELETE PSOT $e");
     }
   }
 

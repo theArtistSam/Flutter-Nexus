@@ -17,12 +17,12 @@ import 'package:nexus/utils/enums.dart';
 import 'package:nexus/widgets/content_tile.dart';
 import 'package:nexus/screens/home/widgets/guide_tile.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styled_text.dart';
-import 'package:nexus/widgets/styled_button.dart';
-import 'package:nexus/widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_widgets/styled_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
-import 'package:nexus/widgets/styled_icon_tile.dart';
-import 'package:nexus/widgets/styled_tabs.dart';
+import 'package:nexus/widgets/styled_widgets/styled_icon_tile.dart';
+import 'package:nexus/widgets/styled_widgets/styled_tabs.dart';
 
 class HomeScreen extends StatefulWidget {
   // ignore: use_key_in_widget_constructors

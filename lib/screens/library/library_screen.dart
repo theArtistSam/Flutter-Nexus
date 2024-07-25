@@ -9,19 +9,19 @@ import 'package:nexus/models/content_model.dart';
 import 'package:nexus/models/folder_model.dart';
 import 'package:nexus/screens/content/content_screen.dart';
 import 'package:nexus/screens/folder/folder_screen.dart';
+import 'package:nexus/screens/library/widgets/search_bottom_sheet.dart';
 import 'package:nexus/utils/enums.dart';
 import 'package:nexus/widgets/content_tile.dart';
-import 'package:nexus/screens/search/search_screen.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styled_text.dart';
-import 'package:nexus/widgets/styled_icon_button.dart';
-import 'package:nexus/widgets/styled_icon_tile.dart';
-import 'package:nexus/widgets/styled_tabs.dart';
+import 'package:nexus/widgets/styled_widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_icon_tile.dart';
+import 'package:nexus/widgets/styled_widgets/styled_tabs.dart';
 
 // ignore: must_be_immutable
 class LibraryScreen extends StatefulWidget {
-  LibraryScreen({super.key, required this.controller});
-  ScrollController controller;
+  const LibraryScreen({super.key, required this.controller});
+  final ScrollController controller;
   @override
   State<LibraryScreen> createState() => _LibraryScreenState();
 }
@@ -100,12 +100,18 @@ class _LibraryScreenState extends State<LibraryScreen> {
                   padding: 6,
                   icon: 'search',
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (builder) => const SearchScreenn(),
-                      ),
-                    );
+                    // * Use modal bottom sheet
+
+                    showModalBottomSheet(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (context) => SearchBottomSheet());
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (builder) => const SearchScreenn(),
+                    //   ),
+                    // );
                   },
                 )
               ],

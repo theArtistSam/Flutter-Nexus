@@ -9,9 +9,9 @@ import 'package:nexus/models/support_model.dart';
 import 'package:nexus/screens/support/support_chat_screen.dart';
 import 'package:nexus/screens/support/widgets/support_category_bottom_sheet.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styled_button.dart';
-import 'package:nexus/widgets/styled_icon_button.dart';
-import 'package:nexus/widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_widgets/styled_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 
 class SupportScreen extends StatefulWidget {
   const SupportScreen({super.key});

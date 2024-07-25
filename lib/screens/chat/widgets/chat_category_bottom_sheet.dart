@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus/blocs/chat_category_bottom_sheet_bloc/bloc/chat_category_bottom_sheet_bloc.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/category_tile.dart';
-import 'package:nexus/widgets/styled_button.dart';
-import 'package:nexus/widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_widgets/styled_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 
 class ChatCategoryBottomSheet extends StatefulWidget {
   const ChatCategoryBottomSheet({super.key});
@@ -115,27 +115,17 @@ class _ChatCategoryBottomSheetState extends State<ChatCategoryBottomSheet> {
                   StyledButton(
                     text: 'Proceed',
                     onTap: () async {
-                      // final state = (chatCategoryBottomSheetBloc.state
-                      //     as SupportCategoryBottomSheetInitial);
-                      // final int index = state.selectedIndex;
-                      // final issues = state.issues;
+                      final state = (chatCategoryBottomSheetBloc.state
+                          as ChatCategoryBottomSheetInitial);
+                      final int index = state.selectedIndex;
 
-                      // // * Push to support chat screen
-                      // // * PROVIDE THE USER ID HERE *
-                      // bool issueStatus = await SupportRepository()
-                      //     .checkIssueStatus(userId: 'Bd4umkyLqOLnMpdOLZ0E');
-                      // // ignore: use_build_context_synchronously
-                      // if (!issueStatus) {
-                      //   chatCategoryBottomSheetBloc.add(
-                      //     AddIssue(
-                      //       issueCategory: issues[index].type!,
-                      //       userId: 'Bd4umkyLqOLnMpdOLZ0E',
-                      //     ),
-                      //   );
-                      //   Navigator.pop(context);
-                      // } else {
-                      //   print('AN ISSUE IS ALREADY PENDING');
-                      // }
+                      Map<int, String> chatType = {
+                        0: "Summarization",
+                        1: "Translation",
+                      };
+                      chatCategoryBottomSheetBloc
+                          .add(AddAIChat(chatType: chatType[index]!));
+                      Navigator.pop(context);
                     },
                   ),
                   SizedBox(

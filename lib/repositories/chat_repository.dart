@@ -137,6 +137,49 @@ class AIChatRepository {
     });
   }
 
+  Future<void> addAIChat({required String chatType}) async {
+    try {
+      // Define the collection reference
+      final collection = _firestore
+          .collection('users')
+          .doc("Bd4umkyLqOLnMpdOLZ0E")
+          .collection('chat');
+
+      String text = chatType == "Summarization"
+          ? 'Here to help you with summarization😊'
+          : '😊ترجمہ میں آپ کی مدد کرنے کے لیے حاضر ہوں';
+      ChatModel chatModel = ChatModel(
+        // TODO: Make sure you check the connection
+        // * before adding the chat
+        chatId: '',
+        chatType: chatType,
+        userId: 'Bd4umkyLqOLnMpdOLZ0E',
+        conversation: [
+          Chat(
+            text: text,
+            datetime: DateTime.now().toString(),
+            messageType: 'response',
+          )
+        ],
+        summarizationConfig: chatType == 'Summarization'
+            ? SummarizationConfig(length: 'medium')
+            : null,
+        translationConfig: chatType == 'Translation'
+            ? TranslationConfig(
+                sourceLanguage: 'English',
+                targetLanguage: 'Urdu',
+              )
+            : null,
+      );
+      // Add the chat to Firestore
+      DocumentReference docRef = await collection.add(chatModel.toJson());
+      await docRef.update({'chat_id': docRef.id});
+      print("FREAKING ADDED NEW AI CHAT!!");
+    } catch (e) {
+      print('FREAKING CANNOT ADD NEW AI CHAT');
+    }
+  }
+
   Future<void> addChatMessage({
     required String userId,
     required String documentId,
@@ -168,6 +211,22 @@ class AIChatRepository {
       print("MESSAGE HAS BEEN ADDED");
     } catch (e) {
       print("NOT BEING ABLE TO ADD NEW Message $e");
+    }
+  }
+
+  Future<void> deleteAIChat({required String chatId}) async {
+    try {
+      // Define the collection reference
+      final DocumentReference docRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc('Bd4umkyLqOLnMpdOLZ0E')
+          .collection('chat')
+          .doc(chatId);
+
+      await docRef.delete();
+      print("DELETED AI CHAT SUCCESSFULLY");
+    } catch (e) {
+      print("CANNOT DELETE AI CHAT MESSAGE $e");
     }
   }
 

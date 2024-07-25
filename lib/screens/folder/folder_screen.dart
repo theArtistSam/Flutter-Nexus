@@ -12,10 +12,10 @@ import 'package:nexus/screens/folder/widgets/folder_bottom_sheet.dart';
 import 'package:nexus/utils/enums.dart';
 import 'package:nexus/widgets/content_tile.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styled_text.dart';
-import 'package:nexus/widgets/styled_button.dart';
-import 'package:nexus/widgets/styled_icon_button.dart';
-import 'package:nexus/widgets/styled_textfield.dart';
+import 'package:nexus/widgets/styled_widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_widgets/styled_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_textfield.dart';
 
 // ignore: must_be_immutable
 class FolderScreen extends StatefulWidget {

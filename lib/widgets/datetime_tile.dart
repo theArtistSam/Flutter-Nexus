@@ -1,7 +1,7 @@
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 
 class DatetimeTile extends StatelessWidget {
   const DatetimeTile({

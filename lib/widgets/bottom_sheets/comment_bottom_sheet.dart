@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus/blocs/comment_bottom_sheet_bloc/bloc/comment_bottom_sheet_bloc.dart';
 import 'package:nexus/models/comment_model.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styled_icon_button.dart';
-import 'package:nexus/widgets/styled_text.dart';
-import 'package:nexus/widgets/styled_textfield.dart';
+import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_widgets/styled_textfield.dart';
 
 class CommentBottomSheet extends StatefulWidget {
   const CommentBottomSheet({
@@ -201,7 +201,7 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
                 shape: const SmoothRectangleBorder(
                   borderRadius: SmoothBorderRadius.all(
                     SmoothRadius(
-                      cornerRadius: 12,
+                      cornerRadius: 15,
                       cornerSmoothing: 0.8,
                     ),
                   ),
@@ -272,8 +272,8 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
               padding: const EdgeInsets.only(
                 left: 5,
                 right: 15,
-                top: 2,
-                bottom: 2,
+                top: 1,
+                bottom: 1,
               ),
               child: Row(
                 children: [

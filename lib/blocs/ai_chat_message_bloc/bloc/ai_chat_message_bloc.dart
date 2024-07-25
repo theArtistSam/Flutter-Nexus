@@ -18,6 +18,7 @@ class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
     on<UpdateDownVoteStatus>(updateDownVoteStatus);
     on<AddOriginalMessage>(addOriginalMessage);
     on<AddResponseMessage>(addResponseMessage);
+    on<DeleteAIChat>(deleteAIChat);
   }
 
   FutureOr<void> fetchMessages(
@@ -131,6 +132,15 @@ class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
       );
     } catch (e) {
       print("SOME ERROR WHILE ADDING CHAT MESSAGE $e");
+    }
+  }
+
+  FutureOr<void> deleteAIChat(
+      DeleteAIChat event, Emitter<AiChatMessageState> emit) async {
+    try {
+      await AIChatRepository().deleteAIChat(chatId: event.chatId);
+    } catch (e) {
+      print("SOME SHITTY ERROR WHILE DELETE $e");
     }
   }
 }

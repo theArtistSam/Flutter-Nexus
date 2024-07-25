@@ -8,13 +8,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nexus/blocs/community_bloc/bloc/community_bloc.dart';
 import 'package:nexus/models/post_model.dart';
-import 'package:nexus/screens/community/widgets/comment_bottom_sheet.dart';
+import 'package:nexus/widgets/bottom_sheets/comment_bottom_sheet.dart';
 import 'package:nexus/screens/settings/settings_screen.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styled_button.dart';
-import 'package:nexus/widgets/styled_icon_button.dart';
-import 'package:nexus/widgets/styled_text.dart';
-import 'package:nexus/widgets/styled_textfield.dart';
+import 'package:nexus/widgets/bottom_sheets/delete_bottom_sheet.dart';
+import 'package:nexus/widgets/bottom_sheets/image_slider_bottom_sheet.dart';
+import 'package:nexus/widgets/popup_menu.dart';
+import 'package:nexus/widgets/post_tile.dart';
+import 'package:nexus/widgets/styled_widgets/styled_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_widgets/styled_textfield.dart';
 
 // ignore: must_be_immutable
 class CommunityScreen extends StatefulWidget {
@@ -64,7 +68,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   : NexusColors.accentColorLight,
               leadingWidth: 30,
               leading: SvgPicture.asset(
-                'assets/icons/community-filled-2.svg',
+                'assets/icons/globe-filled.svg',
                 // COLOR: FIX
                 color: NexusColors.isDark
                     ? Colors.white
@@ -77,8 +81,17 @@ class _CommunityScreenState extends State<CommunityScreen> {
               ),
               actions: [
                 StyledIconButton(
-                  icon: 'menu',
-                  backgroundColor: NexusColors.primaryColor,
+                  isBordered: true,
+                  backgroundColor: NexusColors.isDark
+                      ? const Color(0XFF0A0A0A)
+                      : NexusColors.accentColor,
+                  // COLOR: FIX
+                  iconColor: NexusColors.isDark
+                      ? Colors.white
+                      : NexusColors.primaryColor,
+                  // padding: 6,
+                  height: 20,
+                  icon: 'configure',
                   onTap: () {},
                 ),
               ],
@@ -115,11 +128,12 @@ class _CommunityScreenState extends State<CommunityScreen> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(20),
-                  // !GUIDES
+                  // * GUIDES
                   child: ClipRRect(
                     borderRadius: const SmoothBorderRadius.all(
                       SmoothRadius(
-                        cornerRadius: 15,
+                        // * Check this baad ma
+                        cornerRadius: 10,
                         cornerSmoothing: 0.8,
                       ),
                     ),
@@ -196,7 +210,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                     text: 'Share your thoughts ...',
                                     // COLOR: FIX
                                     color: NexusColors.isDark
-                                        ? Colors.white54
+                                        ? Colors.white
                                         : NexusColors.primaryColor,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -204,7 +218,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                   SvgPicture.asset(
                                     'assets/icons/gallery-add.svg',
                                     color: NexusColors.isDark
-                                        ? Colors.white54
+                                        ? Colors.white
                                         : NexusColors.primaryColor,
                                   )
                                 ],
@@ -249,10 +263,9 @@ class _CommunityScreenState extends State<CommunityScreen> {
                             const SizedBox(height: 15),
                         itemBuilder: (BuildContext context, int index) {
                           PostModel postModel = postList[index];
-                          return post(
-                            height: height,
-                            context: context,
+                          return PostTile(
                             post: postModel,
+                            userId: 'Bd4umkyLqOLnMpdOLZ0E',
                           );
                         },
                       );
@@ -367,287 +380,6 @@ class _CommunityScreenState extends State<CommunityScreen> {
           ],
         ),
       );
-
-  post({
-    required BuildContext context,
-    required double height,
-    required PostModel post,
-  }) {
-    final isLiked = post.likedBy!.contains("Bd4umkyLqOLnMpdOLZ0E");
-    final isSaved = post.savedBy!.contains("Bd4umkyLqOLnMpdOLZ0E");
-
-    return Container(
-      color: NexusColors.backgroundColor,
-      child: Container(
-        decoration: ShapeDecoration(
-          shape: SmoothRectangleBorder(
-            side: BorderSide(
-              width: 1,
-              color: NexusColors.backgroundColor,
-            ),
-            borderRadius: SmoothBorderRadius(
-              cornerRadius: 10,
-              cornerSmoothing: .8,
-            ),
-          ),
-        ),
-        child: Column(children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 15,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    ClipOval(
-                      child: Image.asset(
-                        'assets/images/profile-picture.png',
-                        width: 30,
-                        height: 30,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    StyledText(
-                      text: 'Dunn Oliver',
-                      fontSize: 16,
-                      color: NexusColors.textColor,
-                    ),
-                    const Spacer(),
-                    StyledText(
-                      text: DateTimeConversion.formattedDate(
-                        datetime: post.dateCreated!,
-                      ),
-                      fontSize: 12,
-                      color: NexusColors.textColor.withOpacity(.5),
-                      fontWeight: FontWeight.w500,
-                    )
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: const SmoothBorderRadius.all(
-                            SmoothRadius(
-                              cornerRadius: 12,
-                              cornerSmoothing: 0.8,
-                            ),
-                          ),
-                          child: Image.network(
-                            post.images?[0] ?? '',
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                          ),
-                        ),
-                        Positioned(
-                          top: 10,
-                          right: 10,
-                          child: Container(
-                            decoration: const ShapeDecoration(
-                              color: Colors.white70,
-                              shape: SmoothRectangleBorder(
-                                borderRadius: SmoothBorderRadius.all(
-                                  SmoothRadius(
-                                    cornerRadius: 5,
-                                    cornerSmoothing: 0.8,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 5,
-                              ),
-                              child: StyledText(
-                                text: '+${post.images?.length ?? 0} More',
-                                color: NexusColors.primaryColor,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    StyledText(
-                      text: post.description ?? '',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: NexusColors.textColor,
-                    ),
-                    const SizedBox(height: 10),
-                    Container(
-                      decoration: ShapeDecoration(
-                        color: NexusColors.accentColor,
-                        shape: const SmoothRectangleBorder(
-                          borderRadius: SmoothBorderRadius.all(
-                            SmoothRadius(
-                              cornerRadius: 12,
-                              cornerSmoothing: 0.8,
-                            ),
-                          ),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          top: 10,
-                          left: 5,
-                          bottom: 10,
-                          right: 5,
-                        ),
-                        child: Row(
-                          children: [
-                            StyledIconButton(
-                              icon: isLiked ? 'heart-filled' : 'heart',
-                              height: 26,
-                              backgroundColor: NexusColors.accentColor,
-                              // COLOR: FIX
-                              iconColor: NexusColors.isDark
-                                  ? Colors.white
-                                  : isLiked
-                                      ? NexusColors.primaryColor.withOpacity(
-                                          1,
-                                        )
-                                      : NexusColors.textColor.withOpacity(
-                                          .5,
-                                        ),
-                              onTap: () {
-                                // ! USE HARDCORE USER ID FOR NOW!!
-                                if (isLiked) {
-                                  communityBloc.add(
-                                    DislikePost(
-                                      postId: post.postId!,
-                                      userId: 'Bd4umkyLqOLnMpdOLZ0E',
-                                    ),
-                                  );
-                                } else {
-                                  communityBloc.add(
-                                    LikePost(
-                                      postId: post.postId!,
-                                      userId: 'Bd4umkyLqOLnMpdOLZ0E',
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
-                            StyledText(
-                              text: '${post.totalLikes}',
-                              fontSize: 14,
-                              color: NexusColors.isDark
-                                  ? Colors.white
-                                  : isLiked
-                                      ? NexusColors.primaryColor.withOpacity(
-                                          1,
-                                        )
-                                      : NexusColors.textColor.withOpacity(
-                                          .5,
-                                        ),
-                              fontWeight: FontWeight.w500,
-                            ),
-                            const SizedBox(width: 5),
-                            StyledIconButton(
-                              icon: 'message',
-                              height: 26,
-                              backgroundColor: NexusColors.accentColor,
-                              iconColor: NexusColors.textColor.withOpacity(.5),
-                              onTap: () {
-                                showModalBottomSheet(
-                                  isScrollControlled: true,
-                                  context: context,
-                                  builder: (context) => SingleChildScrollView(
-                                      // physics:
-                                      //     const NeverScrollableScrollPhysics(),
-                                      child: Padding(
-                                    padding: EdgeInsets.only(
-                                      bottom: MediaQuery.of(context)
-                                          .viewInsets
-                                          .bottom,
-                                    ),
-                                    child: CommentBottomSheet(
-                                      postId: post.postId!,
-                                      height: height,
-                                      context: context,
-                                    ),
-                                  )),
-                                );
-                              },
-                            ),
-                            StyledText(
-                              text: '${post.totalComments}',
-                              fontSize: 14,
-                              color: NexusColors.textColor.withOpacity(.5),
-                              fontWeight: FontWeight.w500,
-                            ),
-                            const SizedBox(width: 5),
-                            StyledIconButton(
-                              icon: 'share',
-                              height: 26,
-                              backgroundColor: NexusColors.accentColor,
-                              iconColor: NexusColors.textColor.withOpacity(
-                                .5,
-                              ),
-                              onTap: () {},
-                            ),
-                            StyledText(
-                              text: '${post.totalShares}',
-                              fontSize: 14,
-                              color: NexusColors.textColor.withOpacity(.5),
-                              fontWeight: FontWeight.w500,
-                            ),
-                            const Spacer(),
-                            StyledIconButton(
-                              icon: isSaved ? 'save-filled' : 'save',
-                              backgroundColor: NexusColors.accentColor,
-                              iconColor: NexusColors.isDark
-                                  ? Colors.white
-                                  : isSaved
-                                      ? NexusColors.primaryColor.withOpacity(
-                                          1,
-                                        )
-                                      : NexusColors.textColor.withOpacity(
-                                          .5,
-                                        ),
-                              onTap: () {
-                                // ! USE HARDCORE USER ID FOR NOW!!
-                                if (isSaved) {
-                                  communityBloc.add(
-                                    UnsavePost(
-                                      postId: post.postId!,
-                                      userId: 'Bd4umkyLqOLnMpdOLZ0E',
-                                    ),
-                                  );
-                                } else {
-                                  communityBloc.add(
-                                    SavePost(
-                                      postId: post.postId!,
-                                      userId: 'Bd4umkyLqOLnMpdOLZ0E',
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ]),
-      ),
-    );
-  }
 
   createPostBottomSheet({required double height}) => Wrap(
         children: [

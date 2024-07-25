@@ -9,7 +9,7 @@ class StyledText extends StatelessWidget {
     required this.text,
     this.fontSize = 16,
     this.fontWeight = FontWeight.w600,
-    this.color = NexusColors.textColorDark,
+    this.color,
     this.align = TextAlign.left,
     this.isUrdu = false,
   });
@@ -17,7 +17,7 @@ class StyledText extends StatelessWidget {
   final String text;
   final double fontSize;
   final FontWeight fontWeight;
-  final Color color;
+  final Color? color;
   final TextAlign align;
   final bool isUrdu;
 
@@ -27,7 +27,7 @@ class StyledText extends StatelessWidget {
       text,
       style: isUrdu
           ? GoogleFonts.notoNastaliqUrdu(
-              color: color,
+              color: color ?? NexusColors.textColor,
               height: 2.1,
               fontSize: fontSize,
               fontWeight: fontWeight,
@@ -35,7 +35,7 @@ class StyledText extends StatelessWidget {
           : GoogleFonts.poppins(
               fontSize: fontSize,
               fontWeight: fontWeight,
-              color: color,
+              color: color ?? NexusColors.textColor,
             ),
       textAlign: isUrdu ? TextAlign.right : align,
     );

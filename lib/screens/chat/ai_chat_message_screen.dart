@@ -5,10 +5,11 @@ import 'package:nexus/blocs/ai_chat_message_bloc/bloc/ai_chat_message_bloc.dart'
 import 'package:nexus/models/chat_model.dart';
 import 'package:nexus/repositories/extractive_model_repository.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/content_configure_bottom_sheet.dart';
-import 'package:nexus/widgets/styled_icon_button.dart';
-import 'package:nexus/widgets/styled_text.dart';
-import 'package:nexus/widgets/styled_textfield.dart';
+import 'package:nexus/widgets/bottom_sheets/content_configure_bottom_sheet.dart';
+import 'package:nexus/widgets/bottom_sheets/delete_bottom_sheet.dart';
+import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_widgets/styled_textfield.dart';
 
 class AIChatMessageScreen extends StatefulWidget {
   const AIChatMessageScreen({super.key, required this.chat});
@@ -123,6 +124,41 @@ class _AIChatMessageScreenState extends State<AIChatMessageScreen> {
                 ],
               ),
               actions: [
+                StyledIconButton(
+                  isBordered: true,
+                  backgroundColor: NexusColors.isDark
+                      ? const Color(0XFF0A0A0A)
+                      : NexusColors.accentColor,
+                  // COLOR: FIX
+                  iconColor: NexusColors.isDark
+                      ? Colors.white
+                      : NexusColors.primaryColor,
+
+                  padding: 8.5,
+                  height: 22,
+                  icon: 'trash',
+                  onTap: () {
+                    showModalBottomSheet(
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) => DeleteBottomSheet(
+                        title: 'Delete Chat',
+                        message:
+                            'Are you certain you want to remove this conversation?',
+                        onDelete: () {
+                          aiChatMessageBloc
+                              .add(DeleteAIChat(chatId: widget.chat.chatId!));
+
+                          // Bottom sheet
+                          Navigator.pop(context);
+                          // Chat Screen
+                          Navigator.pop(context);
+                        },
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(width: 5),
                 StyledIconButton(
                   isBordered: true,
                   backgroundColor: NexusColors.isDark
@@ -292,8 +328,8 @@ class _AIChatMessageScreenState extends State<AIChatMessageScreen> {
     required Chat message,
     required int index,
   }) {
-    final bool isLiked = message.responseStatus!.isLiked!;
-    final bool isDisliked = message.responseStatus!.isDisliked!;
+    final bool isLiked = message.responseStatus?.isLiked! ?? false;
+    final bool isDisliked = message.responseStatus?.isDisliked! ?? false;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -329,6 +365,7 @@ class _AIChatMessageScreenState extends State<AIChatMessageScreen> {
                     padding: const EdgeInsets.fromLTRB(15, 15, 15, 22),
                     child: StyledText(
                       text: message.text!,
+                      isUrdu: widget.chat.chatType == 'Translation',
                       fontSize: 14,
                       color: NexusColors.textColorLight,
                       fontWeight: FontWeight.w500,
@@ -336,100 +373,102 @@ class _AIChatMessageScreenState extends State<AIChatMessageScreen> {
                   ),
                 ),
               ),
-              Positioned(
-                left: 10,
-                bottom: 0,
-                child: Row(
-                  children: [
-                    StyledIconButton(
-                      icon: message.responseStatus!.isLiked!
-                          ? 'like-filled'
-                          : 'like',
-                      isBordered: true,
-                      height: 20,
-                      borderColor: NexusColors.backgroundColor,
-                      padding: 7,
-                      onTap: () {
-                        if (isLiked) {
-                          aiChatMessageBloc.add(
-                            ToggleLike(
-                              value: false,
-                              index: index,
-                              documentId: widget.chat.chatId!,
-                            ),
-                          );
+              message.responseStatus != null
+                  ? Positioned(
+                      left: 10,
+                      bottom: 0,
+                      child: Row(
+                        children: [
+                          StyledIconButton(
+                            icon: message.responseStatus!.isLiked!
+                                ? 'like-filled'
+                                : 'like',
+                            isBordered: true,
+                            height: 20,
+                            borderColor: NexusColors.backgroundColor,
+                            padding: 7,
+                            onTap: () {
+                              if (isLiked) {
+                                aiChatMessageBloc.add(
+                                  ToggleLike(
+                                    value: false,
+                                    index: index,
+                                    documentId: widget.chat.chatId!,
+                                  ),
+                                );
 
-                          // * Update upvote status
-                          aiChatMessageBloc.add(
-                            UpdateUpVoteStatus(
-                              likeStatus: false,
-                              dislikeStatus: isDisliked,
-                            ),
-                          );
-                        } else {
-                          aiChatMessageBloc.add(
-                            ToggleLike(
-                              value: true,
-                              index: index,
-                              documentId: widget.chat.chatId!,
-                            ),
-                          );
+                                // * Update upvote status
+                                aiChatMessageBloc.add(
+                                  UpdateUpVoteStatus(
+                                    likeStatus: false,
+                                    dislikeStatus: isDisliked,
+                                  ),
+                                );
+                              } else {
+                                aiChatMessageBloc.add(
+                                  ToggleLike(
+                                    value: true,
+                                    index: index,
+                                    documentId: widget.chat.chatId!,
+                                  ),
+                                );
 
-                          // * Update upvote status
-                          aiChatMessageBloc.add(
-                            UpdateUpVoteStatus(
-                              likeStatus: true,
-                              dislikeStatus: isDisliked,
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                    StyledIconButton(
-                      icon: message.responseStatus!.isDisliked!
-                          ? 'dislike-filled'
-                          : 'dislike',
-                      height: 20,
-                      padding: 7,
-                      isBordered: true,
-                      borderColor: NexusColors.backgroundColor,
-                      onTap: () {
-                        if (isDisliked) {
-                          aiChatMessageBloc.add(
-                            ToggleDisike(
-                              value: false,
-                              index: index,
-                              documentId: widget.chat.chatId!,
-                            ),
-                          );
-                          // * Update downvote status
-                          aiChatMessageBloc.add(
-                            UpdateDownVoteStatus(
-                              likeStatus: isLiked,
-                              dislikeStatus: false,
-                            ),
-                          );
-                        } else {
-                          aiChatMessageBloc.add(
-                            ToggleDisike(
-                              value: true,
-                              index: index,
-                              documentId: widget.chat.chatId!,
-                            ),
-                          );
-                          // * Update downvote status
-                          aiChatMessageBloc.add(
-                            UpdateDownVoteStatus(
-                              likeStatus: isLiked,
-                              dislikeStatus: true,
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              )
+                                // * Update upvote status
+                                aiChatMessageBloc.add(
+                                  UpdateUpVoteStatus(
+                                    likeStatus: true,
+                                    dislikeStatus: isDisliked,
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                          StyledIconButton(
+                            icon: message.responseStatus!.isDisliked!
+                                ? 'dislike-filled'
+                                : 'dislike',
+                            height: 20,
+                            padding: 7,
+                            isBordered: true,
+                            borderColor: NexusColors.backgroundColor,
+                            onTap: () {
+                              if (isDisliked) {
+                                aiChatMessageBloc.add(
+                                  ToggleDisike(
+                                    value: false,
+                                    index: index,
+                                    documentId: widget.chat.chatId!,
+                                  ),
+                                );
+                                // * Update downvote status
+                                aiChatMessageBloc.add(
+                                  UpdateDownVoteStatus(
+                                    likeStatus: isLiked,
+                                    dislikeStatus: false,
+                                  ),
+                                );
+                              } else {
+                                aiChatMessageBloc.add(
+                                  ToggleDisike(
+                                    value: true,
+                                    index: index,
+                                    documentId: widget.chat.chatId!,
+                                  ),
+                                );
+                                // * Update downvote status
+                                aiChatMessageBloc.add(
+                                  UpdateDownVoteStatus(
+                                    likeStatus: isLiked,
+                                    dislikeStatus: true,
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    )
+                  : const SizedBox()
             ],
           ),
         ),

@@ -13,11 +13,11 @@ import 'package:nexus/models/folder_model.dart';
 import 'package:nexus/screens/content/content_screen.dart';
 import 'package:nexus/screens/home/home_screen.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styled_button.dart';
-import 'package:nexus/widgets/styled_icon_button.dart';
-import 'package:nexus/widgets/styled_tabs.dart';
-import 'package:nexus/widgets/styled_text.dart';
-import 'package:nexus/widgets/styled_textfield.dart';
+import 'package:nexus/widgets/styled_widgets/styled_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_tabs.dart';
+import 'package:nexus/widgets/styled_widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_widgets/styled_textfield.dart';
 
 // ignore: must_be_immutable
 class EditBottomSheet extends StatefulWidget {

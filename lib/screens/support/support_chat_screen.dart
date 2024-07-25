@@ -7,9 +7,10 @@ import 'package:nexus/blocs/support_chat_bloc/bloc/support_chat_bloc.dart';
 import 'package:nexus/models/support_model.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/datetime_tile.dart';
-import 'package:nexus/widgets/styled_icon_button.dart';
-import 'package:nexus/widgets/styled_text.dart';
-import 'package:nexus/widgets/styled_textfield.dart';
+import 'package:nexus/widgets/bottom_sheets/image_slider_bottom_sheet.dart';
+import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_widgets/styled_textfield.dart';
 
 class SupportChatScreen extends StatefulWidget {
   SupportChatScreen({super.key, required this.issue});
@@ -612,12 +613,11 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
 
                           List<Message> conversation = snapshot.data!;
 
-                          List<Message> imageList = conversation
+                          List<String> imageList = conversation
                               .where(
                                   (message) => message.messageType == 'image')
+                              .map((message) => message.imageLink!)
                               .toList();
-                          print(
-                              "Filtered imageList length: ${imageList.length}");
 
                           if (imageList.isEmpty) {
                             return Center(
@@ -645,12 +645,24 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
                                     cornerSmoothing: 0.8,
                                   ),
                                 ),
-                                child: Container(
-                                  color: NexusColors.accentColor,
-                                  height: 125,
-                                  child: Image.network(
-                                    imageList[index].imageLink!,
-                                    fit: BoxFit.cover,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                      isScrollControlled: true,
+                                      context: context,
+                                      builder: (context) =>
+                                          ImageSliderBottomSheet(
+                                        images: imageList,
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    color: NexusColors.accentColor,
+                                    height: 125,
+                                    child: Image.network(
+                                      imageList[index],
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
                               );

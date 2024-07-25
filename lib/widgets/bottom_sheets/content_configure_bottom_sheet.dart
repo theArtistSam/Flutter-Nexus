@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nexus/screens/content/widgets/content_configure_tabs.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styled_button.dart';
-import 'package:nexus/widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_widgets/styled_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 
 class ContentConfigureBottomSheet extends StatelessWidget {
   const ContentConfigureBottomSheet({super.key});

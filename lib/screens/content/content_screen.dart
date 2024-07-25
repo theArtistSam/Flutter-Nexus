@@ -10,13 +10,13 @@ import 'package:nexus/models/folder_model.dart';
 import 'package:nexus/screens/content/widgets/content_configure_tabs.dart';
 import 'package:nexus/screens/content/widgets/edit_bottom_sheet.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/content_configure_bottom_sheet.dart';
+import 'package:nexus/widgets/bottom_sheets/content_configure_bottom_sheet.dart';
 import 'package:nexus/widgets/content_tile.dart';
-import 'package:nexus/widgets/styled_button.dart';
-import 'package:nexus/widgets/styled_icon_button.dart';
-import 'package:nexus/widgets/styled_tabs.dart';
-import 'package:nexus/widgets/styled_text.dart';
-import 'package:nexus/widgets/styled_textfield.dart';
+import 'package:nexus/widgets/styled_widgets/styled_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_tabs.dart';
+import 'package:nexus/widgets/styled_widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_widgets/styled_textfield.dart';
 
 // ignore: must_be_immutable
 class ContentScreen extends StatefulWidget {

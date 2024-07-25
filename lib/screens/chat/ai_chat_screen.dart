@@ -7,8 +7,8 @@ import 'package:nexus/models/chat_model.dart';
 import 'package:nexus/screens/chat/ai_chat_message_screen.dart';
 import 'package:nexus/screens/chat/widgets/chat_category_bottom_sheet.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styled_icon_button.dart';
-import 'package:nexus/widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 
 class AIChatScreen extends StatefulWidget {
   const AIChatScreen({super.key, required this.controller});
@@ -89,69 +89,78 @@ class _AIChatScreenState extends State<AIChatScreen> {
             ),
           ),
         ),
-        body: Container(
-          // height: height - (kToolbarHeight + 5),
-          decoration: ShapeDecoration(
-            color: NexusColors.backgroundColor,
-            shape: const SmoothRectangleBorder(
-              borderRadius: SmoothBorderRadius.only(
-                topLeft: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
-                topRight: SmoothRadius(cornerRadius: 35, cornerSmoothing: 0.8),
+        body: SingleChildScrollView(
+          controller: widget.controller,
+          child: Container(
+            // height: height - (kToolbarHeight + 5) - 60,
+            decoration: ShapeDecoration(
+              color: NexusColors.backgroundColor,
+              shape: const SmoothRectangleBorder(
+                borderRadius: SmoothBorderRadius.only(
+                  topLeft: SmoothRadius(
+                    cornerRadius: 35,
+                    cornerSmoothing: 0.8,
+                  ),
+                  topRight: SmoothRadius(
+                    cornerRadius: 35,
+                    cornerSmoothing: 0.8,
+                  ),
+                ),
               ),
             ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-            child: BlocBuilder<AiChatBloc, AiChatState>(
-              builder: (context, state) {
-                Stream<List<ChatModel>> issues =
-                    (state as AiChatInitial).messages;
+            child: Padding(
+              padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+              child: BlocBuilder<AiChatBloc, AiChatState>(
+                builder: (context, state) {
+                  Stream<List<ChatModel>> issues =
+                      (state as AiChatInitial).messages;
 
-                return StreamBuilder<List<ChatModel>>(
-                  stream: issues,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Center(
-                        child: Text('Error: ${snapshot.error}'),
-                      );
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(
-                        child: Text('No chats yet'),
-                      );
-                    }
-                    List<ChatModel> messageList = snapshot.data!;
-
-                    return ListView.separated(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: messageList.length,
-                      separatorBuilder: (BuildContext context, int index) =>
-                          const SizedBox(height: 15),
-                      itemBuilder: (BuildContext context, int index) {
-                        ChatModel messageModel = messageList[index];
-                        print(messageList.length);
-                        return chatTile(
-                          message: messageModel,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (builder) => AIChatMessageScreen(
-                                  chat: messageModel,
-                                ),
-                              ),
-                            );
-                          },
+                  return StreamBuilder<List<ChatModel>>(
+                    stream: issues,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
                         );
-                      },
-                    );
-                  },
-                );
-              },
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text('Error: ${snapshot.error}'),
+                        );
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(
+                          child: Text('No chats yet'),
+                        );
+                      }
+                      List<ChatModel> messageList = snapshot.data!;
+
+                      return ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: messageList.length,
+                        separatorBuilder: (BuildContext context, int index) =>
+                            const SizedBox(height: 15),
+                        itemBuilder: (BuildContext context, int index) {
+                          ChatModel messageModel = messageList[index];
+                          print(messageList.length);
+                          return chatTile(
+                            message: messageModel,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (builder) => AIChatMessageScreen(
+                                    chat: messageModel,
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ),
         ),
