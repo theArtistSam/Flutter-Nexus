@@ -124,6 +124,7 @@ class ContentRepository {
           .collection('content')
           .doc(contentId)
           .update({'thumbnail': downloadURL});
+
       // Update the thumbnail field of the content model with the download URL
       final updatedContent = ContentModel(
         // Assuming ContentModel has a constructor to update the thumbnail

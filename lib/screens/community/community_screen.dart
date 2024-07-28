@@ -14,9 +14,11 @@ import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/bottom_sheets/delete_bottom_sheet.dart';
 import 'package:nexus/widgets/bottom_sheets/image_slider_bottom_sheet.dart';
 import 'package:nexus/widgets/popup_menu.dart';
+import 'package:nexus/widgets/bottom_sheets/post_bottom_sheet.dart';
 import 'package:nexus/widgets/post_tile.dart';
 import 'package:nexus/widgets/styled_widgets/styled_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_snackbar.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 import 'package:nexus/widgets/styled_widgets/styled_textfield.dart';
 
@@ -92,7 +94,10 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   // padding: 6,
                   height: 20,
                   icon: 'configure',
-                  onTap: () {},
+                  onTap: () {
+                    // Show snackbar
+                    StyledSnackbar.show(context: context, message: 'MESSAGE');
+                  },
                 ),
               ],
             ),
@@ -183,9 +188,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                             showModalBottomSheet(
                               isScrollControlled: true,
                               context: context,
-                              builder: (context) => createPostBottomSheet(
-                                height: height,
-                              ),
+                              builder: (context) => const PostBottomSheet(),
                             );
                           },
                           child: Container(
@@ -292,10 +295,9 @@ class _CommunityScreenState extends State<CommunityScreen> {
         opacity: isNew ? 1 : 0.5,
         child: Stack(
           children: [
-            ClipRRect(
-              borderRadius: const SmoothBorderRadius.all(
-                SmoothRadius(cornerRadius: 15, cornerSmoothing: 0.8),
-              ),
+            ClipSmoothRect(
+              radius:
+                  SmoothBorderRadius(cornerRadius: 15, cornerSmoothing: 0.8),
               child: Image.asset(
                 'assets/images/$image.png',
                 width: 125,
@@ -341,9 +343,11 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   )
                 : const SizedBox(),
             Positioned(
-              bottom: 0,
+              left: 0,
+              right: 0,
+              bottom: 1,
               child: Container(
-                width: 125,
+                // width: double.maxFinite,
                 height: 40,
                 decoration: const ShapeDecoration(
                   gradient: LinearGradient(
@@ -379,188 +383,5 @@ class _CommunityScreenState extends State<CommunityScreen> {
             )
           ],
         ),
-      );
-
-  createPostBottomSheet({required double height}) => Wrap(
-        children: [
-          Container(
-            height: height - 40,
-            decoration: ShapeDecoration(
-              color: NexusColors.backgroundColor,
-              shape: const SmoothRectangleBorder(
-                borderRadius: SmoothBorderRadius.all(
-                  SmoothRadius(
-                    cornerRadius: 20,
-                    cornerSmoothing: 0.8,
-                  ),
-                ),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 60,
-                      height: 5,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                          20,
-                        ),
-                        color: NexusColors.borderColor,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Row(
-                    children: [
-                      ClipOval(
-                        child: Image.asset(
-                          'assets/images/profile-picture.png',
-                          width: 35,
-                          height: 35,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      StyledText(
-                        text: 'Dunn Oliver',
-                        fontSize: 16,
-                        color: NexusColors.textColor,
-                      ),
-                      const Spacer(),
-                      Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          borderRadius: SmoothBorderRadius(
-                            cornerRadius: 10,
-                            cornerSmoothing: .8,
-                          ),
-                          onTap: () {},
-                          child: Ink(
-                            decoration: ShapeDecoration(
-                              color: NexusColors.accentColor,
-                              shape: SmoothRectangleBorder(
-                                borderRadius: SmoothBorderRadius(
-                                  cornerRadius: 10,
-                                  cornerSmoothing: .8,
-                                ),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 7,
-                              ),
-                              child: Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    'assets/icons/earth.svg',
-                                    // COLOR: FIX
-                                    color: NexusColors.isDark
-                                        ? Colors.white
-                                        : NexusColors.primaryColorLight,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  StyledText(
-                                    text: "Public",
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    // COLOR: FIX
-                                    color: NexusColors.isDark
-                                        ? Colors.white
-                                        : NexusColors.primaryColorLight,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      StyledIconButton(
-                        icon: 'dots-circle',
-                        padding: 0,
-                        backgroundColor: NexusColors.backgroundColor,
-                        iconColor: NexusColors.textColor,
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 15),
-                  StyledTextfield(
-                    hintText: 'Share your thoughts...',
-                    controller: TextEditingController(),
-                    maxlines: 5,
-                  ),
-                  const SizedBox(height: 15),
-                  Row(
-                    children: [
-                      StyledText(
-                        text: 'Images',
-                        color: NexusColors.textColor,
-                      ),
-                      const Spacer(),
-                      StyledIconButton(
-                        icon: 'add-circle',
-                        padding: 0,
-                        backgroundColor: NexusColors.backgroundColor,
-                        iconColor: NexusColors.textColor,
-                        onTap: () {},
-                      )
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  CarouselSlider(
-                    options: CarouselOptions(
-                      height: 200,
-                      autoPlay: true,
-                      viewportFraction: 1,
-                    ),
-                    items: [1, 2, 3, 4, 5].map((i) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 5.0,
-                            ),
-                            child: ClipSmoothRect(
-                              radius: SmoothBorderRadius(
-                                cornerRadius: 10,
-                                cornerSmoothing: 0.8,
-                              ),
-                              child: Image.asset(
-                                'assets/images/content.png',
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    }).toList(),
-                  ),
-                  const Spacer(),
-                  StyledButton(text: "Post now", onTap: () {}),
-                  // ! Replace with bottom padding
-                  const SizedBox(
-                    height: 20,
-                  )
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-        ],
       );
 }

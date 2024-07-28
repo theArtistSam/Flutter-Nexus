@@ -276,18 +276,15 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                   child: GestureDetector(
                 onTap: () async {
                   // Use image picker to pick the image from gallery
-                  final picker = ImagePicker();
-                  final XFile? pickedFile = await picker.pickImage(
-                    source: ImageSource.gallery,
-                    imageQuality: 30,
-                  );
+                  final XFile? image = await ImageSelector.pickImage();
 
-                  if (pickedFile != null) {
+                  if (image != null) {
                     // Trigger the ChangeThumbnail operation with the picked image file and content ID
                     editBottomSheetBloc.add(
                       ChangeThumbnail(
-                          file: File(pickedFile.path),
-                          contentId: content.contentId!),
+                        file: File(image.path),
+                        contentId: content.contentId!,
+                      ),
                     );
                   } else {
                     // User canceled the image picker
@@ -317,7 +314,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                           color: Colors.white,
                         ),
                         const SizedBox(width: 10),
-                        StyledText(
+                        const StyledText(
                           text: 'Change Thumbnail',
                           fontWeight: FontWeight.w500,
                           color: NexusColors.textColorLight,
@@ -375,7 +372,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                   ),
                   // value: content.title,
                   items: [
-                    DropdownMenuItem<String>(
+                    const DropdownMenuItem<String>(
                       value: null,
                       child: StyledText(
                         text: 'None',

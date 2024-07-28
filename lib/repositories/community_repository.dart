@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nexus/models/content_model.dart';
 import 'package:nexus/models/post_model.dart';
 
@@ -11,7 +12,6 @@ class CommunityRepository {
   Stream<List<PostModel>> getAllPosts({Query Function(Query)? queryBuilder}) {
     Query query = _firestore.collection('posts');
     // * use this for the profile section or smth like that
-    // .where("user_id", isEqualTo: "Bd4umkyLqOLnMpdOLZ0E");
 
     // Apply the optional query builder if provided
     if (queryBuilder != null) {
@@ -26,8 +26,10 @@ class CommunityRepository {
     });
   }
 
-  Future<void> likePost(
-      {required String postId, required String userId}) async {
+  Future<void> likePost({
+    required String postId,
+    required String userId,
+  }) async {
     try {
       // Get a reference to the Firestore document
       DocumentReference postRef =
@@ -45,8 +47,10 @@ class CommunityRepository {
     }
   }
 
-  Future<void> dislikePost(
-      {required String postId, required String userId}) async {
+  Future<void> dislikePost({
+    required String postId,
+    required String userId,
+  }) async {
     try {
       // Get a reference to the Firestore document
       DocumentReference postRef =
@@ -64,8 +68,10 @@ class CommunityRepository {
     }
   }
 
-  Future<void> savePost(
-      {required String postId, required String userId}) async {
+  Future<void> savePost({
+    required String postId,
+    required String userId,
+  }) async {
     try {
       // Get a reference to the Firestore document
       DocumentReference postRef =
@@ -82,8 +88,10 @@ class CommunityRepository {
     }
   }
 
-  Future<void> unsavePost(
-      {required String postId, required String userId}) async {
+  Future<void> unsavePost({
+    required String postId,
+    required String userId,
+  }) async {
     try {
       // Get a reference to the Firestore document
       DocumentReference postRef =
@@ -102,14 +110,158 @@ class CommunityRepository {
 
   Future<void> deletePost({required String postId}) async {
     try {
-      // Define the collection reference
-      final DocumentReference docRef =
+      // Define the collection reference for the post
+      final DocumentReference postDocRef =
           FirebaseFirestore.instance.collection('posts').doc(postId);
 
-      await docRef.delete();
+      // Define the collection reference for the comments sub-collection
+      final CollectionReference commentsCollectionRef = FirebaseFirestore
+          .instance
+          .collection('posts')
+          .doc(postId)
+          .collection('comments');
+
+      // Delete all documents in the comments sub-collection
+      final QuerySnapshot commentsSnapshot = await commentsCollectionRef.get();
+      for (DocumentSnapshot doc in commentsSnapshot.docs) {
+        await doc.reference.delete();
+      }
+
+      // Reference to the storage location
+      final storageRef =
+          FirebaseStorage.instance.ref().child('posts').child(postId);
+
+      try {
+        // List all files in the storage folder
+        final ListResult listResult = await storageRef.listAll();
+
+        // Delete each file in the folder if the folder exists
+        for (Reference fileRef in listResult.items) {
+          await fileRef.delete();
+        }
+      } catch (e) {
+        // If listing fails, it means the folder does not exist
+        print("FOLDER DOES NOT EXIST: $e");
+      }
+
+      // Finally, delete the Firestore document
+      await postDocRef.delete();
+
       print("POST DELETED SUCCESSFULLY");
     } catch (e) {
-      print("CANNOT DELETE PSOT $e");
+      print("CANNOT DELETE POST $e");
+    }
+  }
+
+  Future<void> addPost({
+    required PostModel post,
+    required List<XFile> images,
+  }) async {
+    try {
+      // Hard-code value for now
+      final collection = FirebaseFirestore.instance.collection('posts');
+
+      // Add the post document
+      DocumentReference docRef = await collection.add(post.toJson());
+      await docRef.update({
+        'post_id': docRef.id,
+        'user_id': 'Bd4umkyLqOLnMpdOLZ0E',
+      });
+
+      if (images.isNotEmpty) {
+        // Reference to the storage location
+        final storageRef =
+            FirebaseStorage.instance.ref().child('posts').child(docRef.id);
+
+        // List to hold the download URLs of the uploaded images
+        List<String> imageUrls = [];
+
+        // Upload each image and get the download URL
+        for (int i = 0; i < images.length; i++) {
+          final imageRef = storageRef.child('image_$i.jpg');
+          await imageRef.putFile(File(images[i].path));
+          String downloadUrl = await imageRef.getDownloadURL();
+          imageUrls.add(downloadUrl);
+        }
+
+        // Update the "images" attribute in the Firebase document
+        await docRef.update({'images': imageUrls});
+      }
+
+      print('Post added successfully');
+    } catch (e) {
+      print("CANNOT ADD POST $e");
+    }
+  }
+
+  Future<void> deleteImage({
+    required String postId,
+    required String url,
+  }) async {
+    try {
+      final docRef = FirebaseFirestore.instance.collection('posts').doc(postId);
+
+      await docRef.update({
+        'images': FieldValue.arrayRemove([url]),
+      });
+
+      // Extract the file path from the URL
+      final Uri uri = Uri.parse(url);
+      final String decodedPath = Uri.decodeFull(uri.path);
+      final List<String> segments = decodedPath.split('/');
+      final String fileName = segments.last;
+
+      // Create a reference to the file to be deleted
+      final imageRef = FirebaseStorage.instance
+          .ref()
+          .child('posts')
+          .child(postId)
+          .child(fileName);
+
+      // Delete the image
+      await imageRef.delete();
+
+      print('Image deleted successfully');
+    } catch (e) {
+      print('CANNOT DELETE IMAGE $e');
+    }
+  }
+
+  Future<void> updatePost({
+    required PostModel post,
+    required List<XFile> images,
+  }) async {
+    try {
+      // Hard-code value for now
+      final docRef =
+          FirebaseFirestore.instance.collection('posts').doc(post.postId);
+
+      // Add the post document
+      await docRef.update(post.toJson());
+
+      if (images.isNotEmpty) {
+        // Reference to the storage location
+        final storageRef =
+            FirebaseStorage.instance.ref().child('posts').child(docRef.id);
+
+        // List to hold the download URLs of the uploaded images
+        List<String> imageUrls = [];
+
+        // Upload each image and get the download URL
+        for (int i = 0; i < images.length; i++) {
+          final imageRef = storageRef.child('image_$i.jpg');
+          await imageRef.putFile(File(images[i].path));
+          String downloadUrl = await imageRef.getDownloadURL();
+          imageUrls.add(downloadUrl);
+        }
+
+        // Update the "images" attribute in the Firebase document
+        await docRef.update({'images': FieldValue.arrayUnion(imageUrls)});
+      }
+
+      print('Post updated successfully');
+    } catch (e) {
+      print("CANNOT UPDATE POST $e");
     }
   }
 

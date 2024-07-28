@@ -13,12 +13,13 @@ class PopupMenu extends StatelessWidget {
   });
 
   final void Function(String)? onSelected;
-  final List<String> items;
+  final List<PopupItem> items;
   final String icon;
 
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
+      surfaceTintColor: NexusColors.backgroundColor,
       shape: SmoothRectangleBorder(
         borderRadius: SmoothBorderRadius(
           cornerRadius: 12,
@@ -34,15 +35,43 @@ class PopupMenu extends StatelessWidget {
       onSelected: onSelected,
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
         for (int i = 0; i < items.length; i++)
-          PopupMenuItem<String>(
-            value: items[i],
-            child: StyledText(
-              text: items[i],
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+          _item(item: items[i].name, status: items[i].value)
       ],
     );
   }
+
+  // _stringItem({required String item}) => PopupMenuItem<String>(
+  //       value: item,
+  //       child: StyledText(
+  //         text: item,
+  //         fontSize: 14,
+  //         fontWeight: FontWeight.w500,
+  //       ),
+  //     );
+
+  _item({required String item, required bool status}) => PopupMenuItem<String>(
+        value: item,
+        child: Row(
+          children: [
+            StyledText(
+              text: item,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+            const Spacer(),
+            status
+                ? SvgPicture.asset(
+                    'assets/icons/tick-circle.svg',
+                    color: NexusColors.textColor,
+                  )
+                : const SizedBox()
+          ],
+        ),
+      );
+}
+
+class PopupItem {
+  final String name;
+  final bool value;
+  const PopupItem({required this.name, this.value = false});
 }

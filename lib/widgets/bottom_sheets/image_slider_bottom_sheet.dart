@@ -31,6 +31,7 @@ class ImageSliderBottomSheet extends StatelessWidget {
                   itemCount: images.length,
                   builder: (BuildContext context, int index) {
                     return PhotoViewGalleryPageOptions(
+                      minScale: PhotoViewComputedScale.contained * 1,
                       imageProvider: NetworkImage(images[index]),
                     );
                   },

@@ -7,6 +7,7 @@ import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/bottom_sheets/comment_bottom_sheet.dart';
 import 'package:nexus/widgets/bottom_sheets/delete_bottom_sheet.dart';
 import 'package:nexus/widgets/bottom_sheets/image_slider_bottom_sheet.dart';
+import 'package:nexus/widgets/bottom_sheets/post_bottom_sheet.dart';
 import 'package:nexus/widgets/popup_menu.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
@@ -28,6 +29,8 @@ class PostTile extends StatelessWidget {
     final isLiked = post.likedBy!.contains(userId);
     final isSaved = post.savedBy!.contains(userId);
     final isSelfPost = post.userId! == userId;
+
+    print(isSelfPost);
 
     return BlocProvider(
       create: (context) => postBloc,
@@ -53,9 +56,9 @@ class PostTile extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.fromLTRB(
                     20,
-                    15,
-                    isSelfPost ? 12 : 15,
-                    0,
+                    isSelfPost ? 10 : 15,
+                    isSelfPost ? 7 : 20,
+                    isSelfPost ? 5 : 15,
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -88,6 +91,13 @@ class PostTile extends StatelessWidget {
                               onSelected: (value) {
                                 switch (value) {
                                   case 'Edit':
+                                    showModalBottomSheet(
+                                      isScrollControlled: true,
+                                      context: context,
+                                      builder: (context) => PostBottomSheet(
+                                        post: post,
+                                      ),
+                                    );
                                     break;
                                   case 'Delete':
                                     showModalBottomSheet(
@@ -110,7 +120,10 @@ class PostTile extends StatelessWidget {
                                   default:
                                 }
                               },
-                              items: const ["Edit", "Delete"],
+                              items: const [
+                                PopupItem(name: "Edit"),
+                                PopupItem(name: 'Delete')
+                              ],
                               icon: "dots-circle",
                             )
                           : const SizedBox(),
@@ -118,7 +131,7 @@ class PostTile extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 15),
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -134,17 +147,19 @@ class PostTile extends StatelessWidget {
                                 ),
                               );
                             },
-                            child: ClipSmoothRect(
-                              radius: SmoothBorderRadius(
-                                cornerRadius: 15,
-                                cornerSmoothing: .8,
-                              ),
-                              child: Image.network(
-                                post.images?[0] ?? '',
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                              ),
-                            ),
+                            child: post.images!.isNotEmpty
+                                ? ClipSmoothRect(
+                                    radius: SmoothBorderRadius(
+                                      cornerRadius: 15,
+                                      cornerSmoothing: .8,
+                                    ),
+                                    child: Image.network(
+                                      post.images?[0] ?? '',
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                    ),
+                                  )
+                                : const SizedBox(),
                           ),
                           post.images!.length > 1
                               ? Positioned(

@@ -84,6 +84,34 @@ class PostModel {
   List<String>? get savedBy => _savedBy;
   set savedBy(List<String>? savedBy) => _savedBy = savedBy;
 
+  PostModel copyWith({
+    String? postId,
+    String? userId,
+    String? description,
+    String? dateCreated,
+    List<String>? images,
+    int? totalLikes,
+    int? totalComments,
+    int? totalShares,
+    Permissions? permissions,
+    List<String>? likedBy,
+    List<String>? savedBy,
+  }) {
+    return PostModel(
+      postId: postId ?? _postId,
+      userId: userId ?? _userId,
+      description: description ?? _description,
+      dateCreated: dateCreated ?? _dateCreated,
+      images: images ?? [],
+      totalLikes: totalLikes ?? _totalLikes,
+      totalComments: totalComments ?? _totalComments,
+      totalShares: totalShares ?? _totalShares,
+      permissions: permissions ?? _permissions,
+      likedBy: likedBy ?? [],
+      savedBy: savedBy ?? [],
+    );
+  }
+
   PostModel.fromJson(Map<String, dynamic> json) {
     _postId = json['post_id'];
     _userId = json['user_id'];
@@ -153,6 +181,20 @@ class Permissions {
   set likeAllowed(bool? likeAllowed) => _likeAllowed = likeAllowed;
   bool? get shareAllowed => _shareAllowed;
   set shareAllowed(bool? shareAllowed) => _shareAllowed = shareAllowed;
+
+  Permissions copyWith({
+    bool? isPrivate,
+    bool? commentAllowed,
+    bool? likeAllowed,
+    bool? shareAllowed,
+  }) {
+    return Permissions(
+      isPrivate: isPrivate ?? _isPrivate,
+      commentAllowed: commentAllowed ?? _commentAllowed,
+      likeAllowed: likeAllowed ?? _likeAllowed,
+      shareAllowed: shareAllowed ?? _shareAllowed,
+    );
+  }
 
   Permissions.fromJson(Map<String, dynamic> json) {
     _isPrivate = json['is_private'];

@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class NexusColors {
@@ -40,44 +41,6 @@ class NexusColors {
   static Color get secondaryTextColor =>
       isDark ? secondaryTextColorLight : secondaryTextColorDark;
 }
-
-// class NexusThemes {
-//   static final lightTheme = ThemeData(
-//     brightness: Brightness.light,
-//     primaryColor: NexusColors.primaryColorLight,
-//     // accentColor: NexusColors.accentColorLight,
-//     scaffoldBackgroundColor: NexusColors.backgroundColorLight,
-//     cardColor: NexusColors
-//         .backgroundColorLight, // You can use backgroundColorLight as cardColor
-//     canvasColor: NexusColors
-//         .backgroundColorLight, // You can use backgroundColorLight as canvasColor
-//     dividerColor:
-//         NexusColors.borderColor, // You can use borderColor as dividerColor
-//     focusColor: NexusColors
-//         .primaryColorLight, // You can use primaryColorLight as focusColor
-//     splashColor: NexusColors.primaryColorLight
-//         .withOpacity(0.3), // You can adjust the opacity as needed
-//     // Add other colors as needed
-//   );
-
-//   static final darkTheme = ThemeData(
-//     primaryColor: NexusColors.primaryColorDark,
-//     brightness: Brightness.dark,
-//     // accentColor: NexusColors.accentColorDark,
-//     scaffoldBackgroundColor: NexusColors.backgroundColorDark,
-//     cardColor: NexusColors
-//         .backgroundColorDark, // You can use backgroundColorDark as cardColor
-//     canvasColor: NexusColors
-//         .backgroundColorDark, // You can use backgroundColorDark as canvasColor
-//     dividerColor:
-//         NexusColors.borderColor, // You can use borderColor as dividerColor
-//     focusColor: NexusColors
-//         .primaryColorDark, // You can use primaryColorDark as focusColor
-//     splashColor: NexusColors.primaryColorDark
-//         .withOpacity(0.3), // You can adjust the opacity as needed
-//     // Add other colors as needed
-//   );
-// }
 
 class DateTimeConversion {
   static String formattedDate({required String datetime}) {
@@ -139,6 +102,17 @@ class DateTimeConversion {
       datetime: messageList[index - 1].timeStamp,
     );
     return currentMessageTime != nextMessageTime;
+  }
+}
+
+class ImageSelector {
+  static Future<XFile?> pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 30,
+    );
+    return pickedFile;
   }
 }
 

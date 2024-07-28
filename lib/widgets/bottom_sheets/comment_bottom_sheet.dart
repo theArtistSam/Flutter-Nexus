@@ -123,7 +123,7 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
                             } else if (!snapshot.hasData ||
                                 snapshot.data!.isEmpty) {
                               return const Center(
-                                child: Text('No comments'),
+                                child: StyledText(text: 'No comments'),
                               );
                             }
                             List<CommentModel> commentList = snapshot.data!;

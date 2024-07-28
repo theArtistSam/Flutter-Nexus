@@ -17,7 +17,11 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     final currentState = state as CommunityInitial;
 
     try {
-      Stream<List<PostModel>> postList = CommunityRepository().getAllPosts();
+      Stream<List<PostModel>> postList =
+          CommunityRepository().getAllPosts(queryBuilder: (query) {
+        return query.where('permissions.is_private', isEqualTo: false);
+      });
+
       emit(currentState.copyWith(posts: postList));
 
       print('LOADING ... ');
