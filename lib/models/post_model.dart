@@ -102,13 +102,13 @@ class PostModel {
       userId: userId ?? _userId,
       description: description ?? _description,
       dateCreated: dateCreated ?? _dateCreated,
-      images: images ?? [],
+      images: images ?? _images,
       totalLikes: totalLikes ?? _totalLikes,
       totalComments: totalComments ?? _totalComments,
       totalShares: totalShares ?? _totalShares,
       permissions: permissions ?? _permissions,
-      likedBy: likedBy ?? [],
-      savedBy: savedBy ?? [],
+      likedBy: likedBy ?? _likedBy,
+      savedBy: savedBy ?? _savedBy,
     );
   }
 

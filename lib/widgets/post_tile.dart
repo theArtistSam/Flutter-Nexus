@@ -10,6 +10,7 @@ import 'package:nexus/widgets/bottom_sheets/image_slider_bottom_sheet.dart';
 import 'package:nexus/widgets/bottom_sheets/post_bottom_sheet.dart';
 import 'package:nexus/widgets/popup_menu.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_snackbar.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 
 class PostTile extends StatelessWidget {
@@ -249,7 +250,9 @@ class PostTile extends StatelessWidget {
                                 },
                               ),
                               StyledText(
-                                text: '${post.totalLikes}',
+                                text: post.permissions!.likeAllowed!
+                                    ? '${post.totalLikes}'
+                                    : 'Like',
                                 fontSize: 14,
                                 color: _postIconColor(isActive: isLiked),
                                 fontWeight: FontWeight.w500,
@@ -262,29 +265,36 @@ class PostTile extends StatelessWidget {
                                 iconColor:
                                     NexusColors.textColor.withOpacity(.5),
                                 onTap: () {
-                                  showModalBottomSheet(
-                                    isScrollControlled: true,
-                                    context: context,
-                                    builder: (context) => SingleChildScrollView(
-                                        // physics:
-                                        //     const NeverScrollableScrollPhysics(),
-                                        child: Padding(
-                                      padding: EdgeInsets.only(
-                                        bottom: MediaQuery.of(context)
-                                            .viewInsets
-                                            .bottom,
-                                      ),
-                                      child: CommentBottomSheet(
-                                        postId: post.postId!,
-                                        height: height,
+                                  if (post.permissions!.commentAllowed!) {
+                                    showModalBottomSheet(
+                                      isScrollControlled: true,
+                                      context: context,
+                                      builder: (context) =>
+                                          SingleChildScrollView(
+                                              child: Padding(
+                                        padding: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context)
+                                              .viewInsets
+                                              .bottom,
+                                        ),
+                                        child: CommentBottomSheet(
+                                          postId: post.postId!,
+                                          height: height,
+                                          context: context,
+                                        ),
+                                      )),
+                                    );
+                                  } else {
+                                    StyledSnackbar.show(
                                         context: context,
-                                      ),
-                                    )),
-                                  );
+                                        message: "Comments disabled");
+                                  }
                                 },
                               ),
                               StyledText(
-                                text: '${post.totalComments}',
+                                text: post.permissions!.commentAllowed!
+                                    ? '${post.totalComments}'
+                                    : 'Comment',
                                 fontSize: 14,
                                 color: NexusColors.textColor.withOpacity(.5),
                                 fontWeight: FontWeight.w500,
@@ -300,7 +310,9 @@ class PostTile extends StatelessWidget {
                                 onTap: () {},
                               ),
                               StyledText(
-                                text: '${post.totalShares}',
+                                text: post.permissions!.shareAllowed!
+                                    ? '${post.totalShares}'
+                                    : 'Share',
                                 fontSize: 14,
                                 color: NexusColors.textColor.withOpacity(.5),
                                 fontWeight: FontWeight.w500,

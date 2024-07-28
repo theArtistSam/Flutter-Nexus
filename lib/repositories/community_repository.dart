@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nexus/models/content_model.dart';
 import 'package:nexus/models/post_model.dart';
+import 'package:uuid/uuid.dart';
 
 class CommunityRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -178,7 +179,8 @@ class CommunityRepository {
 
         // Upload each image and get the download URL
         for (int i = 0; i < images.length; i++) {
-          final imageRef = storageRef.child('image_$i.jpg');
+          String filename = const Uuid().v1();
+          final imageRef = storageRef.child("$filename.jpg");
           await imageRef.putFile(File(images[i].path));
           String downloadUrl = await imageRef.getDownloadURL();
           imageUrls.add(downloadUrl);
@@ -249,7 +251,8 @@ class CommunityRepository {
 
         // Upload each image and get the download URL
         for (int i = 0; i < images.length; i++) {
-          final imageRef = storageRef.child('image_$i.jpg');
+          String filename = const Uuid().v1();
+          final imageRef = storageRef.child("$filename.jpg");
           await imageRef.putFile(File(images[i].path));
           String downloadUrl = await imageRef.getDownloadURL();
           imageUrls.add(downloadUrl);

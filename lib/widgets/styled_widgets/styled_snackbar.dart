@@ -11,7 +11,12 @@ class StyledSnackbar {
   }) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        padding: const EdgeInsets.all(10),
+        padding: EdgeInsets.fromLTRB(
+          10,
+          10,
+          10,
+          MediaQuery.of(context).padding.bottom + 10,
+        ),
         elevation: 0,
         backgroundColor: Colors.transparent,
         content: Container(

@@ -154,7 +154,6 @@ class PostBottomSheetBloc
     final PostModel post = currentState.post!;
     post.dateCreated = DateTime.now().toString();
     post.description = event.text;
-    print("<<<${post.postId}");
     try {
       await CommunityRepository().updatePost(
         post: post,
@@ -183,7 +182,6 @@ class PostBottomSheetBloc
 
     await CommunityRepository().deleteImage(
       postId: currentState.post!.postId!,
-      // filename: 'image_${event.index}.jpg',
       url: url,
     );
 
