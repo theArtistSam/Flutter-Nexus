@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:nexus/models/guide_model.dart';
 import 'package:nexus/models/post_model.dart';
 import 'package:nexus/repositories/community_repository.dart';
 
@@ -11,6 +12,7 @@ part 'community_state.dart';
 class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
   CommunityBloc() : super(const CommunityInitial()) {
     on<FetchPosts>(fetchPosts);
+    on<FetchGuides>(fetchGuides);
   }
 
   FutureOr<void> fetchPosts(FetchPosts event, Emitter<CommunityState> emit) {
@@ -27,6 +29,20 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       print('LOADING ... ');
     } catch (e) {
       print("SHIT FAILED TO LOAD POSTS...");
+    }
+  }
+
+  FutureOr<void> fetchGuides(FetchGuides event, Emitter<CommunityState> emit) {
+    final currentState = state as CommunityInitial;
+
+    try {
+      Stream<List<GuideModel>> guideList = CommunityRepository().getAllGuides();
+
+      emit(currentState.copyWith(guides: guideList));
+
+      print('LOADING ... ');
+    } catch (e) {
+      print("SHIT FAILED TO LOAD GUIDES...");
     }
   }
 }

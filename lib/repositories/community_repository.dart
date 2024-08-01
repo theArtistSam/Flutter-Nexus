@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nexus/models/content_model.dart';
+import 'package:nexus/models/guide_model.dart';
 import 'package:nexus/models/post_model.dart';
 import 'package:uuid/uuid.dart';
 
@@ -268,142 +269,81 @@ class CommunityRepository {
     }
   }
 
-  Future<void> addPosts() async {
-    List<PostModel> posts = [
-      PostModel(
-        postId: "post_1",
-        userId: "Bd4umkyLqOLnMpdOLZ0E",
-        description: "This is the first post description.",
-        dateCreated: DateTime.now().toString(),
-        images: ["image1.jpg", "image2.jpg"],
-        totalLikes: 10,
-        totalComments: 5,
-        totalShares: 2,
-        permissions: Permissions(isPrivate: false),
-        likedBy: ["user_2", "user_3"],
-      ),
-      PostModel(
-        postId: "post_2",
-        userId: "Bd4umkyLqOLnMpdOLZ0E",
-        description: "Another post with some description.",
-        dateCreated: DateTime.now().toString(),
-        images: ["image3.jpg"],
-        totalLikes: 8,
-        totalComments: 3,
-        totalShares: 1,
-        permissions: Permissions(isPrivate: false),
-        likedBy: ["user_1", "user_3"],
-      ),
-      PostModel(
-        postId: "post_3",
-        userId: "Bd4umkyLqOLnMpdOLZ0E",
-        description: "Yet another interesting post.",
-        dateCreated: DateTime.now().toString(),
-        images: [],
-        totalLikes: 15,
-        totalComments: 7,
-        totalShares: 3,
-        permissions: Permissions(isPrivate: true),
-        likedBy: ["user_1", "user_2", "user_4"],
-      ),
-      PostModel(
-        postId: "post_4",
-        userId: "Bd4umkyLqOLnMpdOLZ0E",
-        description: "A post with no images.",
-        dateCreated: DateTime.now().toString(),
-        images: [],
-        totalLikes: 5,
-        totalComments: 2,
-        totalShares: 0,
-        permissions: Permissions(isPrivate: false),
-        likedBy: ["user_3"],
-      ),
-      PostModel(
-        postId: "post_5",
-        userId: "Bd4umkyLqOLnMpdOLZ0E",
-        description: "Check out these pictures.",
-        dateCreated: DateTime.now().toString(),
-        images: ["image4.jpg", "image5.jpg", "image6.jpg"],
-        totalLikes: 20,
-        totalComments: 10,
-        totalShares: 5,
-        permissions: Permissions(isPrivate: true),
-        likedBy: ["user_1", "user_2", "user_3", "user_4"],
-      ),
-      PostModel(
-        postId: "post_6",
-        userId: "Bd4umkyLqOLnMpdOLZ0E",
-        description: "An informative post.",
-        dateCreated: DateTime.now().toString(),
-        images: ["image7.jpg"],
-        totalLikes: 12,
-        totalComments: 4,
-        totalShares: 3,
-        permissions: Permissions(isPrivate: false),
-        likedBy: ["user_5"],
-      ),
-      PostModel(
-        postId: "post_7",
-        userId: "Bd4umkyLqOLnMpdOLZ0E",
-        description: "Sharing some thoughts.",
-        dateCreated: DateTime.now().toString(),
-        images: [],
-        totalLikes: 7,
-        totalComments: 3,
-        totalShares: 2,
-        permissions: Permissions(isPrivate: true),
-        likedBy: ["user_3", "user_6"],
-      ),
-      PostModel(
-        postId: "post_8",
-        userId: "Bd4umkyLqOLnMpdOLZ0E",
-        description: "A random post.",
-        dateCreated: DateTime.now().toString(),
-        images: ["image8.jpg", "image9.jpg"],
-        totalLikes: 9,
-        totalComments: 4,
-        totalShares: 1,
-        permissions: Permissions(isPrivate: false),
-        likedBy: ["user_1", "user_7"],
-      ),
-      PostModel(
-        postId: "post_9",
-        userId: "Bd4umkyLqOLnMpdOLZ0E",
-        description: "Some updates.",
-        dateCreated: DateTime.now().toString(),
-        images: ["image10.jpg"],
-        totalLikes: 11,
-        totalComments: 6,
-        totalShares: 4,
-        permissions: Permissions(isPrivate: true),
-        likedBy: ["user_2", "user_8"],
-      ),
-      PostModel(
-        postId: "post_10",
-        userId: "Bd4umkyLqOLnMpdOLZ0E",
-        description: "Final post in the list.",
-        dateCreated: DateTime.now().toString(),
-        images: ["image11.jpg"],
-        totalLikes: 13,
-        totalComments: 5,
-        totalShares: 2,
-        permissions: Permissions(isPrivate: false),
-        likedBy: ["user_9", "user_1"],
-      ),
-    ];
+  // *GUIDES*
+  Stream<List<GuideModel>> getAllGuides({Query Function(Query)? queryBuilder}) {
+    Query query = _firestore.collection('guides');
 
+    // Apply the optional query builder if provided
+    if (queryBuilder != null) {
+      query = queryBuilder(query);
+    }
+
+    return query.snapshots().map((querySnapshot) {
+      return querySnapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return GuideModel.fromJson(data);
+      }).toList();
+    });
+  }
+
+  Future<void> likeGuide({
+    required String guideId,
+  }) async {
     try {
-      // hard-code value for now
-      final collection = _firestore.collection('posts');
+      // Get a reference to the Firestore document
+      DocumentReference postRef =
+          FirebaseFirestore.instance.collection('guides').doc(guideId);
 
-      for (var post in posts) {
-        DocumentReference docRef = await collection.add(post.toJson());
-        await docRef.update({'post_id': docRef.id});
-      }
+      // Update the document, adding the userId to the liked_by array
+      await postRef.update({
+        'liked_by': FieldValue.arrayUnion(['Bd4umkyLqOLnMpdOLZ0E']),
+        'total_likes': FieldValue.increment(1),
+      });
 
-      print('Added successfully');
+      print("Guide liked successfully");
     } catch (e) {
-      print('Error getting users: $e');
+      print("Failed to like guide: $e");
+    }
+  }
+
+  Future<void> dislikeGuide({
+    required String guideId,
+  }) async {
+    try {
+      // Get a reference to the Firestore document
+      DocumentReference postRef =
+          FirebaseFirestore.instance.collection('guides').doc(guideId);
+
+      // Update the document, removing the userId from the liked_by array
+      await postRef.update({
+        'liked_by': FieldValue.arrayRemove(["Bd4umkyLqOLnMpdOLZ0E"]),
+        'total_likes': FieldValue.increment(-1),
+      });
+
+      print("Guide disliked successfully");
+    } catch (e) {
+      print("Failed to dislike guide: $e");
+    }
+  }
+
+  Future<List<String>> getLikedBy({required String guideId}) async {
+    try {
+      DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+          .collection('guides')
+          .doc(guideId)
+          .get();
+
+      if (documentSnapshot.exists) {
+        List<dynamic> likedBy =
+            documentSnapshot.get('liked_by') as List<dynamic>;
+        return likedBy.map((item) => item as String).toList();
+      } else {
+        print('Document does not exist');
+        return [];
+      }
+    } catch (e) {
+      print('Error getting liked_by: $e');
+      return [];
     }
   }
 }

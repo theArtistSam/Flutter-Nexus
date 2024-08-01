@@ -10,14 +10,15 @@ import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 
 // ignore: must_be_immutable
 class ContentTile extends StatelessWidget {
-  ContentTile(
-      {super.key,
-      required this.title,
-      required this.thumbnail,
-      required this.date,
-      required this.icon,
-      required this.onTap,
-      this.isSmall = false});
+  ContentTile({
+    super.key,
+    required this.title,
+    required this.thumbnail,
+    required this.date,
+    required this.icon,
+    required this.onTap,
+    this.isSmall = false,
+  });
 
   String title;
   String date;

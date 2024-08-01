@@ -3,15 +3,18 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nexus/blocs/community_bloc/bloc/community_bloc.dart';
+import 'package:nexus/models/guide_model.dart';
 import 'package:nexus/models/post_model.dart';
 import 'package:nexus/widgets/bottom_sheets/comment_bottom_sheet.dart';
 import 'package:nexus/screens/settings/settings_screen.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/bottom_sheets/delete_bottom_sheet.dart';
+import 'package:nexus/widgets/bottom_sheets/guide_bottom_sheet.dart';
 import 'package:nexus/widgets/bottom_sheets/image_slider_bottom_sheet.dart';
 import 'package:nexus/widgets/popup_menu.dart';
 import 'package:nexus/widgets/bottom_sheets/post_bottom_sheet.dart';
@@ -38,6 +41,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
   void initState() {
     communityBloc = CommunityBloc();
     communityBloc.add(FetchPosts());
+    communityBloc.add(FetchGuides());
     super.initState();
   }
 
@@ -143,21 +147,64 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       ),
                     ),
                     child: SizedBox(
-                      height: 150,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 5,
-                        separatorBuilder: (BuildContext context, int index) =>
-                            const SizedBox(width: 10),
-                        itemBuilder: (BuildContext context, int index) {
-                          return guideTileCommunity(
-                            image: 'guide',
-                            title: 'Community',
-                            isNew: index == 0 ? true : false,
-                          );
-                        },
-                      ),
-                    ),
+                        height: 150,
+                        child: BlocBuilder<CommunityBloc, CommunityState>(
+                          builder: (context, state) {
+                            Stream<List<GuideModel>> guides =
+                                (state as CommunityInitial).guides;
+
+                            return StreamBuilder<List<GuideModel>>(
+                              stream: guides,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                } else if (snapshot.hasError) {
+                                  return Center(
+                                    child: Text('Error: ${snapshot.error}'),
+                                  );
+                                } else if (!snapshot.hasData ||
+                                    snapshot.data!.isEmpty) {
+                                  return const Center(
+                                    child: Text('No guide available'),
+                                  );
+                                }
+                                List<GuideModel> guideList = snapshot.data!;
+
+                                return ListView.separated(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: guideList.length,
+                                  separatorBuilder:
+                                      (BuildContext context, int index) =>
+                                          const SizedBox(width: 10),
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    GuideModel guide = guideList[index];
+                                    return guideTileCommunity(
+                                      image: guide.thumbnail!,
+                                      title: guide.title!,
+                                      isNew: guide.viewedBy!
+                                          .contains('Bd4umkyLqOLnMpdOLZ0E'),
+                                      onTap: () {
+                                        showModalBottomSheet(
+                                          isScrollControlled: true,
+                                          context: context,
+                                          builder: (context) =>
+                                              GuideBottomSheet(
+                                            key: UniqueKey(),
+                                            guide: guide,
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          },
+                        )),
                   ),
                 ),
               ),
@@ -290,98 +337,102 @@ class _CommunityScreenState extends State<CommunityScreen> {
     required String image,
     required String title,
     required bool isNew,
+    required VoidCallback onTap,
   }) =>
-      Opacity(
-        opacity: isNew ? 1 : 0.5,
-        child: Stack(
-          children: [
-            ClipSmoothRect(
-              radius:
-                  SmoothBorderRadius(cornerRadius: 15, cornerSmoothing: 0.8),
-              child: Image.asset(
-                'assets/images/$image.png',
-                width: 125,
-                height: 150,
-                fit: BoxFit.cover,
+      GestureDetector(
+        onTap: onTap,
+        child: Opacity(
+          opacity: isNew ? 1 : 0.5,
+          child: Stack(
+            children: [
+              ClipSmoothRect(
+                radius:
+                    SmoothBorderRadius(cornerRadius: 15, cornerSmoothing: 0.8),
+                child: Image.network(
+                  image,
+                  width: 125,
+                  height: 150,
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
-            // TODO: IF NEW
-            isNew
-                ? Positioned(
-                    top: 10,
-                    left: 10,
-                    child: Container(
-                      decoration: const ShapeDecoration(
-                        color: Colors.white70,
-                        shape: SmoothRectangleBorder(
-                          borderRadius: SmoothBorderRadius.all(
-                            SmoothRadius(
-                              cornerRadius: 5,
-                              cornerSmoothing: 0.8,
+              // TODO: IF NEW
+              isNew
+                  ? Positioned(
+                      top: 10,
+                      left: 10,
+                      child: Container(
+                        decoration: const ShapeDecoration(
+                          color: Colors.white70,
+                          shape: SmoothRectangleBorder(
+                            borderRadius: SmoothBorderRadius.all(
+                              SmoothRadius(
+                                cornerRadius: 5,
+                                cornerSmoothing: 0.8,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 5,
-                          vertical: 2,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 5,
+                            vertical: 2,
+                          ),
+                          child: Row(
+                            children: [
+                              SvgPicture.asset('assets/icons/dot.svg'),
+                              const SizedBox(width: 5),
+                              StyledText(
+                                text: 'New',
+                                color: NexusColors.primaryColor,
+                                fontSize: 12,
+                              )
+                            ],
+                          ),
                         ),
-                        child: Row(
-                          children: [
-                            SvgPicture.asset('assets/icons/dot.svg'),
-                            const SizedBox(width: 5),
-                            StyledText(
-                              text: 'New',
-                              color: NexusColors.primaryColor,
-                              fontSize: 12,
-                            )
-                          ],
+                      ),
+                    )
+                  : const SizedBox(),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  // width: double.maxFinite,
+                  height: 40,
+                  decoration: const ShapeDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Color.fromRGBO(0, 0, 0, 0),
+                        Color.fromRGBO(0, 0, 0, 0.7),
+                      ],
+                    ),
+                    shape: SmoothRectangleBorder(
+                      borderRadius: SmoothBorderRadius.only(
+                        bottomLeft: SmoothRadius(
+                          cornerRadius: 15,
+                          cornerSmoothing: 0.8,
+                        ),
+                        bottomRight: SmoothRadius(
+                          cornerRadius: 15,
+                          cornerSmoothing: 0.8,
                         ),
                       ),
                     ),
-                  )
-                : const SizedBox(),
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 1,
-              child: Container(
-                // width: double.maxFinite,
-                height: 40,
-                decoration: const ShapeDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Color.fromRGBO(0, 0, 0, 0),
-                      Color.fromRGBO(0, 0, 0, 0.7),
-                    ],
                   ),
-                  shape: SmoothRectangleBorder(
-                    borderRadius: SmoothBorderRadius.only(
-                      bottomLeft: SmoothRadius(
-                        cornerRadius: 15,
-                        cornerSmoothing: 0.8,
-                      ),
-                      bottomRight: SmoothRadius(
-                        cornerRadius: 15,
-                        cornerSmoothing: 0.8,
-                      ),
+                  child: Center(
+                    child: StyledText(
+                      text: title,
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
-                child: Center(
-                  child: StyledText(
-                    text: title,
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       );
 }

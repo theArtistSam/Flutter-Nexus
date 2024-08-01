@@ -7,16 +7,11 @@ class StyledSnackbar {
   static void show({
     required BuildContext context,
     required String message,
-    Duration duration = const Duration(seconds: 2),
+    Duration duration = const Duration(seconds: 3),
   }) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        padding: EdgeInsets.fromLTRB(
-          10,
-          10,
-          10,
-          MediaQuery.of(context).padding.bottom + 10,
-        ),
+        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
         elevation: 0,
         backgroundColor: Colors.transparent,
         content: Container(

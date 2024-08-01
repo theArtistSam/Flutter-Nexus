@@ -14,6 +14,7 @@ import 'package:nexus/widgets/bottom_sheets/delete_bottom_sheet.dart';
 import 'package:nexus/widgets/popup_menu.dart';
 import 'package:nexus/widgets/styled_widgets/styled_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_snackbar.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 import 'package:nexus/widgets/styled_widgets/styled_textfield.dart';
 
@@ -289,29 +290,47 @@ class _PostBottomSheetState extends State<PostBottomSheet> {
                                         // Use image picker to pick the image from gallery
                                         final XFile? image =
                                             await ImageSelector.pickImage();
+
+                                        // Ensure the image is not null before proceeding
+                                        if (image == null) {
+                                          if (context.mounted) {
+                                            print("NOO");
+                                            StyledSnackbar.show(
+                                              context: context,
+                                              message: 'Image not picked',
+                                            );
+                                          }
+                                          return;
+                                        }
+
                                         // Check if the image has already been picked
                                         bool alreadyPicked = newImages.any(
                                             (pickedImage) =>
-                                                pickedImage.path ==
-                                                image!.path);
+                                                pickedImage.path == image.path);
                                         bool checkLength = newImages.length +
                                                 (images?.length ?? 0) <
                                             5;
-                                        if (image != null) {
-                                          if (alreadyPicked) {
-                                            // TODO: Replace print with snackbar
-                                            print("Already picked that image!");
-                                          } else if (checkLength) {
-                                            postBottomSheetBloc.add(
-                                              PickImage(file: image),
+
+                                        if (alreadyPicked) {
+                                          if (context.mounted) {
+                                            StyledSnackbar.show(
+                                              context: context,
+                                              message:
+                                                  'Already picked that image',
                                             );
-                                          } else {
-                                            print(
-                                              "Cannot pick more than 5 images",
+                                          }
+                                        } else if (!checkLength) {
+                                          if (context.mounted) {
+                                            StyledSnackbar.show(
+                                              context: context,
+                                              message:
+                                                  'Cannot pick more than 5 images',
                                             );
                                           }
                                         } else {
-                                          print("Image not picked!");
+                                          postBottomSheetBloc.add(
+                                            PickImage(file: image),
+                                          );
                                         }
                                       },
                                     )

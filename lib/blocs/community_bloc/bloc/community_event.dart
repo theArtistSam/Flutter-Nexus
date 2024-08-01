@@ -8,3 +8,5 @@ sealed class CommunityEvent extends Equatable {
 }
 
 class FetchPosts extends CommunityEvent {}
+
+class FetchGuides extends CommunityEvent {}

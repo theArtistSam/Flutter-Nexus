@@ -9,13 +9,23 @@ sealed class CommunityState extends Equatable {
 
 final class CommunityInitial extends CommunityState {
   final Stream<List<PostModel>> posts;
+  final Stream<List<GuideModel>> guides;
 
-  const CommunityInitial({this.posts = const Stream.empty()});
+  const CommunityInitial({
+    this.posts = const Stream.empty(),
+    this.guides = const Stream.empty(),
+  });
 
-  CommunityInitial copyWith({Stream<List<PostModel>>? posts}) {
-    return CommunityInitial(posts: posts ?? this.posts);
+  CommunityInitial copyWith({
+    Stream<List<PostModel>>? posts,
+    Stream<List<GuideModel>>? guides,
+  }) {
+    return CommunityInitial(
+      posts: posts ?? this.posts,
+      guides: guides ?? this.guides,
+    );
   }
 
   @override
-  List<Object> get props => [posts];
+  List<Object> get props => [posts, guides];
 }
