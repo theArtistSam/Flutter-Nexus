@@ -147,64 +147,63 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       ),
                     ),
                     child: SizedBox(
-                        height: 150,
-                        child: BlocBuilder<CommunityBloc, CommunityState>(
-                          builder: (context, state) {
-                            Stream<List<GuideModel>> guides =
-                                (state as CommunityInitial).guides;
+                      height: 150,
+                      child: BlocBuilder<CommunityBloc, CommunityState>(
+                        builder: (context, state) {
+                          Stream<List<GuideModel>> guides =
+                              (state as CommunityInitial).guides;
 
-                            return StreamBuilder<List<GuideModel>>(
-                              stream: guides,
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                } else if (snapshot.hasError) {
-                                  return Center(
-                                    child: Text('Error: ${snapshot.error}'),
-                                  );
-                                } else if (!snapshot.hasData ||
-                                    snapshot.data!.isEmpty) {
-                                  return const Center(
-                                    child: Text('No guide available'),
-                                  );
-                                }
-                                List<GuideModel> guideList = snapshot.data!;
-
-                                return ListView.separated(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: guideList.length,
-                                  separatorBuilder:
-                                      (BuildContext context, int index) =>
-                                          const SizedBox(width: 10),
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    GuideModel guide = guideList[index];
-                                    return guideTileCommunity(
-                                      image: guide.thumbnail!,
-                                      title: guide.title!,
-                                      isNew: guide.viewedBy!
-                                          .contains('Bd4umkyLqOLnMpdOLZ0E'),
-                                      onTap: () {
-                                        showModalBottomSheet(
-                                          isScrollControlled: true,
-                                          context: context,
-                                          builder: (context) =>
-                                              GuideBottomSheet(
-                                            key: UniqueKey(),
-                                            guide: guide,
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
+                          return StreamBuilder<List<GuideModel>>(
+                            stream: guides,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
                                 );
-                              },
-                            );
-                          },
-                        )),
+                              } else if (snapshot.hasError) {
+                                return Center(
+                                  child: Text('Error: ${snapshot.error}'),
+                                );
+                              } else if (!snapshot.hasData ||
+                                  snapshot.data!.isEmpty) {
+                                return const Center(
+                                  child: Text('No guide available'),
+                                );
+                              }
+                              List<GuideModel> guideList = snapshot.data!;
+
+                              return ListView.separated(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: guideList.length,
+                                separatorBuilder:
+                                    (BuildContext context, int index) =>
+                                        const SizedBox(width: 10),
+                                itemBuilder: (BuildContext context, int index) {
+                                  GuideModel guide = guideList[index];
+                                  return guideTileCommunity(
+                                    image: guide.thumbnail!,
+                                    title: guide.title!,
+                                    isNew: guide.viewedBy!
+                                        .contains('Bd4umkyLqOLnMpdOLZ0E'),
+                                    onTap: () {
+                                      showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        context: context,
+                                        builder: (context) => GuideBottomSheet(
+                                          key: UniqueKey(),
+                                          guide: guide,
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
                   ),
                 ),
               ),

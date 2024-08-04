@@ -12,6 +12,7 @@ import 'package:nexus/models/guide_model.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
+import 'package:video_player/video_player.dart';
 
 class GuideBottomSheet extends StatefulWidget {
   const GuideBottomSheet({
@@ -25,18 +26,32 @@ class GuideBottomSheet extends StatefulWidget {
 
 class _GuideBottomSheetState extends State<GuideBottomSheet> {
   late GuideBottomSheetBloc guideBottomSheetBloc;
-
+  late VideoPlayerController videoPlayerController;
   @override
   void initState() {
     guideBottomSheetBloc = GuideBottomSheetBloc(guide: widget.guide);
-    guideBottomSheetBloc.add(StartTimer());
+    if (widget.guide.type == 'video') {
+      _initVideoPlayerController(link: widget.guide.link!);
+    } else {
+      guideBottomSheetBloc.add(const StartTimer());
+    }
     super.initState();
   }
 
   @override
   void dispose() {
     guideBottomSheetBloc.close();
+    videoPlayerController.dispose();
     super.dispose();
+  }
+
+  _initVideoPlayerController({required String link}) async {
+    videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(link));
+    await videoPlayerController.initialize();
+    final duration =
+        videoPlayerController.value.duration.inMilliseconds / 1000.0;
+    videoPlayerController.play();
+    guideBottomSheetBloc.add(StartTimer(endTime: duration));
   }
 
   @override
@@ -82,10 +97,8 @@ class _GuideBottomSheetState extends State<GuideBottomSheet> {
                   builder: (context, state) {
                     final isPaused =
                         (state as GuideBottomSheetInitial).isPaused;
-                    final bool isLiked = (state)
-                        .guide!
-                        .likedBy!
-                        .contains('Bd4umkyLqOLnMpdOLZ0E');
+                    final bool isLiked =
+                        (state).guide.likedBy!.contains('Bd4umkyLqOLnMpdOLZ0E');
                     return Stack(
                       alignment: Alignment.center,
                       children: [
@@ -94,16 +107,25 @@ class _GuideBottomSheetState extends State<GuideBottomSheet> {
                           child: GestureDetector(
                             onTap: () {
                               guideBottomSheetBloc.add(
-                                const TogglePauseResume(value: true),
+                                const TogglePauseResume(
+                                  value: true,
+                                ),
                               );
+                              videoPlayerController.pause();
                             },
-                            child: Container(
-                              color: NexusColors.accentColorDark,
-                              child: Image.network(
-                                widget.guide.link!,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+                            child: widget.guide.type == 'image'
+                                ? Container(
+                                    color: NexusColors.accentColorDark,
+                                    child: Image.network(
+                                      widget.guide.link!,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
+                                : AspectRatio(
+                                    aspectRatio:
+                                        videoPlayerController.value.aspectRatio,
+                                    child: VideoPlayer(videoPlayerController),
+                                  ),
                           ),
                         ),
                         isPaused
@@ -116,6 +138,7 @@ class _GuideBottomSheetState extends State<GuideBottomSheet> {
                                     guideBottomSheetBloc.add(
                                       const TogglePauseResume(value: false),
                                     );
+                                    videoPlayerController.play();
                                   },
                                 ),
                               )
@@ -190,6 +213,7 @@ class _GuideBottomSheetState extends State<GuideBottomSheet> {
                   builder: (context, state) {
                     final sliderValue =
                         (state as GuideBottomSheetInitial).sliderValue;
+                    final duration = (state).duration;
 
                     return TweenAnimationBuilder<double>(
                       tween: Tween<double>(begin: 0, end: sliderValue),
@@ -208,7 +232,9 @@ class _GuideBottomSheetState extends State<GuideBottomSheet> {
                             activeColor: Colors.white,
                             inactiveColor: Colors.white.withOpacity(.50),
                             min: 0,
-                            max: 15,
+                            max: widget.guide.type == 'image'
+                                ? 15
+                                : duration.ceilToDouble(),
                             value: value,
                             onChanged: (newValue) {
                               // * Do not allow user the change slider value.

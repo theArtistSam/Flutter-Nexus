@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:nexus/models/content_model.dart';
+import 'package:nexus/models/guide_model.dart';
+import 'package:nexus/repositories/community_repository.dart';
 import 'package:nexus/repositories/content_repository.dart';
 import 'package:nexus/utils/enums.dart';
 
@@ -12,6 +14,7 @@ part 'home_screen_state.dart';
 class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
   HomeScreenBloc() : super(HomeScreenInitial()) {
     on<FetchContent>(fetchContent);
+    on<FetchGuides>(fetchGuides);
   }
 
   FutureOr<void> fetchContent(
@@ -33,6 +36,20 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
           contents: contentList, status: ContentStatus.success));
 
       print('LOADING ... ');
+    } catch (e) {
+      emit(currentState.copyWith(status: ContentStatus.failure));
+    }
+  }
+
+  FutureOr<void> fetchGuides(FetchGuides event, Emitter<HomeScreenState> emit) {
+    final currentState = state as HomeScreenInitial;
+    try {
+      Stream<List<GuideModel>> guideList = CommunityRepository().getAllGuides();
+      emit(currentState.copyWith(
+        guides: guideList,
+      ));
+
+      print('LOADING GUIDES... ');
     } catch (e) {
       emit(currentState.copyWith(status: ContentStatus.failure));
     }

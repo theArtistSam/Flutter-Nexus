@@ -4,11 +4,12 @@ import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 
 // ignore: must_be_immutable
 class GuideTile extends StatelessWidget {
-  GuideTile(
-      {super.key,
-      required this.image,
-      required this.title,
-      required this.onTap});
+  GuideTile({
+    super.key,
+    required this.image,
+    required this.title,
+    required this.onTap,
+  });
 
   String image;
   String title;
@@ -26,8 +27,8 @@ class GuideTile extends StatelessWidget {
                 cornerRadius: 15,
                 cornerSmoothing: 0.8,
               ),
-              child: Image.asset(
-                'assets/images/guide.png',
+              child: Image.network(
+                image,
                 fit: BoxFit.cover,
                 width: double.infinity,
               ),
@@ -55,7 +56,7 @@ class GuideTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  StyledText(
+                  const StyledText(
                     text: 'Guide',
                     fontSize: 20,
                     fontWeight: FontWeight.w500,
@@ -65,7 +66,7 @@ class GuideTile extends StatelessWidget {
                   SizedBox(
                     width: 220,
                     child: StyledText(
-                      text: 'Learn to Translate',
+                      text: title,
                       fontSize: 24,
                       color: Colors.white,
                     ),

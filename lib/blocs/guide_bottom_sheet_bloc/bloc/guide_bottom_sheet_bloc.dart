@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:nexus/models/guide_model.dart';
 import 'package:nexus/repositories/community_repository.dart';
@@ -27,9 +28,9 @@ class GuideBottomSheetBloc
     _timer = null;
   }
 
-  void _start() {
+  void _start({required double endTime}) {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_currentValue >= 15) {
+      if (_currentValue >= endTime) {
         _stop();
       } else {
         _currentValue++;
@@ -47,7 +48,8 @@ class GuideBottomSheetBloc
 
   FutureOr<void> startTimer(
       StartTimer event, Emitter<GuideBottomSheetState> emit) async {
-    _start();
+    emit((state as GuideBottomSheetInitial).copyWith(duration: event.endTime));
+    _start(endTime: event.endTime);
   }
 
   FutureOr<void> togglePauseResume(
@@ -65,7 +67,7 @@ class GuideBottomSheetBloc
     } else {
       // Resuming the timer
       _currentValue = (state as GuideBottomSheetInitial).elapsedValue.toInt();
-      _start();
+      _start(endTime: (state as GuideBottomSheetInitial).duration);
       emit(
         (state as GuideBottomSheetInitial).copyWith(
           isPaused: false,
@@ -82,7 +84,7 @@ class GuideBottomSheetBloc
       await CommunityRepository().likeGuide(guideId: event.guideId);
       List<String> likedBy =
           await CommunityRepository().getLikedBy(guideId: event.guideId);
-      final guide = currentState.guide!.copyWith(likedBy: likedBy);
+      final guide = currentState.guide.copyWith(likedBy: likedBy);
       emit(currentState.copyWith(guide: guide));
       print("GUIDE LIKED SUCCESSFULLY");
     } catch (e) {
@@ -97,7 +99,7 @@ class GuideBottomSheetBloc
       await CommunityRepository().dislikeGuide(guideId: event.guideId);
       List<String> likedBy =
           await CommunityRepository().getLikedBy(guideId: event.guideId);
-      final guide = currentState.guide!.copyWith(likedBy: likedBy);
+      final guide = currentState.guide.copyWith(likedBy: likedBy);
       emit(currentState.copyWith(guide: guide));
       print("GUIDE DISLIKED SUCCESSFULLY");
     } catch (e) {

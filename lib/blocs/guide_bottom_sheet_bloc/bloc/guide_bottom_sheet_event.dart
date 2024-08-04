@@ -7,10 +7,14 @@ sealed class GuideBottomSheetEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class StartTimer extends GuideBottomSheetEvent {}
+class StartTimer extends GuideBottomSheetEvent {
+  final double endTime;
+  const StartTimer({this.endTime = 15});
+}
 
 class TogglePauseResume extends GuideBottomSheetEvent {
   final bool value;
+  // final double endTime;
   const TogglePauseResume({required this.value});
 }
 

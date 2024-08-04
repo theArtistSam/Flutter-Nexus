@@ -211,9 +211,14 @@ class _PostBottomSheetState extends State<PostBottomSheet> {
                                     name: 'Comments',
                                     value: commentAllowed,
                                   ),
-                                  PopupItem(name: 'Likes', value: likeAllowed),
                                   PopupItem(
-                                      name: 'Shares', value: shareAllowed),
+                                    name: 'Likes',
+                                    value: likeAllowed,
+                                  ),
+                                  PopupItem(
+                                    name: 'Shares',
+                                    value: shareAllowed,
+                                  ),
                                 ],
                                 icon: 'dots-circle',
                               )

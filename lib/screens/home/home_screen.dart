@@ -10,10 +10,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:nexus/blocs/home_screen_bloc/bloc/home_screen_bloc.dart';
 import 'package:nexus/models/content_model.dart';
+import 'package:nexus/models/guide_model.dart';
 import 'package:nexus/screens/content/content_screen.dart';
 import 'package:nexus/screens/home/widgets/content_upload_tile.dart';
 import 'package:nexus/screens/settings/settings_screen.dart';
 import 'package:nexus/utils/enums.dart';
+import 'package:nexus/widgets/bottom_sheets/guide_bottom_sheet.dart';
 import 'package:nexus/widgets/content_tile.dart';
 import 'package:nexus/screens/home/widgets/guide_tile.dart';
 import 'package:nexus/utils/constants.dart';
@@ -40,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // context.read<HomeScreenBloc>().add(LoadContent());
     homeScreenBloc = HomeScreenBloc();
     homeScreenBloc.add(FetchContent());
+    homeScreenBloc.add(FetchGuides());
     super.initState();
   }
 
@@ -171,28 +174,67 @@ class _HomeScreenState extends State<HomeScreen> {
                       cornerRadius: 15,
                       cornerSmoothing: 0.8,
                     ),
-                    child: CarouselSlider(
-                      options: CarouselOptions(
-                        height: 170,
-                        autoPlay: true,
-                        viewportFraction: 1,
-                      ),
-                      items: [1, 2, 3, 4, 5].map((i) {
-                        return Builder(
-                          builder: (BuildContext context) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 5.0,
+                    child: BlocBuilder<HomeScreenBloc, HomeScreenState>(
+                      builder: (context, state) {
+                        Stream<List<GuideModel>> guides =
+                            (state as HomeScreenInitial).guides;
+
+                        return StreamBuilder<List<GuideModel>>(
+                          stream: guides,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                child: Text('Error: ${snapshot.error}'),
+                              );
+                            } else if (!snapshot.hasData ||
+                                snapshot.data!.isEmpty) {
+                              return const Center(
+                                child: Text('No guide available'),
+                              );
+                            }
+                            List<GuideModel> guideList = snapshot.data!;
+
+                            return CarouselSlider(
+                              options: CarouselOptions(
+                                height: 170,
+                                autoPlay: true,
+                                viewportFraction: 1,
                               ),
-                              child: GuideTile(
-                                image: 'image',
-                                title: 'title',
-                                onTap: () => {},
-                              ),
+                              items: guideList.map((guide) {
+                                return Builder(
+                                  builder: (BuildContext context) {
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 5.0,
+                                      ),
+                                      child: GuideTile(
+                                        image: guide.thumbnail!,
+                                        title: guide.title!,
+                                        onTap: () {
+                                          showModalBottomSheet(
+                                            isScrollControlled: true,
+                                            context: context,
+                                            builder: (context) =>
+                                                GuideBottomSheet(
+                                              key: UniqueKey(),
+                                              guide: guide,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  },
+                                );
+                              }).toList(),
                             );
                           },
                         );
-                      }).toList(),
+                      },
                     ),
                   ),
                   const SizedBox(height: 15),
