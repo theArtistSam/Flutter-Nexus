@@ -29,7 +29,7 @@ class SupportCategoryBottomSheetBloc extends Bloc<
             "Experiencing challenges with translation, transcription, or summarization?",
       ),
       CategoryModel(
-        icon: 'community-filled',
+        icon: 'globe-filled',
         type: 'Community',
         tagline:
             "Encountering issues with posts, guides, or data within the community?",
@@ -38,7 +38,7 @@ class SupportCategoryBottomSheetBloc extends Bloc<
         icon: 'sparkle',
         type: 'Application',
         tagline:
-            "Having trouble with folders, content, or general application usage?",
+            "Having trouble with payment, content, or general application usage?",
       ),
       CategoryModel(
         icon: 'pen',

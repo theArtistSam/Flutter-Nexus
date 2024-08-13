@@ -41,7 +41,7 @@ class CategoryTile extends StatelessWidget {
                   )
                 : null,
             borderRadius: const SmoothBorderRadius.all(
-              SmoothRadius(cornerRadius: 10, cornerSmoothing: 0.8),
+              SmoothRadius(cornerRadius: 15, cornerSmoothing: 0.8),
             ),
           ),
           child: Padding(

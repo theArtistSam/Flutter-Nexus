@@ -3,15 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nexus/blocs/support_chat_bloc/bloc/support_chat_bloc.dart';
 import 'package:nexus/models/support_model.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/datetime_tile.dart';
 import 'package:nexus/widgets/bottom_sheets/image_slider_bottom_sheet.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_snackbar.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 import 'package:nexus/widgets/styled_widgets/styled_textfield.dart';
 
+// ignore: must_be_immutable
 class SupportChatScreen extends StatefulWidget {
   SupportChatScreen({super.key, required this.issue});
   SupportModel issue;
@@ -265,14 +268,13 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
                             return adminChat(
                               message: message,
                               isLast: !isUserLast || isLast,
-                              isTimeStampRequired:
-                                  isTimeStampRequired && !isLast,
+                              isTimeStampRequired: isTimeStampRequired,
                             );
                           }
                           return userChat(
                             message: message,
                             isLast: isUserLast || isLast,
-                            isTimeStampRequired: isTimeStampRequired && !isLast,
+                            isTimeStampRequired: isTimeStampRequired,
                           );
                         },
                       );
@@ -297,8 +299,12 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
                   ],
                 ),
                 child: Padding(
-                    padding:
-                        EdgeInsets.fromLTRB(15, 10, 15, 10 + bottomPadding),
+                    padding: EdgeInsets.fromLTRB(
+                      15,
+                      10,
+                      15,
+                      10 + bottomPadding,
+                    ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
@@ -312,7 +318,24 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
                           // padding: 6,
                           height: 20,
                           icon: 'gallery-add',
-                          onTap: () {},
+                          onTap: () async {
+                            final XFile? image =
+                                await ImageSelector.pickImage();
+                            if (image != null) {
+                              supportChatBloc.add(SendImageMessage(
+                                documentId: widget.issue.issueId!,
+                                senderId: widget.issue.userId!,
+                                file: image,
+                              ));
+                            } else {
+                              if (context.mounted) {
+                                StyledSnackbar.show(
+                                  context: context,
+                                  message: 'Image not selected',
+                                );
+                              }
+                            }
+                          },
                         ),
                         const SizedBox(width: 10),
                         Expanded(
@@ -334,7 +357,7 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
                               String message =
                                   textEditingController.text.trim();
                               supportChatBloc.add(
-                                SendMessage(
+                                SendTextMessage(
                                   message: message,
                                   documentId: widget.issue.issueId!,
                                   senderId: widget.issue.userId!,
@@ -390,45 +413,51 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   message.messageType == 'text'
-                      ? Container(
-                          decoration: ShapeDecoration(
-                            color: NexusColors.primaryColor,
-                            shape: SmoothRectangleBorder(
-                              borderRadius: SmoothBorderRadius(
-                                cornerRadius: 15,
-                                cornerSmoothing: 0.8,
+                      ? Padding(
+                          padding: const EdgeInsets.only(right: 40.0),
+                          child: Container(
+                            decoration: ShapeDecoration(
+                              color: NexusColors.primaryColor,
+                              shape: SmoothRectangleBorder(
+                                borderRadius: SmoothBorderRadius(
+                                  cornerRadius: 15,
+                                  cornerSmoothing: 0.8,
+                                ),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: StyledText(
+                                text: message.text!,
+                                fontSize: 14,
+                                color: NexusColors.textColorLight,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: StyledText(
-                              text: message.text!,
-                              fontSize: 14,
-                              color: NexusColors.textColorLight,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
                         )
-                      : ClipSmoothRect(
-                          radius: const SmoothBorderRadius.all(
-                            SmoothRadius(
-                              cornerRadius: 10,
-                              cornerSmoothing: 0.8,
+                      : Padding(
+                          padding: const EdgeInsets.only(right: 40.0),
+                          child: ClipSmoothRect(
+                            radius: const SmoothBorderRadius.all(
+                              SmoothRadius(
+                                cornerRadius: 10,
+                                cornerSmoothing: 0.8,
+                              ),
                             ),
-                          ),
-                          child: Image.network(
-                            message.imageLink!,
-                            width: double.infinity,
+                            child: Image.network(
+                              message.imageLink!,
+                              width: double.infinity,
+                            ),
                           ),
                         ),
                   isLast
                       ? Padding(
                           padding: const EdgeInsets.only(top: 10.0),
                           child: StyledText(
-                            text: "${DateTimeConversion.formattedTime(
+                            text: "$status • ${DateTimeConversion.formattedTime(
                               datetime: message.timeStamp!,
-                            )} . $status",
+                            )} ",
                             fontSize: 12,
                             color: NexusColors.secondaryTextColor,
                             fontWeight: FontWeight.w500,
@@ -468,36 +497,42 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   message.messageType == 'text'
-                      ? Container(
-                          decoration: ShapeDecoration(
-                            color: NexusColors.accentColor,
-                            shape: SmoothRectangleBorder(
-                              borderRadius: SmoothBorderRadius(
+                      ? Padding(
+                          padding: const EdgeInsets.only(left: 40),
+                          child: Container(
+                            decoration: ShapeDecoration(
+                              color: NexusColors.accentColor,
+                              shape: SmoothRectangleBorder(
+                                borderRadius: SmoothBorderRadius(
+                                  cornerRadius: 15,
+                                  cornerSmoothing: 0.8,
+                                ),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: StyledText(
+                                text: message.text!,
+                                fontSize: 14,
+                                color: NexusColors.textColor,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.only(left: 40.0),
+                          child: ClipSmoothRect(
+                            radius: const SmoothBorderRadius.all(
+                              SmoothRadius(
                                 cornerRadius: 15,
                                 cornerSmoothing: 0.8,
                               ),
                             ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: StyledText(
-                              text: message.text!,
-                              fontSize: 14,
-                              color: NexusColors.textColor,
-                              fontWeight: FontWeight.w500,
+                            child: Image.network(
+                              message.imageLink!,
+                              width: double.infinity,
                             ),
-                          ),
-                        )
-                      : ClipSmoothRect(
-                          radius: const SmoothBorderRadius.all(
-                            SmoothRadius(
-                              cornerRadius: 15,
-                              cornerSmoothing: 0.8,
-                            ),
-                          ),
-                          child: Image.network(
-                            message.imageLink!,
-                            width: double.infinity,
                           ),
                         ),
                   isLast
@@ -506,7 +541,7 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
                           child: StyledText(
                             text: "${DateTimeConversion.formattedTime(
                               datetime: message.timeStamp!,
-                            )} . $status",
+                            )} • $status",
                             fontSize: 12,
                             color: NexusColors.secondaryTextColor,
                             fontWeight: FontWeight.w500,
@@ -516,21 +551,22 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
                 ],
               ),
             ),
-            isLast
-                ? Padding(
-                    padding: const EdgeInsets.only(left: 10.0, bottom: 27),
-                    child: ClipOval(
-                      child: Image.asset(
-                        'assets/images/profile-picture.png',
-                        width: 30,
-                        height: 30,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  )
-                : const SizedBox(
-                    width: 40,
-                  ),
+            // * Let's keep this for now and we'll see if it's required
+            // isLast
+            //     ? Padding(
+            //         padding: const EdgeInsets.only(left: 10.0, bottom: 27),
+            //         child: ClipOval(
+            //           child: Image.asset(
+            //             'assets/images/profile-picture.png',
+            //             width: 30,
+            //             height: 30,
+            //             fit: BoxFit.cover,
+            //           ),
+            //         ),
+            //       )
+            //     : const SizedBox(
+            //         width: 40,
+            //       ),
           ],
         ),
         SizedBox(height: isLast ? 15 : 0),

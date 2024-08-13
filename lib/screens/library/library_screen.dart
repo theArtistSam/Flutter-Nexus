@@ -189,6 +189,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                                         },
                                       );
                                     }
+                                    print(folderList[index - 1].icon);
                                     return StyledIconTile(
                                       icon: FolderIcons.icons[
                                           folderList[index - 1].icon ?? 0],

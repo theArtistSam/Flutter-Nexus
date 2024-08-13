@@ -13,13 +13,24 @@ class FetchMessages extends SupportChatEvent {
   const FetchMessages({required this.documentId});
 }
 
-class SendMessage extends SupportChatEvent {
+class SendTextMessage extends SupportChatEvent {
   final String message;
   final String documentId;
   final String senderId;
-  const SendMessage({
+  const SendTextMessage({
     required this.message,
     required this.documentId,
     required this.senderId,
+  });
+}
+
+class SendImageMessage extends SupportChatEvent {
+  final String documentId;
+  final String senderId;
+  final XFile file;
+  const SendImageMessage({
+    required this.documentId,
+    required this.senderId,
+    required this.file,
   });
 }

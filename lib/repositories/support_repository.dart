@@ -1,7 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nexus/models/support_model.dart';
+import 'package:uuid/uuid.dart';
 
 class SupportRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -44,7 +48,7 @@ class SupportRepository {
     });
   }
 
-  Future<void> addMessage({
+  Future<void> addTextMessage({
     required String message,
     required String documentId,
     required String senderId,
@@ -69,6 +73,46 @@ class SupportRepository {
       });
 
       print('Added successfully');
+    } catch (e) {
+      print('Error getting users: $e');
+    }
+  }
+
+  Future<void> addImageMessage({
+    required XFile image,
+    required String documentId,
+    required String senderId,
+  }) async {
+    try {
+      DocumentReference docRef =
+          FirebaseFirestore.instance.collection('support').doc(documentId);
+
+      // folder reference
+      final storageRef =
+          FirebaseStorage.instance.ref().child('support').child(documentId);
+
+      // Upload each image and get the download URL
+      String filename = const Uuid().v1();
+      final imageRef = storageRef.child("$filename.jpg");
+      await imageRef.putFile(File(image.path));
+      String downloadUrl = await imageRef.getDownloadURL();
+
+      Message newMessage = Message(
+        senderId: senderId,
+        timeStamp: DateTime.now().toString(),
+        messageType: 'image',
+        status: Status(
+          isSent: true,
+          isSeen: false,
+        ),
+        imageLink: downloadUrl,
+      );
+
+      await docRef.update({
+        'conversation': FieldValue.arrayUnion([newMessage.toJson()]),
+      });
+
+      print('Image Added successfully');
     } catch (e) {
       print('Error getting users: $e');
     }

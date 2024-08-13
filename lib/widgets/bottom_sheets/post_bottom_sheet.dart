@@ -320,8 +320,7 @@ class _PostBottomSheetState extends State<PostBottomSheet> {
                                           if (context.mounted) {
                                             StyledSnackbar.show(
                                               context: context,
-                                              message:
-                                                  'Already picked that image',
+                                              message: 'Image already picked',
                                             );
                                           }
                                         } else if (!checkLength) {
@@ -368,11 +367,19 @@ class _PostBottomSheetState extends State<PostBottomSheet> {
                                         //  TODO: use bloc listner and enum
                                         //  to wait for the post to be added
                                         //  then use pop out of the screen
+                                        StyledSnackbar.show(
+                                          context: context,
+                                          message: "Post added",
+                                        );
                                       } else {
                                         // event to update the post
 
                                         postBottomSheetBloc.add(
                                           UpdatePost(text: text),
+                                        );
+                                        StyledSnackbar.show(
+                                          context: context,
+                                          message: "Post updated",
                                         );
                                       }
                                     }
