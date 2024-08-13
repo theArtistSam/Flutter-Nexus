@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:intl/intl.dart';
 import 'package:nexus/blocs/library_screen_bloc/bloc/library_screen_bloc.dart';
 import 'package:nexus/models/content_model.dart';
 import 'package:nexus/models/folder_model.dart';
@@ -11,6 +10,7 @@ import 'package:nexus/screens/content/content_screen.dart';
 import 'package:nexus/screens/folder/folder_screen.dart';
 import 'package:nexus/screens/library/widgets/search_bottom_sheet.dart';
 import 'package:nexus/utils/enums.dart';
+import 'package:nexus/widgets/bottom_sheets/folder_bottom_sheet.dart';
 import 'package:nexus/widgets/content_tile.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
@@ -103,15 +103,10 @@ class _LibraryScreenState extends State<LibraryScreen> {
                     // * Use modal bottom sheet
 
                     showModalBottomSheet(
-                        isScrollControlled: true,
-                        context: context,
-                        builder: (context) => SearchBottomSheet());
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (builder) => const SearchScreenn(),
-                    //   ),
-                    // );
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) => const SearchBottomSheet(),
+                    );
                   },
                 )
               ],
@@ -145,44 +140,75 @@ class _LibraryScreenState extends State<LibraryScreen> {
                     if (state is LibraryScreenInitial) {
                       bool isLeftSelected = state.isLeftSelected;
                       Stream<List<ContentModel>> contentList = state.contents;
-                      List<FolderModel> folderList = state.folders;
+                      Stream<List<FolderModel>> folderList = state.folders;
                       LibraryStatus status = state.status;
 
                       if (status == LibraryStatus.success) {
                         if (isLeftSelected) {
-                          return Expanded(
-                            child: MasonryGridView.count(
-                              controller: widget.controller,
-                              // padding: const EdgeInsets.only(top: 15),
-                              crossAxisCount: gridCount(),
-                              crossAxisSpacing: 15, //
-                              mainAxisSpacing: 15,
-                              itemCount: folderList.length + 1,
-                              itemBuilder: (context, index) {
-                                if (index == 0) {
-                                  return StyledIconTile(
-                                    icon: 'add-folder-filled',
-                                    text: 'Create Folder',
-                                    onTap: () => {},
-                                  );
-                                }
-                                return StyledIconTile(
-                                  icon: FolderIcons.icons[index - 1],
-                                  text: folderList[index - 1].title ?? '',
-                                  isPrimary: false,
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (builder) => FolderScreen(
-                                          folder: folderList[index - 1],
-                                        ),
-                                      ),
+                          return StreamBuilder<List<FolderModel>>(
+                            stream: folderList,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              } else if (snapshot.hasError) {
+                                return Center(
+                                  child: Text('Error: ${snapshot.error}'),
+                                );
+                              } else if (!snapshot.hasData ||
+                                  snapshot.data!.isEmpty) {
+                                return const Center(
+                                  child: Text('No content available'),
+                                );
+                              }
+
+                              List<FolderModel> folderList = snapshot.data!;
+
+                              return Expanded(
+                                child: MasonryGridView.count(
+                                  controller: widget.controller,
+                                  // padding: const EdgeInsets.only(top: 15),
+                                  crossAxisCount: gridCount(),
+                                  crossAxisSpacing: 15, //
+                                  mainAxisSpacing: 15,
+                                  itemCount: folderList.length + 1,
+                                  itemBuilder: (context, index) {
+                                    if (index == 0) {
+                                      return StyledIconTile(
+                                        icon: 'add-folder-filled',
+                                        text: 'Create Folder',
+                                        onTap: () => {
+                                          showModalBottomSheet(
+                                            isScrollControlled: true,
+                                            context: context,
+                                            builder: (context) =>
+                                                const FolderBottomSheet(),
+                                          )
+                                        },
+                                      );
+                                    }
+                                    return StyledIconTile(
+                                      icon: FolderIcons.icons[
+                                          folderList[index - 1].icon ?? 0],
+                                      text: folderList[index - 1].title ?? '',
+                                      isPrimary: false,
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (builder) => FolderScreen(
+                                              folder: folderList[index - 1],
+                                            ),
+                                          ),
+                                        );
+                                      },
                                     );
                                   },
-                                );
-                              },
-                            ),
+                                ),
+                              );
+                            },
                           );
                         }
                         return StreamBuilder<List<ContentModel>>(
@@ -191,14 +217,17 @@ class _LibraryScreenState extends State<LibraryScreen> {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
                               return const Center(
-                                  child: CircularProgressIndicator());
+                                child: CircularProgressIndicator(),
+                              );
                             } else if (snapshot.hasError) {
                               return Center(
-                                  child: Text('Error: ${snapshot.error}'));
+                                child: Text('Error: ${snapshot.error}'),
+                              );
                             } else if (!snapshot.hasData ||
                                 snapshot.data!.isEmpty) {
                               return const Center(
-                                  child: Text('No content available'));
+                                child: Text('No content available'),
+                              );
                             }
 
                             List<ContentModel> contentList = snapshot.data!;

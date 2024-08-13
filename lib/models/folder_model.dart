@@ -7,8 +7,28 @@ class FolderModel {
   List<String>? contents;
   String? dateUpdated;
 
-  FolderModel(
-      {this.folderId, this.title, this.icon, this.contents, this.dateUpdated});
+  FolderModel({
+    this.folderId,
+    this.title,
+    this.icon,
+    this.contents,
+    this.dateUpdated,
+  });
+  FolderModel copyWith({
+    String? folderId,
+    String? title,
+    int? icon,
+    List<String>? contents,
+    String? dateUpdated,
+  }) {
+    return FolderModel(
+      folderId: folderId ?? this.folderId,
+      title: title ?? this.title,
+      icon: icon ?? this.icon,
+      contents: contents ?? this.contents?.toList(),
+      dateUpdated: dateUpdated ?? this.dateUpdated,
+    );
+  }
 
   FolderModel.fromJson(Map<String, dynamic> json) {
     folderId = json['folder_id'];

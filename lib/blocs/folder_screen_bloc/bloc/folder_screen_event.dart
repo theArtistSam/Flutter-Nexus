@@ -12,3 +12,8 @@ class LoadContent extends FolderScreenEvent {
   String folderID;
   LoadContent({required this.folderID});
 }
+
+class FetchFolder extends FolderScreenEvent {
+  final String folderId;
+  const FetchFolder({required this.folderId});
+}

@@ -26,31 +26,36 @@ class GuideBottomSheet extends StatefulWidget {
 
 class _GuideBottomSheetState extends State<GuideBottomSheet> {
   late GuideBottomSheetBloc guideBottomSheetBloc;
-  late VideoPlayerController videoPlayerController;
+  late VideoPlayerController? videoPlayerController;
+
   @override
   void initState() {
     guideBottomSheetBloc = GuideBottomSheetBloc(guide: widget.guide);
+
     if (widget.guide.type == 'video') {
       _initVideoPlayerController(link: widget.guide.link!);
     } else {
       guideBottomSheetBloc.add(const StartTimer());
     }
+
+    videoPlayerController = null;
+
     super.initState();
   }
 
   @override
   void dispose() {
     guideBottomSheetBloc.close();
-    videoPlayerController.dispose();
+    videoPlayerController?.dispose();
     super.dispose();
   }
 
   _initVideoPlayerController({required String link}) async {
     videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(link));
-    await videoPlayerController.initialize();
+    await videoPlayerController!.initialize();
     final duration =
-        videoPlayerController.value.duration.inMilliseconds / 1000.0;
-    videoPlayerController.play();
+        videoPlayerController!.value.duration.inMilliseconds / 1000.0;
+    videoPlayerController!.play();
     guideBottomSheetBloc.add(StartTimer(endTime: duration));
   }
 
@@ -111,20 +116,26 @@ class _GuideBottomSheetState extends State<GuideBottomSheet> {
                                   value: true,
                                 ),
                               );
-                              videoPlayerController.pause();
+                              if (videoPlayerController?.value.isInitialized ??
+                                  false) {
+                                videoPlayerController!.pause();
+                              }
                             },
-                            child: widget.guide.type == 'image'
-                                ? Container(
+                            child: widget.guide.type == 'video' &&
+                                    (videoPlayerController
+                                            ?.value.isInitialized ??
+                                        false)
+                                ? AspectRatio(
+                                    aspectRatio: videoPlayerController!
+                                        .value.aspectRatio,
+                                    child: VideoPlayer(videoPlayerController!),
+                                  )
+                                : Container(
                                     color: NexusColors.accentColorDark,
                                     child: Image.network(
                                       widget.guide.link!,
                                       fit: BoxFit.cover,
                                     ),
-                                  )
-                                : AspectRatio(
-                                    aspectRatio:
-                                        videoPlayerController.value.aspectRatio,
-                                    child: VideoPlayer(videoPlayerController),
                                   ),
                           ),
                         ),
@@ -138,7 +149,11 @@ class _GuideBottomSheetState extends State<GuideBottomSheet> {
                                     guideBottomSheetBloc.add(
                                       const TogglePauseResume(value: false),
                                     );
-                                    videoPlayerController.play();
+                                    if (videoPlayerController
+                                            ?.value.isInitialized ??
+                                        false) {
+                                      videoPlayerController!.play();
+                                    }
                                   },
                                 ),
                               )

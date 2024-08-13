@@ -12,3 +12,18 @@ class SelectFolderIcon extends FolderBottomSheetEvent {
   int index;
   SelectFolderIcon({required this.index});
 }
+
+class UpdateFolder extends FolderBottomSheetEvent {
+  final String title;
+  const UpdateFolder({required this.title});
+}
+
+class CreateFolder extends FolderBottomSheetEvent {
+  final String title;
+  const CreateFolder({required this.title});
+}
+
+class DeleteFolder extends FolderBottomSheetEvent {
+  final String folderId;
+  const DeleteFolder({required this.folderId});
+}

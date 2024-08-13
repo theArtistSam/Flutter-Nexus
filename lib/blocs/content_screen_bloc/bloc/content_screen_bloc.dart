@@ -14,7 +14,7 @@ class ContentScreenBloc extends Bloc<ContentScreenEvent, ContentScreenState> {
     on<ToggleTranslateSummarizeView>(toggleView);
     on<ToggleContainerView>(toggleContainerView);
     on<ToggleLikeDislike>(toggleLikeDislike);
-    on<ContentScreenInitialEvent>(contentScreenInitialEvent);
+    // on<ContentScreenInitialEvent>(contentScreenInitialEvent);
   }
 
   FutureOr<void> toggleView(
@@ -37,16 +37,16 @@ class ContentScreenBloc extends Bloc<ContentScreenEvent, ContentScreenState> {
     emit(currentState.copyWith(isLiked: event.isLiked));
   }
 
-  FutureOr<void> contentScreenInitialEvent(
-      ContentScreenInitialEvent event, Emitter<ContentScreenState> emit) async {
-    final currentState = (state as ContentScreenInitial);
-    try {
-      List<FolderModel> folders = await FolderRepository().getAllFolders();
-      emit(currentState.copyWith(
-          content: currentState.content, folders: folders));
-      print('Loading Folders...');
-    } catch (e) {
-      print(e.toString());
-    }
-  }
+  // FutureOr<void> contentScreenInitialEvent(
+  //     ContentScreenInitialEvent event, Emitter<ContentScreenState> emit) async {
+  //   final currentState = (state as ContentScreenInitial);
+  //   try {
+  //     List<FolderModel> folders = await FolderRepository().getAllFolders();
+  //     emit(currentState.copyWith(
+  //         content: currentState.content, folders: folders));
+  //     print('Loading Folders...');
+  //   } catch (e) {
+  //     print(e.toString());
+  //   }
+  // }
 }

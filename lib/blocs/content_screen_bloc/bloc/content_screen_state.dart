@@ -17,12 +17,13 @@ final class ContentScreenInitial extends ContentScreenState {
 
   ContentModel? content;
   List<FolderModel> folders;
-  ContentScreenInitial(
-      {this.isLeftSelected = true,
-      this.isOriginal = false,
-      this.isLiked = false,
-      this.content,
-      this.folders = const <FolderModel>[]});
+  ContentScreenInitial({
+    this.isLeftSelected = true,
+    this.isOriginal = false,
+    this.isLiked = false,
+    this.content,
+    this.folders = const <FolderModel>[],
+  });
 
   ContentScreenInitial copyWith(
       {bool? isLeftSelected,

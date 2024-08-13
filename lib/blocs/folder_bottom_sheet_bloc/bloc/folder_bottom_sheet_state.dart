@@ -9,13 +9,17 @@ sealed class FolderBottomSheetState extends Equatable {
 
 // ignore: must_be_immutable
 class FolderBottomSheetInitial extends FolderBottomSheetState {
-  int index;
-  FolderBottomSheetInitial({this.index = 0});
+  FolderModel folder;
+  FolderBottomSheetInitial({
+    required this.folder,
+  });
 
-  FolderBottomSheetInitial copyWith({int? index}) {
-    return FolderBottomSheetInitial(index: index ?? this.index);
+  FolderBottomSheetInitial copyWith({int? index, FolderModel? folder}) {
+    return FolderBottomSheetInitial(
+      folder: folder ?? this.folder,
+    );
   }
 
   @override
-  List<Object> get props => [index];
+  List<Object> get props => [folder];
 }

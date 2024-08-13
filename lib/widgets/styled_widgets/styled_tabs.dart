@@ -7,11 +7,12 @@ import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 
 // ignore: must_be_immutable
 class StyledTabs extends StatefulWidget {
-  StyledTabs(
-      {super.key,
-      required this.leftTabText,
-      required this.rightTabText,
-      this.changeState});
+  StyledTabs({
+    super.key,
+    required this.leftTabText,
+    required this.rightTabText,
+    this.changeState,
+  });
 
   String leftTabText;
   String rightTabText;

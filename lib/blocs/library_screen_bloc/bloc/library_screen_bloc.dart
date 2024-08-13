@@ -26,18 +26,19 @@ class LibraryScreenBloc extends Bloc<LibraryScreenEvent, LibraryScreenState> {
   }
 
   FutureOr<void> loadContent(
-      LoadContent event, Emitter<LibraryScreenState> emit) async {
+      LoadContent event, Emitter<LibraryScreenState> emit) {
     final currentState = (state as LibraryScreenInitial);
     try {
       Stream<List<ContentModel>> contentList =
           ContentRepository().getAllContents();
 
-      List<FolderModel> folderList = await FolderRepository().getAllFolders();
+      Stream<List<FolderModel>> folderList = FolderRepository().getAllFolders();
 
       emit(currentState.copyWith(
-          contents: contentList,
-          status: LibraryStatus.success,
-          folders: folderList));
+        contents: contentList,
+        status: LibraryStatus.success,
+        folders: folderList,
+      ));
     } catch (e) {
       emit(currentState.copyWith(status: LibraryStatus.failure));
     }
