@@ -11,18 +11,19 @@ class ContentModel {
   String? link;
   List<String>? tags;
 
-  ContentModel(
-      {this.contentId,
-      this.extractedText,
-      this.dateUpdated,
-      this.translation,
-      this.summarization,
-      this.type,
-      this.title,
-      this.folderId,
-      this.thumbnail,
-      this.link,
-      this.tags});
+  ContentModel({
+    this.contentId,
+    this.extractedText,
+    this.dateUpdated,
+    this.translation,
+    this.summarization,
+    this.type,
+    this.title,
+    this.folderId,
+    this.thumbnail,
+    this.link,
+    this.tags,
+  });
 
   ContentModel.fromJson(Map<String, dynamic> json) {
     contentId = json['content_id'];
@@ -60,6 +61,34 @@ class ContentModel {
     data['link'] = link;
     data['tags'] = tags;
     return data;
+  }
+
+  ContentModel copyWith({
+    String? contentId,
+    String? extractedText,
+    String? dateUpdated,
+    Translation? translation,
+    Translation? summarization,
+    String? type,
+    String? title,
+    String? folderId,
+    String? thumbnail,
+    String? link,
+    List<String>? tags,
+  }) {
+    return ContentModel(
+      contentId: contentId ?? this.contentId,
+      extractedText: extractedText ?? this.extractedText,
+      dateUpdated: dateUpdated ?? this.dateUpdated,
+      translation: translation ?? this.translation,
+      summarization: summarization ?? this.summarization,
+      type: type ?? this.type,
+      title: title ?? this.title,
+      folderId: folderId ?? this.folderId,
+      thumbnail: thumbnail ?? this.thumbnail,
+      link: link ?? this.link,
+      tags: tags ?? this.tags,
+    );
   }
 }
 

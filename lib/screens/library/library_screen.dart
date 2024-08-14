@@ -189,7 +189,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
                                         },
                                       );
                                     }
-                                    print(folderList[index - 1].icon);
                                     return StyledIconTile(
                                       icon: FolderIcons.icons[
                                           folderList[index - 1].icon ?? 0],
@@ -248,7 +247,9 @@ class _LibraryScreenState extends State<LibraryScreen> {
                                   return ContentTile(
                                     title: content.title ?? '',
                                     thumbnail: content.thumbnail ?? '',
-                                    date: content.dateUpdated ?? '',
+                                    date: DateTimeConversion.formattedDate(
+                                      datetime: content.dateUpdated!,
+                                    ),
                                     icon: content.type ?? '',
                                     onTap: () => {
                                       Navigator.push(

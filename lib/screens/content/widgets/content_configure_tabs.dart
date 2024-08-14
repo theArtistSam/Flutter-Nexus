@@ -38,7 +38,6 @@ class _ContentConfigureTabsState extends State<ContentConfigureTabs> {
       child: BlocBuilder<ConfigureTabsBloc, ConfigureTabsState>(
         builder: (context, state) {
           if (state is ConfigureTabsInitial) {
-            print(state.index);
             return Container(
               // width: 100,
               decoration: ShapeDecoration(

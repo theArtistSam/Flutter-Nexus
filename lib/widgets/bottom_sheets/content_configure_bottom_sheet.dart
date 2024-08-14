@@ -34,8 +34,9 @@ class ContentConfigureBottomSheet extends StatelessWidget {
                   width: 60,
                   height: 5,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: NexusColors.borderColor),
+                    borderRadius: BorderRadius.circular(20),
+                    color: NexusColors.borderColor,
+                  ),
                 ),
               ),
               const SizedBox(height: 15),

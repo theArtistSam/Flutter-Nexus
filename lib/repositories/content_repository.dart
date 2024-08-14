@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nexus/models/content_model.dart';
 
 class ContentRepository {
@@ -28,59 +29,6 @@ class ContentRepository {
     });
   }
 
-  Future<ContentModel> addTag(
-      {required String tag, required String contentId}) async {
-    try {
-      await _firestore
-          .collection('users')
-          .doc('Bd4umkyLqOLnMpdOLZ0E')
-          .collection('content')
-          .doc(contentId)
-          .update({
-        'tags': FieldValue.arrayUnion([tag]),
-      });
-
-      // Fetch the updated document to return the updated ContentModel
-      final updatedDoc = await _firestore
-          .collection('users')
-          .doc('Bd4umkyLqOLnMpdOLZ0E')
-          .collection('content')
-          .doc(contentId)
-          .get();
-      print('ADDED!!');
-      return ContentModel.fromJson(updatedDoc.data()!);
-    } catch (e) {
-      // Handle the error
-      throw Exception('Failed to add tag: $e');
-    }
-  }
-
-  Future<ContentModel> removeTag(
-      {required String tag, required String contentId}) async {
-    try {
-      await _firestore
-          .collection('users')
-          .doc('Bd4umkyLqOLnMpdOLZ0E')
-          .collection('content')
-          .doc(contentId)
-          .update({
-        'tags': FieldValue.arrayRemove([tag]),
-      });
-
-      // Fetch the updated document to return the updated ContentModel
-      final updatedDoc = await _firestore
-          .collection('users')
-          .doc('Bd4umkyLqOLnMpdOLZ0E')
-          .collection('content')
-          .doc(contentId)
-          .get();
-      return ContentModel.fromJson(updatedDoc.data()!);
-    } catch (e) {
-      // Handle the error
-      throw Exception('Failed to add tag: $e');
-    }
-  }
-
   Future<String> deleteContent({required String contentId}) async {
     try {
       await _firestore
@@ -95,48 +43,70 @@ class ContentRepository {
     }
   }
 
-  Future<ContentModel> changeThumbnail(
-      {required File? file, required String contentId}) async {
+  Future<void> updateContent({
+    required ContentModel content,
+    required XFile? image,
+  }) async {
     try {
-      if (file == null) {
-        throw Exception('File is null');
+      String? downloadURL;
+
+      if (image != null) {
+        // Reference to the storage location
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('users')
+            .child('Bd4umkyLqOLnMpdOLZ0E') // Replace with user ID
+            .child('content')
+            .child(content.contentId!)
+            .child('image.jpg');
+
+        // Upload the file to Firebase Storage
+        await ref.putFile(File(image.path));
+
+        // Get the download URL of the uploaded image
+        downloadURL = await ref.getDownloadURL();
       }
 
-      // Reference to the storage location
-      final ref = FirebaseStorage.instance
-          .ref()
-          .child('users')
-          .child('Bd4umkyLqOLnMpdOLZ0E') // Replace with user ID
-          .child('content')
-          .child(contentId)
-          .child('image.jpg'); // Assuming the file is an image
+      // Update the content's thumbnail if a new image was uploaded
+      if (downloadURL != null) {
+        content = content.copyWith(thumbnail: downloadURL);
+      }
 
-      // Upload the file to Firestore storage
-      await ref.putFile(file);
+      // Set the dateUpdated attribute to the current date and time
+      content = content.copyWith(dateUpdated: DateTime.now().toString());
 
-      // Get the download URL of the uploaded image
-      final downloadURL = await ref.getDownloadURL();
-
-      // Update link firebase
-      await _firestore
+      // Update the Firestore document with the content data
+      await FirebaseFirestore.instance
           .collection('users')
-          .doc('Bd4umkyLqOLnMpdOLZ0E')
+          .doc('Bd4umkyLqOLnMpdOLZ0E') // Replace with user ID
           .collection('content')
-          .doc(contentId)
-          .update({'thumbnail': downloadURL});
-
-      // Update the thumbnail field of the content model with the download URL
-      final updatedContent = ContentModel(
-        // Assuming ContentModel has a constructor to update the thumbnail
-        // Update other fields as needed
-        thumbnail: downloadURL,
-      );
-
-      // Return the updated content model
-      return updatedContent;
+          .doc(content.contentId)
+          .update(content.toJson());
     } catch (e) {
-      // Handle errors
-      throw Exception('Failed to change thumbnail: $e');
+      print("SOME ERROR: $e");
+    }
+  }
+
+  Future<ContentModel> getContentById({
+    required String userId,
+    required String contentId,
+  }) async {
+    try {
+      // Define the document reference
+      final docRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('content')
+          .doc(contentId);
+
+      // Fetch the document snapshot
+      final docSnapshot = await docRef.get();
+
+      // Check if the document exists
+      final contentData = docSnapshot.data();
+      return ContentModel.fromJson(contentData!..['content_id'] = contentId);
+    } catch (e) {
+      throw ('Error fetching folder: $e');
     }
   }
 

@@ -124,7 +124,7 @@ class FolderRepository {
 
       // Check if the document exists
       final folderData = docSnapshot.data();
-      return FolderModel.fromJson(folderData!..['folderId'] = folderId);
+      return FolderModel.fromJson(folderData!..['folder_id'] = folderId);
     } catch (e) {
       throw ('Error fetching folder: $e');
     }

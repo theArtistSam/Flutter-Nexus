@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 part of 'content_screen_bloc.dart';
 
 sealed class ContentScreenEvent extends Equatable {
@@ -7,26 +9,54 @@ sealed class ContentScreenEvent extends Equatable {
   List<Object> get props => [];
 }
 
-// ignore: must_be_immutable
+class FetchFolders extends ContentScreenEvent {}
+
 class ToggleTranslateSummarizeView extends ContentScreenEvent {
   bool isLeftSelected;
   ToggleTranslateSummarizeView({required this.isLeftSelected});
 }
 
-// ignore: must_be_immutable
 class ToggleContainerView extends ContentScreenEvent {
   bool isOriginal;
   ToggleContainerView({required this.isOriginal});
 }
 
-// ignore: must_be_immutable
 class ToggleLikeDislike extends ContentScreenEvent {
   bool isLiked;
   ToggleLikeDislike({required this.isLiked});
 }
 
-// ignore: must_be_immutable
-class ContentScreenInitialEvent extends ContentScreenEvent {
-  ContentModel content;
-  ContentScreenInitialEvent({required this.content});
+class AddTag extends ContentScreenEvent {
+  String tag;
+  AddTag({
+    required this.tag,
+  });
 }
+
+class RemoveTag extends ContentScreenEvent {
+  final String tag;
+  const RemoveTag({required this.tag});
+}
+
+class AddThumbnail extends ContentScreenEvent {
+  XFile file;
+  AddThumbnail({required this.file});
+}
+
+class RemoveThumbnail extends ContentScreenEvent {}
+
+class DeleteContent extends ContentScreenEvent {}
+
+class ChangeFolder extends ContentScreenEvent {
+  final String? folderId;
+  const ChangeFolder({this.folderId});
+}
+
+class RevertChanges extends ContentScreenEvent {
+  final ContentModel content;
+  const RevertChanges({required this.content});
+}
+
+class UpdateContent extends ContentScreenEvent {}
+
+class FetchContent extends ContentScreenEvent {}

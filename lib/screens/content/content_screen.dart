@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nexus/blocs/content_screen_bloc/bloc/content_screen_bloc.dart';
 import 'package:nexus/models/content_model.dart';
 import 'package:nexus/models/folder_model.dart';
@@ -14,21 +15,21 @@ import 'package:nexus/widgets/bottom_sheets/content_configure_bottom_sheet.dart'
 import 'package:nexus/widgets/content_tile.dart';
 import 'package:nexus/widgets/styled_widgets/styled_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_snackbar.dart';
 import 'package:nexus/widgets/styled_widgets/styled_tabs.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 import 'package:nexus/widgets/styled_widgets/styled_textfield.dart';
 
 // ignore: must_be_immutable
 class ContentScreen extends StatefulWidget {
-  ContentScreen({super.key, required this.content});
+  const ContentScreen({super.key, required this.content});
 
-  ContentModel content;
+  final ContentModel content;
   @override
   State<ContentScreen> createState() => _ContentScreenState();
 }
 
 class _ContentScreenState extends State<ContentScreen> {
-  String dropdownValue = "School Work";
   bool isOriginalDisplayed = false;
   late ContentScreenBloc contentScreenBloc;
 
@@ -39,10 +40,7 @@ class _ContentScreenState extends State<ContentScreen> {
 
   @override
   void initState() {
-    contentScreenBloc = ContentScreenBloc();
-
-    // CHECK THIS: NOT BEING USED AT THE MOMENT
-    contentScreenBloc.add(ContentScreenInitialEvent(content: widget.content));
+    contentScreenBloc = ContentScreenBloc(content: widget.content);
 
     // Create the audio player.
     player = AudioPlayer();
@@ -99,12 +97,17 @@ class _ContentScreenState extends State<ContentScreen> {
         body: SizedBox(
           child: Stack(
             children: [
-              Image.network(
-                widget.content.thumbnail ?? '',
-                fit: BoxFit.cover,
-                width: double.infinity,
-                // height: double.infinity,
-                height: 410,
+              BlocBuilder<ContentScreenBloc, ContentScreenState>(
+                builder: (context, state) {
+                  final currentState = state as ContentScreenInitial;
+                  return Image.network(
+                    currentState.content.thumbnail!,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    // height: double.infinity,
+                    height: 410,
+                  );
+                },
               ),
               Positioned(
                 child: Container(
@@ -146,25 +149,42 @@ class _ContentScreenState extends State<ContentScreen> {
                             icon: 'pencil-filled',
                             height: 20,
                             onTap: () {
+                              bool isConfirmed = false;
+                              final state = (contentScreenBloc.state
+                                  as ContentScreenInitial);
+                              final ContentModel content = state.content;
+
                               showModalBottomSheet(
                                   isScrollControlled: true,
                                   context: context,
-                                  builder: (context) => BlocProvider(
-                                        create: (context) => contentScreenBloc,
-                                        child: BlocBuilder<ContentScreenBloc,
-                                            ContentScreenState>(
-                                          builder: (context, state) {
-                                            return EditBottomSheet(
-                                              content: widget.content,
-                                              // FIX THIS >>>
-                                              folders: (state
-                                                      as ContentScreenInitial)
-                                                  .folders,
-                                            );
-                                          },
-                                        ),
-                                      ) // Add actual content
-                                  );
+                                  builder: (context) {
+                                    return BlocProvider.value(
+                                      value: contentScreenBloc,
+                                      child: EditBottomSheet(
+                                        onConfirm: () {
+                                          isConfirmed = true;
+                                          // Add an event to update content
+                                          contentScreenBloc.add(
+                                            UpdateContent(),
+                                          );
+                                          StyledSnackbar.show(
+                                            context: context,
+                                            message: "Content updated",
+                                          );
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    );
+                                  } // Add actual content
+                                  ).whenComplete(
+                                () {
+                                  if (!isConfirmed) {
+                                    contentScreenBloc.add(
+                                      RevertChanges(content: content),
+                                    );
+                                  }
+                                },
+                              );
                             },
                             padding: 11.5,
                             backgroundColor: Colors.black26,
@@ -275,29 +295,34 @@ class _ContentScreenState extends State<ContentScreen> {
           borderRadius: SmoothBorderRadius(cornerRadius: 15),
           onTap: onTap,
           child: Ink(
-              decoration: ShapeDecoration(
-                  color: Colors.black26,
-                  shape: SmoothRectangleBorder(
-                      borderRadius: SmoothBorderRadius(
-                          cornerRadius: 15, cornerSmoothing: .8))),
-              child: Padding(
-                padding: const EdgeInsets.all(15),
-                child: Row(
-                  children: [
-                    StyledText(
-                      text: title,
-                      color: NexusColors.textColorLight,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                    ),
-                    const Spacer(),
-                    SvgPicture.asset(
-                      'assets/icons/$icon.svg',
-                      color: Colors.white,
-                    )
-                  ],
+            decoration: ShapeDecoration(
+              color: Colors.black26,
+              shape: SmoothRectangleBorder(
+                borderRadius: SmoothBorderRadius(
+                  cornerRadius: 15,
+                  cornerSmoothing: .8,
                 ),
-              )),
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(15),
+              child: Row(
+                children: [
+                  StyledText(
+                    text: title,
+                    color: NexusColors.textColorLight,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                  ),
+                  const Spacer(),
+                  SvgPicture.asset(
+                    'assets/icons/$icon.svg',
+                    color: Colors.white,
+                  )
+                ],
+              ),
+            ),
+          ),
         ),
       );
 
@@ -319,8 +344,10 @@ class _ContentScreenState extends State<ContentScreen> {
             decoration: ShapeDecoration(
               color: NexusColors.accentColor,
               shape: SmoothRectangleBorder(
-                borderRadius:
-                    SmoothBorderRadius(cornerRadius: 15, cornerSmoothing: 0.8),
+                borderRadius: SmoothBorderRadius(
+                  cornerRadius: 15,
+                  cornerSmoothing: 0.8,
+                ),
               ),
             ),
             child: Padding(

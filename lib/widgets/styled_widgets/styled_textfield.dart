@@ -6,18 +6,20 @@ import 'package:nexus/utils/constants.dart';
 
 // ignore: must_be_immutable
 class StyledTextfield extends StatelessWidget {
-  StyledTextfield({
+  const StyledTextfield({
     super.key,
     this.icon,
     required this.hintText,
     required this.controller,
     this.maxlines = 1,
+    this.onChanged,
   });
 
-  String? icon;
-  String hintText;
-  int maxlines;
-  TextEditingController controller;
+  final String? icon;
+  final String hintText;
+  final int maxlines;
+  final TextEditingController controller;
+  final void Function(String)? onChanged;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -72,7 +74,7 @@ class StyledTextfield extends StatelessWidget {
                       ? Colors.white
                       : NexusColors.primaryColorLight,
                 ),
-                onChanged: (value) {},
+                onChanged: onChanged,
               ),
             ),
           ],

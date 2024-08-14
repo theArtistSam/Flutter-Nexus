@@ -164,8 +164,11 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             child: Padding(
-              padding:
-                  const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
+              padding: const EdgeInsets.only(
+                top: 20.0,
+                left: 20.0,
+                right: 20.0,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -317,7 +320,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               return ContentTile(
                                 title: content.title ?? '',
                                 thumbnail: content.thumbnail ?? '',
-                                date: content.dateUpdated ?? '',
+                                date: DateTimeConversion.formattedDate(
+                                  datetime: content.dateUpdated!,
+                                ),
                                 icon: content.type ?? '',
                                 onTap: () => {
                                   Navigator.push(
