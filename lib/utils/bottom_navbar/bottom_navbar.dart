@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:awesome_bottom_bar/tab_item.dart';
 import 'package:figma_squircle/figma_squircle.dart';
@@ -15,7 +13,10 @@ import 'package:nexus/screens/home/home_screen.dart';
 import 'package:nexus/screens/home/widgets/content_upload_tile.dart';
 import 'package:nexus/screens/library/library_screen.dart';
 import 'package:nexus/screens/test_screen.dart';
+import 'package:nexus/utils/bottom_navbar/widgets/upload_bottom_sheet.dart';
 import 'package:nexus/utils/constants.dart';
+import 'package:nexus/widgets/popup_menu.dart';
+import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 import 'package:nexus/widgets/styled_widgets/styled_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_tabs.dart';
@@ -63,8 +64,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         showModalBottomSheet(
           isScrollControlled: true,
           context: context,
-          builder: (context) =>
-              contentBottomSheet(bottomPadding: bottomPadding),
+          builder: (context) => const UploadBottomSheet(),
         ).whenComplete(() {
           navbarBloc.add(SwitchScreenEvent(index: temp));
         });
@@ -297,14 +297,19 @@ class _BottomNavBarState extends State<BottomNavBar> {
       Wrap(
         children: [
           Container(
-            decoration: const ShapeDecoration(
-              color: Colors.white,
-              shape: SmoothRectangleBorder(
+            decoration: ShapeDecoration(
+              color: NexusColors.backgroundColor,
+              shape: const SmoothRectangleBorder(
                 borderRadius: SmoothBorderRadius.only(
-                    topLeft:
-                        SmoothRadius(cornerRadius: 20, cornerSmoothing: 0.8),
-                    topRight:
-                        SmoothRadius(cornerRadius: 20, cornerSmoothing: 0.8)),
+                  topLeft: SmoothRadius(
+                    cornerRadius: 20,
+                    cornerSmoothing: 0.8,
+                  ),
+                  topRight: SmoothRadius(
+                    cornerRadius: 20,
+                    cornerSmoothing: 0.8,
+                  ),
+                ),
               ),
             ),
             child: Padding(
@@ -358,106 +363,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 StyledButton(
                   text: isLeftSelected ? 'Translate All' : 'Summarize All',
                   onTap: () => {},
-                ),
-                SizedBox(height: bottomPadding),
-              ]),
-            ),
-          )
-        ],
-      );
-
-  Widget contentBottomSheet({
-    required double bottomPadding,
-  }) =>
-      Wrap(
-        children: [
-          Container(
-            decoration: const ShapeDecoration(
-              color: Colors.white,
-              shape: SmoothRectangleBorder(
-                borderRadius: SmoothBorderRadius.only(
-                  topLeft: SmoothRadius(
-                    cornerRadius: 20,
-                    cornerSmoothing: 0.8,
-                  ),
-                  topRight: SmoothRadius(
-                    cornerRadius: 20,
-                    cornerSmoothing: 0.8,
-                  ),
-                ),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-              child: Column(children: [
-                Container(
-                  width: 60,
-                  height: 5,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: NexusColors.borderColor,
-                  ),
-                ),
-                const SizedBox(height: 15),
-                StyledTabs(
-                  leftTabText: 'Translate',
-                  rightTabText: 'Summarize',
-                  changeState: tabCallBack,
-                ),
-                const Divider(color: NexusColors.dividerColor, height: 30),
-                Row(
-                  children: [
-                    ContentUploadTile(
-                        icon: 'video',
-                        text: 'Video',
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          showModalBottomSheet(
-                            isScrollControlled: true,
-                            context: context,
-                            builder: (context) => uploadBottomSheet(
-                                isLeftSelected: isLeftSelected ?? true,
-                                bottomPadding:
-                                    bottomPadding), // Add actual content
-                          ).whenComplete(() => isLeftSelected = true);
-                        }),
-                    const Spacer(),
-                    ContentUploadTile(
-                      icon: 'audio',
-                      text: 'Audio',
-                      onTap: () => {},
-                    ),
-                    const Spacer(),
-                    ContentUploadTile(
-                      icon: 'image',
-                      text: 'Image',
-                      onTap: () => {},
-                    ),
-                    const Spacer(),
-                    ContentUploadTile(
-                      icon: 'document',
-                      text: 'Document',
-                      onTap: () => {},
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                StyledButton(
-                  text: 'Upload via Drive',
-                  onTap: () => {},
-                  icon: 'google-drive',
-                  isBordered: true,
-                ),
-                const SizedBox(height: 20),
-                StyledButton(
-                  text: 'Live chat with AI',
-                  onTap: () {
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (builder) => const ChatScreen()));
-                  },
-                  icon: 'message-filled',
                 ),
                 SizedBox(height: bottomPadding),
               ]),

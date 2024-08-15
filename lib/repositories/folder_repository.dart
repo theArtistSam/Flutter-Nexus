@@ -67,10 +67,12 @@ class FolderRepository {
     }
   }
 
-  Future<void> deleteFolder(
-      {required String userId, required String folderId}) async {
+  Future<void> deleteFolder({
+    required String userId,
+    required String folderId,
+  }) async {
     try {
-      // Define the document reference
+      // Define the document reference for the folder
       final docRef = FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
@@ -80,7 +82,22 @@ class FolderRepository {
       // Delete the folder from the database
       await docRef.delete();
 
-      print('Deleted the folder');
+      // Define the reference to the content collection
+      final contentRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('content');
+
+      // Query the content collection where folder_id matches the deleted folderId
+      final querySnapshot =
+          await contentRef.where('folder_id', isEqualTo: folderId).get();
+
+      // Update each content document to set folder_id to null
+      for (var doc in querySnapshot.docs) {
+        await doc.reference.update({'folder_id': null});
+      }
+
+      print('Deleted the folder and updated associated content.');
     } catch (e) {
       print("Some error occurred while deleting the folder: $e");
     }

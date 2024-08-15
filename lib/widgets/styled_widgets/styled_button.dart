@@ -63,31 +63,29 @@ class StyledButton extends StatelessWidget {
             cornerSmoothing: 0.8,
           ),
           onTap: onTap,
-          child: SizedBox(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  icon != null
-                      ? SvgPicture.asset(
-                          'assets/icons/$icon.svg',
-                          height: 24,
-                          color: isBordered
-                              ? NexusColors.primaryColorLight
-                              : NexusColors.textColorLight,
-                        )
-                      : const SizedBox(),
-                  SizedBox(width: icon != null ? 10 : 0),
-                  StyledText(
-                    text: text,
-                    // fontSize: 14,
-                    color: isBordered
-                        ? NexusColors.textColor
-                        : NexusColors.textColorLight,
-                  )
-                ],
-              ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                icon != null
+                    ? SvgPicture.asset(
+                        'assets/icons/$icon.svg',
+                        height: 24,
+                        color: isBordered
+                            ? NexusColors.primaryColorLight
+                            : NexusColors.textColorLight,
+                      )
+                    : const SizedBox(),
+                SizedBox(width: icon != null ? 10 : 0),
+                StyledText(
+                  text: text,
+                  // fontSize: 14,
+                  color: isBordered
+                      ? NexusColors.textColor
+                      : NexusColors.textColorLight,
+                )
+              ],
             ),
           ),
         ),

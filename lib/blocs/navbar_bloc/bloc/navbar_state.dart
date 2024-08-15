@@ -7,13 +7,15 @@ sealed class NavbarState extends Equatable {
 
 // ignore: must_be_immutable
 class NavbarInitial extends NavbarState {
-  int index;
-  List<Widget> pages;
+  final int index;
+  final List<Widget> pages;
   NavbarInitial({this.index = 0, this.pages = const []});
 
   NavbarInitial copyWith({int? index, List<Widget>? pages}) {
     return NavbarInitial(
-        index: index ?? this.index, pages: pages ?? this.pages);
+      index: index ?? this.index,
+      pages: pages ?? this.pages,
+    );
   }
 
   @override

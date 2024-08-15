@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart' as services;
 import 'package:flutter/material.dart';
-import 'package:nexus/utils/bottom_navbar.dart';
+import 'package:nexus/utils/bottom_navbar/bottom_navbar.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
