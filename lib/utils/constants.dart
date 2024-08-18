@@ -15,12 +15,12 @@ class NexusColors {
   static const borderColorLight = Color(0XFFCBD5E4);
 
   static const confirmColor = Color(0XFF2B9F03);
-  static const warningColor = Color(0XFFB50202);
+  static const warningColor = Color(0XFFff0f0f);
   static const dividerColor = Color(0xFFEBEEF4);
 
   // Issue Colors
   static const resolvedColor = Color(0xFF2B9F03);
-  static const closedColor = Color(0xFFB50202);
+  static const closedColor = Color(0xFFff0f0f);
   static const pendingColor = Color(0xFFF29339);
 
   static const primaryColorDark = Color(0XFF27457D);

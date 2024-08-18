@@ -38,6 +38,7 @@ class _FolderScreenState extends State<FolderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final double height = MediaQuery.of(context).size.height;
     return BlocProvider(
       create: (context) => folderScreenBloc,
       child: Scaffold(
@@ -111,85 +112,95 @@ class _FolderScreenState extends State<FolderScreen> {
           ),
         ),
         body: SingleChildScrollView(
-          child: Container(
-            decoration: ShapeDecoration(
-              color: NexusColors.backgroundColor,
-              shape: const SmoothRectangleBorder(
-                borderRadius: SmoothBorderRadius.only(
-                  topLeft: SmoothRadius(
-                    cornerRadius: 35,
-                    cornerSmoothing: 0.8,
-                  ),
-                  topRight: SmoothRadius(
-                    cornerRadius: 35,
-                    cornerSmoothing: 0.8,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: height - kToolbarHeight + 5 - 63,
+            ),
+            child: Container(
+              decoration: ShapeDecoration(
+                color: NexusColors.backgroundColor,
+                shape: const SmoothRectangleBorder(
+                  borderRadius: SmoothBorderRadius.only(
+                    topLeft: SmoothRadius(
+                      cornerRadius: 35,
+                      cornerSmoothing: 0.8,
+                    ),
+                    topRight: SmoothRadius(
+                      cornerRadius: 35,
+                      cornerSmoothing: 0.8,
+                    ),
                   ),
                 ),
               ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-              child: Column(children: [
-                BlocBuilder<FolderScreenBloc, FolderScreenState>(
-                  builder: (context, state) {
-                    Stream<List<ContentModel>> contents =
-                        (state as FolderScreenInitial).folderContents;
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                child: Column(children: [
+                  BlocBuilder<FolderScreenBloc, FolderScreenState>(
+                    builder: (context, state) {
+                      Stream<List<ContentModel>> contents =
+                          (state as FolderScreenInitial).folderContents;
 
-                    return StreamBuilder<List<ContentModel>>(
-                      stream: contents,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        } else if (snapshot.hasError) {
-                          return Center(
-                            child: Text('Error: ${snapshot.error}'),
-                          );
-                        } else if (!snapshot.hasData ||
-                            snapshot.data!.isEmpty) {
-                          return const Center(
-                            child: Text('No content available'),
-                          );
-                        }
-
-                        List<ContentModel> contentList = snapshot.data!;
-
-                        // ! use Expanded if want to use the following
-                        return ListView.separated(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: contentList.length,
-                          separatorBuilder: (BuildContext context, int index) {
-                            return const SizedBox(height: 15);
-                          },
-                          itemBuilder: (BuildContext context, int index) {
-                            ContentModel content = contentList[index];
-                            return ContentTile(
-                              title: content.title ?? '',
-                              thumbnail: content.thumbnail ?? '',
-                              date: DateTimeConversion.formattedDate(
-                                datetime: content.dateUpdated!,
-                              ),
-                              icon: content.type ?? '',
-                              onTap: () => {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (builder) =>
-                                        ContentScreen(content: content),
-                                  ),
-                                )
-                              },
+                      return StreamBuilder<List<ContentModel>>(
+                        stream: contents,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
                             );
-                          },
-                        );
-                      },
-                    );
-                  },
-                )
-              ]),
+                          } else if (snapshot.hasError) {
+                            return Center(
+                              child: Text('Error: ${snapshot.error}'),
+                            );
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return Center(
+                              child: StyledText(
+                                text: 'No content available',
+                                fontWeight: FontWeight.w500,
+                                color: NexusColors.secondaryTextColor,
+                              ),
+                            );
+                          }
+
+                          List<ContentModel> contentList = snapshot.data!;
+
+                          // ! use Expanded if want to use the following
+                          return ListView.separated(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: contentList.length,
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return const SizedBox(height: 15);
+                            },
+                            itemBuilder: (BuildContext context, int index) {
+                              ContentModel content = contentList[index];
+                              return ContentTile(
+                                title: content.title ?? '',
+                                thumbnail: content.thumbnail ?? '',
+                                date: DateTimeConversion.formattedDate(
+                                  datetime: content.dateUpdated!,
+                                ),
+                                icon: content.type ?? '',
+                                onTap: () => {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (builder) =>
+                                          ContentScreen(content: content),
+                                    ),
+                                  )
+                                },
+                              );
+                            },
+                          );
+                        },
+                      );
+                    },
+                  )
+                ]),
+              ),
             ),
           ),
         ),

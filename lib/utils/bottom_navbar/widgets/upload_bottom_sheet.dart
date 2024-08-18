@@ -149,15 +149,16 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
                             onSelected: (value) {
                               switch (value) {
                                 case 'Delete Selected':
-                                  uploadBottomSheetBloc
-                                      .add(RemoveSelectedFiles());
+                                  uploadBottomSheetBloc.add(
+                                    RemoveSelectedFiles(),
+                                  );
 
                                   break;
                                 default:
                               }
                             },
                             items: [
-                              if (files.isNotEmpty)
+                              if (selectionEnabled)
                                 const PopupItem(name: "Delete Selected"),
                               const PopupItem(name: "Upload Google Drive")
                             ],
@@ -267,9 +268,11 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
                                                 height: 24,
                                                 color: NexusColors.textColor,
                                               ),
-                                              const SizedBox(width: 10),
+                                              const SizedBox(width: 5),
                                               StyledText(
-                                                text: "Select Files",
+                                                text: "Select File",
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
                                                 color: NexusColors.textColor,
                                               )
                                             ],

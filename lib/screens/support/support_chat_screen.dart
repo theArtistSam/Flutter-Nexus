@@ -187,188 +187,205 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
         ),
         body: SingleChildScrollView(
           controller: scrollController,
-          child: Container(
-            decoration: ShapeDecoration(
-              color: NexusColors.backgroundColor,
-              shape: const SmoothRectangleBorder(
-                borderRadius: SmoothBorderRadius.only(
-                  topLeft: SmoothRadius(
-                    cornerRadius: 35,
-                    cornerSmoothing: 0.8,
-                  ),
-                  topRight: SmoothRadius(
-                    cornerRadius: 35,
-                    cornerSmoothing: 0.8,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: height - (kToolbarHeight + 5) - 53,
+            ),
+            child: DecoratedBox(
+              decoration: ShapeDecoration(
+                color: NexusColors.backgroundColor,
+                shape: const SmoothRectangleBorder(
+                  borderRadius: SmoothBorderRadius.only(
+                    topLeft: SmoothRadius(
+                      cornerRadius: 35,
+                      cornerSmoothing: 0.8,
+                    ),
+                    topRight: SmoothRadius(
+                      cornerRadius: 35,
+                      cornerSmoothing: 0.8,
+                    ),
                   ),
                 ),
               ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(
-                top: 5,
-                bottom: 85,
-                right: 20,
-                left: 20,
-              ),
-              child: BlocBuilder<SupportChatBloc, SupportChatState>(
-                builder: (context, state) {
-                  Stream<List<Message>> conversation =
-                      (state as SupportChatInitial).conversation;
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  top: 5,
+                  bottom: 85,
+                  right: 20,
+                  left: 20,
+                ),
+                child: BlocBuilder<SupportChatBloc, SupportChatState>(
+                  builder: (context, state) {
+                    Stream<List<Message>> conversation =
+                        (state as SupportChatInitial).conversation;
 
-                  return StreamBuilder<List<Message>>(
-                    stream: conversation,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else if (snapshot.hasError) {
-                        return Center(
-                          child: Text('Error: ${snapshot.error}'),
-                        );
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return const Center(
-                          child: Text('No issues yet'),
-                        );
-                      }
-                      List<Message> messageList = snapshot.data!;
+                    return StreamBuilder<List<Message>>(
+                      stream: conversation,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text('Error: ${snapshot.error}'),
+                          );
+                        } else if (!snapshot.hasData ||
+                            snapshot.data!.isEmpty) {
+                          return const Center(
+                            child: Text('No issues yet'),
+                          );
+                        }
+                        List<Message> messageList = snapshot.data!;
 
-                      // Scroll to bottom after messages are loaded
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        _scrollToBottom();
-                      });
+                        // Scroll to bottom after messages are loaded
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          _scrollToBottom();
+                        });
 
-                      return ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: messageList.length,
-                        separatorBuilder: (BuildContext context, int index) =>
-                            const SizedBox(height: 5),
-                        itemBuilder: (BuildContext context, int index) {
-                          Message message = messageList[index];
-                          bool isLast = index == messageList.length - 1;
-                          String adminId = 'bpReSCGFYZY9k1TuuCdW';
+                        return ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: messageList.length,
+                          separatorBuilder: (BuildContext context, int index) =>
+                              const SizedBox(height: 5),
+                          itemBuilder: (BuildContext context, int index) {
+                            Message message = messageList[index];
+                            bool isLast = index == messageList.length - 1;
+                            String adminId = 'bpReSCGFYZY9k1TuuCdW';
 
-                          // *Render admin tile
-                          bool isAdmin = messageList[index].senderId == adminId;
-                          // *if next message is from admin then user is last
-                          bool isUserLast = isLast ||
-                              messageList[index + 1].senderId == adminId;
+                            // *Render admin tile
+                            bool isAdmin =
+                                messageList[index].senderId == adminId;
+                            // *if next message is from admin then user is last
+                            bool isUserLast = isLast ||
+                                messageList[index + 1].senderId == adminId;
 
-                          bool isTimeStampRequired = index == 0 ||
-                              DateTimeConversion.isDifferentDay(
-                                index: index,
-                                messageList: messageList,
+                            bool isTimeStampRequired = index == 0 ||
+                                DateTimeConversion.isDifferentDay(
+                                  index: index,
+                                  messageList: messageList,
+                                  message: message,
+                                );
+
+                            print("$isTimeStampRequired :: ${message.text}");
+
+                            if (isAdmin) {
+                              return adminChat(
                                 message: message,
+                                isLast: !isUserLast || isLast,
+                                isTimeStampRequired: isTimeStampRequired,
                               );
-
-                          print("$isTimeStampRequired :: ${message.text}");
-
-                          if (isAdmin) {
-                            return adminChat(
+                            }
+                            return userChat(
                               message: message,
-                              isLast: !isUserLast || isLast,
+                              isLast: isUserLast || isLast,
                               isTimeStampRequired: isTimeStampRequired,
                             );
-                          }
-                          return userChat(
-                            message: message,
-                            isLast: isUserLast || isLast,
-                            isTimeStampRequired: isTimeStampRequired,
-                          );
-                        },
-                      );
-                    },
-                  );
-                },
+                          },
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
             ),
           ),
         ),
         bottomSheet: widget.issue.issueStatus == 'Pending'
-            ? Container(
-                decoration: BoxDecoration(
-                  color: NexusColors.backgroundColor,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      offset: const Offset(0, 0), // x, y values
-                      blurRadius: 25,
-                      spreadRadius: 10,
-                    ),
-                  ],
-                ),
-                child: Padding(
-                    padding: EdgeInsets.fromLTRB(
-                      15,
-                      10,
-                      15,
-                      10 + bottomPadding,
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        StyledIconButton(
-                          isBordered: true,
-                          backgroundColor: NexusColors.backgroundColor,
-                          // COLOR: FIX
-                          iconColor: NexusColors.isDark
-                              ? Colors.white
-                              : NexusColors.primaryColor,
-                          // padding: 6,
-                          height: 20,
-                          icon: 'gallery-add',
-                          onTap: () async {
-                            final XFile? image =
-                                await ImageSelector.pickImage();
-                            if (image != null) {
-                              supportChatBloc.add(SendImageMessage(
-                                documentId: widget.issue.issueId!,
-                                senderId: widget.issue.userId!,
-                                file: image,
-                              ));
-                            } else {
-                              if (context.mounted) {
-                                StyledSnackbar.show(
-                                  context: context,
-                                  message: 'Image not selected',
-                                );
-                              }
-                            }
-                          },
+            ? Wrap(
+                children: [
+                  Divider(
+                    height: 0,
+                    color: NexusColors.accentColor,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: NexusColors.backgroundColor,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          offset: const Offset(0, 0), // x, y values
+                          blurRadius: 25,
+                          spreadRadius: 10,
                         ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: StyledTextfield(
-                            maxlines: 3,
-                            // FOR NOW LET"S KEEP IT SUMMARIZE
-                            hintText: 'Describe your issue..',
-                            controller: textEditingController,
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        StyledIconButton(
-                          icon: 'arrow-up',
-                          backgroundColor: textEditingController.text.isEmpty
-                              ? NexusColors.primaryColor.withOpacity(0.5)
-                              : NexusColors.primaryColor,
-                          onTap: () {
-                            if (textEditingController.text.isNotEmpty) {
-                              String message =
-                                  textEditingController.text.trim();
-                              supportChatBloc.add(
-                                SendTextMessage(
-                                  message: message,
-                                  documentId: widget.issue.issueId!,
-                                  senderId: widget.issue.userId!,
-                                ),
-                              );
-                              textEditingController.text = '';
-                            }
-                          },
-                        )
                       ],
-                    )),
+                    ),
+                    child: Padding(
+                        padding: EdgeInsets.fromLTRB(
+                          15,
+                          10,
+                          15,
+                          10 + bottomPadding,
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            StyledIconButton(
+                              isBordered: true,
+                              backgroundColor: NexusColors.backgroundColor,
+                              // COLOR: FIX
+                              iconColor: NexusColors.isDark
+                                  ? Colors.white
+                                  : NexusColors.primaryColor,
+                              // padding: 6,
+                              height: 20,
+                              icon: 'gallery-add',
+                              onTap: () async {
+                                final XFile? image =
+                                    await ImageSelector.pickImage();
+                                if (image != null) {
+                                  supportChatBloc.add(SendImageMessage(
+                                    documentId: widget.issue.issueId!,
+                                    senderId: widget.issue.userId!,
+                                    file: image,
+                                  ));
+                                } else {
+                                  if (context.mounted) {
+                                    StyledSnackbar.show(
+                                      context: context,
+                                      message: 'Image not selected',
+                                    );
+                                  }
+                                }
+                              },
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: StyledTextfield(
+                                maxlines: 3,
+                                // FOR NOW LET"S KEEP IT SUMMARIZE
+                                hintText: 'Describe your issue..',
+                                controller: textEditingController,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            StyledIconButton(
+                              icon: 'arrow-up',
+                              backgroundColor: textEditingController
+                                      .text.isEmpty
+                                  ? NexusColors.primaryColor.withOpacity(0.5)
+                                  : NexusColors.primaryColor,
+                              onTap: () {
+                                if (textEditingController.text.isNotEmpty) {
+                                  String message =
+                                      textEditingController.text.trim();
+                                  supportChatBloc.add(
+                                    SendTextMessage(
+                                      message: message,
+                                      documentId: widget.issue.issueId!,
+                                      senderId: widget.issue.userId!,
+                                    ),
+                                  );
+                                  textEditingController.text = '';
+                                }
+                              },
+                            )
+                          ],
+                        )),
+                  ),
+                ],
               )
             : const SizedBox(),
       ),
