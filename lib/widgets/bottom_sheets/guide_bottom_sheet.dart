@@ -35,10 +35,9 @@ class _GuideBottomSheetState extends State<GuideBottomSheet> {
     if (widget.guide.type == 'video') {
       _initVideoPlayerController(link: widget.guide.link!);
     } else {
+      videoPlayerController = null;
       guideBottomSheetBloc.add(const StartTimer());
     }
-
-    videoPlayerController = null;
 
     super.initState();
   }
@@ -50,13 +49,16 @@ class _GuideBottomSheetState extends State<GuideBottomSheet> {
     super.dispose();
   }
 
-  _initVideoPlayerController({required String link}) async {
+  Future<void> _initVideoPlayerController({required String link}) async {
     videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(link));
-    await videoPlayerController!.initialize();
+    await videoPlayerController!
+        .initialize(); // Ensure controller is initialized
     final duration =
         videoPlayerController!.value.duration.inMilliseconds / 1000.0;
     videoPlayerController!.play();
     guideBottomSheetBloc.add(StartTimer(endTime: duration));
+
+    setState(() {}); // Trigger UI update after initialization
   }
 
   @override
@@ -116,15 +118,12 @@ class _GuideBottomSheetState extends State<GuideBottomSheet> {
                                   value: true,
                                 ),
                               );
-                              if (videoPlayerController?.value.isInitialized ??
-                                  false) {
+                              if (videoPlayerController != null) {
                                 videoPlayerController!.pause();
                               }
                             },
                             child: widget.guide.type == 'video' &&
-                                    (videoPlayerController
-                                            ?.value.isInitialized ??
-                                        false)
+                                    (videoPlayerController != null)
                                 ? AspectRatio(
                                     aspectRatio: videoPlayerController!
                                         .value.aspectRatio,

@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class APIStubScreen extends StatefulWidget {
   const APIStubScreen({super.key});
@@ -54,6 +55,12 @@ class _APIStubScreenState extends State<APIStubScreen> {
           // await _avFile.writeAsBytes(_video.buffer.asUint8List());
           // var sampleAudio = "${path.path}/sample_audio.mp3";
           // File audioFile = await _avFile.copy(sampleAudio);
+
+          // final audioFile =
+          await _extractAudioFromVideo('assets/video/sample.mp4');
+          // print("Sending audio");
+          // final response = await APIStub().sendAudio(audioFile!);
+          // print(response);
         },
         child: const Center(
           child: Text("PRESS ME"),
@@ -72,6 +79,61 @@ Future<String?> _copyAssetToFile(String assetPath, Directory tempDir) async {
   } catch (e) {
     print('Error loading asset: $e');
     return null;
+  }
+}
+
+Future<File?> _extractAudioFromVideo(String videoAssetPath) async {
+  try {
+    ByteData videoData = await rootBundle.load(videoAssetPath);
+
+    // Get application documents directory
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+
+    // Save the video to a file
+    String videoFilePath = "${appDocDir.path}/sample.mp4";
+    File videoFile = File(videoFilePath);
+    await videoFile.create();
+    await videoFile.writeAsBytes(videoData.buffer.asUint8List());
+
+    print("Video file created at $videoFilePath");
+
+    // Define the path for the audio file
+    String audioFilePath = "${appDocDir.path}/just_audio.mp3";
+    // print(await videoFile.length());
+
+    // Execute the FFmpeg command to extract audio
+    final command = '-i $videoFilePath -vn -ac copy $audioFilePath';
+    print(command);
+    FFmpegKit.executeAsync(command).then((session) async {
+      final returnCode = await session.getReturnCode();
+
+      if (ReturnCode.isSuccess(returnCode)) {
+        print("FFmpeg command successful");
+
+        // Verify the audio file existence after FFmpeg command completion
+        if (await File(audioFilePath).exists()) {
+          print("Audio file created at $audioFilePath");
+          return File(audioFilePath);
+        } else {
+          throw Exception("Audio file was not created");
+        }
+      } else if (ReturnCode.isCancel(returnCode)) {
+        print("FFmpeg command canceled");
+        throw Exception("FFmpeg command was canceled");
+      } else {
+        final errorMessage = await session.getFailStackTrace();
+        final state = await session.getState();
+
+        // Console output generated for this execution
+        // final output = await session.getOutput();
+        // print(output);
+        print("FFmpeg command failed (state: $state, error: $errorMessage)");
+        throw Exception("FFmpeg command failed: $errorMessage");
+      }
+    });
+  } catch (e) {
+    print("Exception: $e");
+    throw Exception("Failed to extract audio: $e");
   }
 }
 
