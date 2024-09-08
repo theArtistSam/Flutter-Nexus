@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/cupertino.dart';
@@ -345,13 +346,21 @@ class _CommunityScreenState extends State<CommunityScreen> {
           child: Stack(
             children: [
               ClipSmoothRect(
-                radius:
-                    SmoothBorderRadius(cornerRadius: 15, cornerSmoothing: 0.8),
-                child: Image.network(
-                  image,
+                radius: SmoothBorderRadius(
+                  cornerRadius: 15,
+                  cornerSmoothing: 0.8,
+                ),
+                child: CachedNetworkImage(
+                  imageUrl: image,
+                  fit: BoxFit.cover,
                   width: 125,
                   height: 150,
-                  fit: BoxFit.cover,
+                  progressIndicatorBuilder: (context, url, progress) => Center(
+                    child: CircularProgressIndicator(
+                      value: progress.progress,
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
               ),
               // TODO: IF NEW

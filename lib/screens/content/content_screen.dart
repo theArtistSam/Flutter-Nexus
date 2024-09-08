@@ -1,4 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -100,12 +101,19 @@ class _ContentScreenState extends State<ContentScreen> {
               BlocBuilder<ContentScreenBloc, ContentScreenState>(
                 builder: (context, state) {
                   final currentState = state as ContentScreenInitial;
-                  return Image.network(
-                    currentState.content.thumbnail!,
+                  return CachedNetworkImage(
+                    imageUrl: currentState.content.thumbnail!,
                     fit: BoxFit.cover,
                     width: double.infinity,
-                    // height: double.infinity,
                     height: 410,
+                    progressIndicatorBuilder: (context, url, progress) =>
+                        Center(
+                      child: CircularProgressIndicator(
+                        value: progress.progress,
+                      ),
+                    ),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
                   );
                 },
               ),

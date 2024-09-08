@@ -2,6 +2,7 @@
 
 import 'dart:ffi';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -10,173 +11,97 @@ import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 
 // ignore: must_be_immutable
 class ContentTile extends StatelessWidget {
-  ContentTile({
+  const ContentTile({
     super.key,
     required this.title,
     required this.thumbnail,
     required this.date,
     required this.icon,
     required this.onTap,
-    this.isSmall = false,
   });
 
-  String title;
-  String date;
-  String icon;
-  String thumbnail;
-  VoidCallback onTap;
-  bool isSmall;
+  final String title;
+  final String date;
+  final String icon;
+  final String thumbnail;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return isSmall ? contentTileSmall() : contentTileLarge();
-  }
-
-  Widget contentTileSmall() => GestureDetector(
+    return GestureDetector(
       onTap: onTap,
-      child: Container(
-        // height: 100,
-        decoration: ShapeDecoration(
-            color: NexusColors.accentColorLight,
-            shape: SmoothRectangleBorder(
-                borderRadius: SmoothBorderRadius(
-                    cornerRadius: 15, cornerSmoothing: 0.8))),
-        child: Row(
-          children: [
-            Stack(children: [
-              // Give this container available height
-              ClipSmoothRect(
-                radius: const SmoothBorderRadius.only(
-                  topLeft: SmoothRadius(cornerRadius: 15, cornerSmoothing: 0.8),
-                  bottomLeft:
-                      SmoothRadius(cornerRadius: 15, cornerSmoothing: 0.8),
-                ),
-                child: Image.network(
-                  thumbnail,
-                  fit: BoxFit.cover,
-                  width: 100,
-                  // height: double.infinity,
-                ),
+      child: Stack(
+        children: [
+          SizedBox(
+            height: 170,
+            child: ClipSmoothRect(
+              radius: SmoothBorderRadius(
+                cornerRadius: 15,
+                cornerSmoothing: 0.8,
               ),
-              Positioned.fill(
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.black.withOpacity(0), // Start color (0% black)
-                        Colors.black.withOpacity(0.5), // End color (90% black)
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Center(
-                    child: SvgPicture.asset(
-                      'assets/icons/$icon.svg',
-                      color: Colors.white60,
-                      height: 35,
-                    ),
+              child: CachedNetworkImage(
+                imageUrl: thumbnail,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                progressIndicatorBuilder: (context, url, progress) => Center(
+                  child: CircularProgressIndicator(
+                    value: progress.progress,
                   ),
                 ),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
-            ]),
-            const SizedBox(
-              width: 15,
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    StyledText(
-                      text: title,
-                      fontSize: 16,
-                      color: NexusColors.textColorDark,
-                    ),
-                    // const Spacer(),
-                    StyledText(
-                      text: date,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: NexusColors.secondaryTextColorDark,
-                    ),
+          ),
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withOpacity(0), // Start color (0% black)
+                    Colors.black.withOpacity(0.5), // End color (90% black)
                   ],
                 ),
-              ),
-            )
-          ],
-        ),
-      ));
-
-  Widget contentTileLarge() => GestureDetector(
-        onTap: onTap,
-        child: Stack(
-          children: [
-            SizedBox(
-              height: 170,
-              child: ClipSmoothRect(
-                radius: SmoothBorderRadius(
-                  cornerRadius: 15,
-                  cornerSmoothing: 0.8,
-                ),
-                child: Image.network(
-                  thumbnail,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                ),
+                borderRadius: BorderRadius.circular(15),
               ),
             ),
-            Positioned.fill(
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.black.withOpacity(0), // Start color (0% black)
-                      Colors.black.withOpacity(0.5), // End color (90% black)
+          ),
+          SizedBox(
+            height: 170,
+            child: Padding(
+              padding: const EdgeInsets.all(15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Spacer(),
+                  StyledText(
+                    text: title,
+                    fontSize: 18,
+                    color: NexusColors.textColorLight,
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      StyledText(
+                        text: date,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: NexusColors.secondaryTextColorLight,
+                      ),
+                      const Spacer(),
+                      SvgPicture.asset(
+                        'assets/icons/$icon.svg',
+                        color: NexusColors.secondaryTextColorLight,
+                      )
                     ],
-                  ),
-                  borderRadius: BorderRadius.circular(15),
-                ),
+                  )
+                ],
               ),
             ),
-            SizedBox(
-              height: 170,
-              child: Padding(
-                padding: const EdgeInsets.all(15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Spacer(),
-                    StyledText(
-                      text: title,
-                      fontSize: 18,
-                      color: NexusColors.textColorLight,
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        StyledText(
-                          text: date,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: NexusColors.secondaryTextColorLight,
-                        ),
-                        const Spacer(),
-                        SvgPicture.asset(
-                          'assets/icons/$icon.svg',
-                          color: NexusColors.secondaryTextColorLight,
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
+  }
 }

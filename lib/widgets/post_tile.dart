@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -154,10 +155,21 @@ class PostTile extends StatelessWidget {
                                       cornerRadius: 15,
                                       cornerSmoothing: .8,
                                     ),
-                                    child: Image.network(
-                                      post.images?[0] ?? '',
+                                    child: CachedNetworkImage(
+                                      imageUrl: post.images?[0] ?? '',
                                       fit: BoxFit.cover,
                                       width: double.infinity,
+                                      progressIndicatorBuilder:
+                                          (context, url, progress) => SizedBox(
+                                        height: 100,
+                                        child: Center(
+                                          child: CircularProgressIndicator(
+                                            value: progress.progress,
+                                          ),
+                                        ),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
                                     ),
                                   )
                                 : const SizedBox(),

@@ -1,19 +1,20 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 
 // ignore: must_be_immutable
 class GuideTile extends StatelessWidget {
-  GuideTile({
+  const GuideTile({
     super.key,
     required this.image,
     required this.title,
     required this.onTap,
   });
 
-  String image;
-  String title;
-  VoidCallback onTap;
+  final String image;
+  final String title;
+  final VoidCallback onTap;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -27,10 +28,16 @@ class GuideTile extends StatelessWidget {
                 cornerRadius: 15,
                 cornerSmoothing: 0.8,
               ),
-              child: Image.network(
-                image,
+              child: CachedNetworkImage(
+                imageUrl: image,
                 fit: BoxFit.cover,
                 width: double.infinity,
+                progressIndicatorBuilder: (context, url, progress) => Center(
+                  child: CircularProgressIndicator(
+                    value: progress.progress,
+                  ),
+                ),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),
           ),

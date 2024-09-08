@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -257,11 +258,19 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                         width: double.infinity,
                         fit: BoxFit.cover,
                       )
-                    : Image.network(
-                        content.thumbnail ?? '',
-                        height: 180,
-                        width: double.infinity,
+                    : CachedNetworkImage(
+                        imageUrl: content.thumbnail ?? '',
                         fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: 180,
+                        progressIndicatorBuilder: (context, url, progress) =>
+                            Center(
+                          child: CircularProgressIndicator(
+                            value: progress.progress,
+                          ),
+                        ),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
                       ),
               ),
               image != null

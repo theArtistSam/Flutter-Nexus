@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:figma_squircle/figma_squircle.dart';
@@ -122,18 +123,35 @@ class _GuideBottomSheetState extends State<GuideBottomSheet> {
                                 videoPlayerController!.pause();
                               }
                             },
-                            child: widget.guide.type == 'video' &&
-                                    (videoPlayerController != null)
-                                ? AspectRatio(
-                                    aspectRatio: videoPlayerController!
-                                        .value.aspectRatio,
-                                    child: VideoPlayer(videoPlayerController!),
-                                  )
+                            child: widget.guide.type == 'video'
+                                ? (videoPlayerController != null &&
+                                        videoPlayerController!
+                                            .value.isInitialized
+                                    ? AspectRatio(
+                                        aspectRatio: videoPlayerController!
+                                            .value.aspectRatio,
+                                        child:
+                                            VideoPlayer(videoPlayerController!),
+                                      )
+                                    : const Center(
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                        ),
+                                      ))
                                 : Container(
                                     color: NexusColors.accentColorDark,
-                                    child: Image.network(
-                                      widget.guide.link!,
+                                    child: CachedNetworkImage(
+                                      imageUrl: widget.guide.link!,
+                                      width: double.infinity,
                                       fit: BoxFit.cover,
+                                      progressIndicatorBuilder:
+                                          (context, url, progress) => Center(
+                                        child: CircularProgressIndicator(
+                                          value: progress.progress,
+                                        ),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
                                     ),
                                   ),
                           ),
