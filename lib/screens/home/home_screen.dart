@@ -320,9 +320,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               return ContentTile(
                                 title: content.title ?? '',
                                 thumbnail: content.thumbnail ?? '',
-                                date: DateTimeConversion.formattedDate(
-                                  datetime: content.dateUpdated!,
-                                ),
+                                date: content.dateUpdated!,
                                 icon: content.type ?? '',
                                 onTap: () => {
                                   Navigator.push(

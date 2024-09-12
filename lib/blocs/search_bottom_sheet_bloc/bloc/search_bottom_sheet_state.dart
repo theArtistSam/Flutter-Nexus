@@ -8,14 +8,34 @@ sealed class SearchBottomSheetState extends Equatable {
 }
 
 // ignore: must_be_immutable
-final class SearchBottomSheetInitial extends SearchBottomSheetState {
-  Stream<List<ContentModel>> content;
-  SearchBottomSheetInitial({this.content = const Stream.empty()});
+class SearchBottomSheetInitial extends SearchBottomSheetState {
+  final Stream<List<ContentModel>> searchedContents;
+  final Stream<List<FolderModel>> searchedFolders;
+  final LibraryRepository searchService;
+  final String searchQuery;
 
-  SearchBottomSheetInitial copyWith({Stream<List<ContentModel>>? content}) {
-    return SearchBottomSheetInitial(content: content ?? this.content);
+  const SearchBottomSheetInitial({
+    this.searchedContents = const Stream.empty(),
+    this.searchedFolders = const Stream.empty(),
+    required this.searchService,
+    this.searchQuery = '',
+  });
+
+  SearchBottomSheetInitial copyWith({
+    Stream<List<ContentModel>>? searchedContents,
+    Stream<List<FolderModel>>? searchedFolders,
+    LibraryRepository? searchService,
+    String? searchQuery,
+  }) {
+    return SearchBottomSheetInitial(
+      searchedContents: searchedContents ?? this.searchedContents,
+      searchService: searchService ?? this.searchService,
+      searchQuery: searchQuery ?? this.searchQuery,
+      searchedFolders: searchedFolders ?? this.searchedFolders,
+    );
   }
 
   @override
-  List<Object> get props => [content];
+  List<Object> get props =>
+      [searchedContents, searchService, searchQuery, searchedFolders];
 }

@@ -197,6 +197,7 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
                                         separatorBuilder: (context, index) {
                                           return Divider(
                                             height: 10,
+                                            thickness: 1.5,
                                             color: NexusColors.backgroundColor,
                                           );
                                         },
@@ -216,6 +217,7 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
                                     : const SizedBox(),
                                 Divider(
                                   height: 0,
+                                  thickness: 1.5,
                                   color: NexusColors.backgroundColor,
                                 ),
                                 Padding(

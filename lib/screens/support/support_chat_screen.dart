@@ -299,19 +299,19 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
                 children: [
                   Divider(
                     height: 0,
-                    color: NexusColors.accentColor,
+                    color: NexusColors.borderColor,
                   ),
                   Container(
                     decoration: BoxDecoration(
                       color: NexusColors.backgroundColor,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          offset: const Offset(0, 0), // x, y values
-                          blurRadius: 25,
-                          spreadRadius: 10,
-                        ),
-                      ],
+                      // boxShadow: [
+                      //   BoxShadow(
+                      //     color: Colors.black.withOpacity(0.05),
+                      //     offset: const Offset(0, 0), // x, y values
+                      //     blurRadius: 25,
+                      //     spreadRadius: 10,
+                      //   ),
+                      // ],
                     ),
                     child: Padding(
                         padding: EdgeInsets.fromLTRB(

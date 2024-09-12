@@ -179,9 +179,7 @@ class _FolderScreenState extends State<FolderScreen> {
                               return ContentTile(
                                 title: content.title ?? '',
                                 thumbnail: content.thumbnail ?? '',
-                                date: DateTimeConversion.formattedDate(
-                                  datetime: content.dateUpdated!,
-                                ),
+                                date: content.dateUpdated!,
                                 icon: content.type ?? '',
                                 onTap: () => {
                                   Navigator.push(

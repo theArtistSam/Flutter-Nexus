@@ -9,12 +9,12 @@ sealed class LibraryScreenState extends Equatable {
 
 // ignore: must_be_immutable
 class LibraryScreenInitial extends LibraryScreenState {
-  bool isLeftSelected;
-  Stream<List<ContentModel>> contents;
-  Stream<List<FolderModel>> folders;
+  final bool isLeftSelected;
+  final Stream<List<ContentModel>> contents;
+  final Stream<List<FolderModel>> folders;
+  final LibraryStatus status;
 
-  LibraryStatus status;
-  LibraryScreenInitial({
+  const LibraryScreenInitial({
     this.isLeftSelected = true,
     this.contents = const Stream.empty(),
     this.status = LibraryStatus.loading,
@@ -25,14 +25,14 @@ class LibraryScreenInitial extends LibraryScreenState {
     bool? isLeftSelected,
     Stream<List<ContentModel>>? contents,
     LibraryStatus? status,
-      Stream<List<FolderModel>>? folders,
-
+    Stream<List<FolderModel>>? folders,
   }) {
     return LibraryScreenInitial(
-        isLeftSelected: isLeftSelected ?? this.isLeftSelected,
-        contents: contents ?? this.contents,
-        status: status ?? this.status,
-        folders: folders ?? this.folders);
+      isLeftSelected: isLeftSelected ?? this.isLeftSelected,
+      contents: contents ?? this.contents,
+      status: status ?? this.status,
+      folders: folders ?? this.folders,
+    );
   }
 
   @override

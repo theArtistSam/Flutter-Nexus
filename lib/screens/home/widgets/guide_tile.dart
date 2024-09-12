@@ -32,11 +32,6 @@ class GuideTile extends StatelessWidget {
                 imageUrl: image,
                 fit: BoxFit.cover,
                 width: double.infinity,
-                progressIndicatorBuilder: (context, url, progress) => Center(
-                  child: CircularProgressIndicator(
-                    value: progress.progress,
-                  ),
-                ),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),

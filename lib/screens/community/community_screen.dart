@@ -208,7 +208,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 10),
               Container(
                 color: NexusColors.backgroundColor,
                 child: Padding(
@@ -281,7 +281,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 10),
               BlocBuilder<CommunityBloc, CommunityState>(
                 builder: (context, state) {
                   Stream<List<PostModel>> posts =
@@ -310,7 +310,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: postList.length,
                         separatorBuilder: (BuildContext context, int index) =>
-                            const SizedBox(height: 15),
+                            const SizedBox(height: 10),
                         itemBuilder: (BuildContext context, int index) {
                           PostModel postModel = postList[index];
                           return PostTile(

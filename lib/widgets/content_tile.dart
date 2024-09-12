@@ -84,7 +84,8 @@ class ContentTile extends StatelessWidget {
                   Row(
                     children: [
                       StyledText(
-                        text: date,
+                        // text: date,
+                        text: DateTimeConversion.formattedDate(datetime: date),
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                         color: NexusColors.secondaryTextColorLight,

@@ -57,6 +57,19 @@ class DateTimeConversion {
     return formattedTime;
   }
 
+  static String formattedSearchDate(String inputDate) {
+    // Define the input format
+    final DateFormat inputFormat = DateFormat('MMMM d, yyyy');
+    // Define the output format
+    final DateFormat outputFormat = DateFormat('yyyy-MM-dd');
+
+    // Parse the input date
+    DateTime dateTime = inputFormat.parse(inputDate);
+
+    // Format the date into the desired output format
+    return outputFormat.format(dateTime);
+  }
+
   static String getTime({required String datetime}) {
     DateTime messageTime = DateTime.parse(datetime); // Parse string to DateTime
 
@@ -70,6 +83,23 @@ class DateTimeConversion {
       lastMessageTime = DateTimeConversion.formattedDate(datetime: datetime);
     }
     return lastMessageTime;
+  }
+
+  // Function to extract date components from a full date string
+  static bool dateMatches(String date, String query) {
+    final dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
+    try {
+      final parsedDate = dateFormat.parse(date);
+      final year = parsedDate.year.toString();
+      final month = DateFormat("MMMM").format(parsedDate).toLowerCase();
+      final day = parsedDate.day.toString();
+
+      return year.contains(query) ||
+          month.contains(query) ||
+          day.contains(query);
+    } catch (e) {
+      return false; // If parsing fails, don't match
+    }
   }
 
   static String getChatTime({required String datetime}) {

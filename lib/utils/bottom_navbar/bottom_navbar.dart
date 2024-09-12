@@ -91,27 +91,38 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 enableOpacityAnimation: false,
                 preferredWidgetSize: Size.fromHeight(56 + bottomPadding),
                 controller: controller,
-                child: BottomBarCreative(
-                  // backgroundSelected: NexusColors.accentColor,
-                  // highlightStyle: HighlightStyle(
-                  //     // background: NexusColors.backgroundColor,
-                  //     ),
-                  pad: 1,
-                  top: 5,
-                  bottom: 0,
-                  items: navbarItems(index: state.index),
-                  backgroundColor: NexusColors.backgroundColor,
-                  color: NexusColors.secondaryTextColor,
-                  // COLOR: FIX
-                  colorSelected: NexusColors.isDark
-                      ? Colors.white
-                      : NexusColors.primaryColorLight,
-                  titleStyle: GoogleFonts.poppins(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w500,
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      top: BorderSide(
+                        color: NexusColors.borderColor,
+                        width: 1,
+                      ),
+                    ),
                   ),
-                  indexSelected: state.index,
-                  onTap: (int index) => _changeTab(index, state, bottomPadding),
+                  child: BottomBarCreative(
+                    // backgroundSelected: NexusColors.accentColor,
+                    // highlightStyle: HighlightStyle(
+                    //     // background: NexusColors.backgroundColor,
+                    //     ),
+                    pad: 1,
+                    top: 5,
+                    bottom: 0,
+                    items: navbarItems(index: state.index),
+                    backgroundColor: NexusColors.backgroundColor,
+                    color: NexusColors.secondaryTextColor,
+                    // COLOR: FIX
+                    colorSelected: NexusColors.isDark
+                        ? Colors.white
+                        : NexusColors.primaryColorLight,
+                    titleStyle: GoogleFonts.poppins(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    indexSelected: state.index,
+                    onTap: (int index) =>
+                        _changeTab(index, state, bottomPadding),
+                  ),
                 ),
               ),
             );

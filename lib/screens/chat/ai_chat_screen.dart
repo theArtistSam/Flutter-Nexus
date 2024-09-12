@@ -254,6 +254,7 @@ class _AIChatScreenState extends State<AIChatScreen> {
                 ),
                 Divider(
                   height: 0,
+                  thickness: 1.5,
                   color: NexusColors.backgroundColor,
                 ),
                 Padding(

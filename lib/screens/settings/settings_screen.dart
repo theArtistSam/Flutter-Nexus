@@ -156,7 +156,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
             const SizedBox(
-              height: 15,
+              height: 10,
             ),
             Container(
               color: NexusColors.backgroundColor,
@@ -206,7 +206,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
             const SizedBox(
-              height: 15,
+              height: 10,
             ),
             Container(
               color: NexusColors.backgroundColor,

@@ -67,8 +67,6 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
             ),
             child: Padding(
               padding: const EdgeInsets.only(
-                left: 25,
-                right: 25,
                 top: 15,
                 bottom: 25,
               ),
@@ -90,10 +88,13 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
                   const SizedBox(
                     height: 15,
                   ),
-                  StyledText(
-                    text: 'Comments',
-                    color: NexusColors.textColor,
-                    fontSize: 20,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15),
+                    child: StyledText(
+                      text: 'Comments',
+                      color: NexusColors.textColor,
+                      fontSize: 20,
+                    ),
                   ),
                   const SizedBox(
                     height: 10,
@@ -129,7 +130,8 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
                             List<CommentModel> commentList = snapshot.data!;
 
                             return ListView.separated(
-                              padding: const EdgeInsets.all(0),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15),
                               itemCount: commentList.length,
                               separatorBuilder:
                                   (BuildContext context, int index) =>
@@ -144,41 +146,54 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
                       },
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 15),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: StyledTextfield(
-                            hintText: 'Add a comment...',
-                            controller: textEditingController,
-                          ),
+                  Column(
+                    children: [
+                      Divider(
+                        height: 0,
+                        color: NexusColors.borderColor,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 10,
+                          left: 15,
+                          right: 15,
                         ),
-                        const SizedBox(
-                          width: 10,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: StyledTextfield(
+                                hintText: 'Add a comment...',
+                                controller: textEditingController,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            StyledIconButton(
+                              icon: 'arrow-up',
+                              backgroundColor: textEditingController
+                                      .text.isNotEmpty
+                                  ? NexusColors.primaryColor
+                                  : NexusColors.primaryColor.withOpacity(.5),
+                              onTap: () {
+                                final String text =
+                                    textEditingController.text.trim();
+                                if (text.isNotEmpty) {
+                                  commentBottomSheetBloc.add(
+                                    AddComment(
+                                      postId: widget.postId,
+                                      userId: 'Bd4umkyLqOLnMpdOLZ0E',
+                                      text: text,
+                                    ),
+                                  );
+                                  textEditingController.text = '';
+                                }
+                              },
+                            ),
+                          ],
                         ),
-                        StyledIconButton(
-                          icon: 'arrow-up',
-                          backgroundColor: textEditingController.text.isNotEmpty
-                              ? NexusColors.primaryColor
-                              : NexusColors.primaryColor.withOpacity(.5),
-                          onTap: () {
-                            final String text =
-                                textEditingController.text.trim();
-                            if (text.isNotEmpty) {
-                              commentBottomSheetBloc.add(
-                                AddComment(
-                                  postId: widget.postId,
-                                  userId: 'Bd4umkyLqOLnMpdOLZ0E',
-                                  text: text,
-                                ),
-                              );
-                              textEditingController.text = '';
-                            }
-                          },
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               ),

@@ -8,3 +8,13 @@ sealed class SearchBottomSheetEvent extends Equatable {
 }
 
 class FetchContent extends SearchBottomSheetEvent {}
+
+class SearchContent extends SearchBottomSheetEvent {
+  final String query;
+  const SearchContent({required this.query});
+}
+
+class SearchFolder extends SearchBottomSheetEvent {
+  final String query;
+  const SearchFolder({required this.query});
+}

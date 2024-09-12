@@ -100,12 +100,16 @@ class _LibraryScreenState extends State<LibraryScreen> {
                   padding: 6,
                   icon: 'search',
                   onTap: () {
+                    bool isLeftSelected =
+                        (libraryScreenBloc.state as LibraryScreenInitial)
+                            .isLeftSelected;
                     // * Use modal bottom sheet
-
                     showModalBottomSheet(
                       isScrollControlled: true,
                       context: context,
-                      builder: (context) => const SearchBottomSheet(),
+                      builder: (context) => SearchBottomSheet(
+                        isFolderSelected: isLeftSelected,
+                      ),
                     );
                   },
                 )
@@ -247,9 +251,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                                   return ContentTile(
                                     title: content.title ?? '',
                                     thumbnail: content.thumbnail ?? '',
-                                    date: DateTimeConversion.formattedDate(
-                                      datetime: content.dateUpdated!,
-                                    ),
+                                    date: content.dateUpdated!,
                                     icon: content.type ?? '',
                                     onTap: () => {
                                       Navigator.push(

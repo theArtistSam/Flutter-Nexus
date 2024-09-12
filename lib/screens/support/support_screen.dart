@@ -277,6 +277,7 @@ class _SupportScreenState extends State<SupportScreen> {
                 ),
                 Divider(
                   height: 0,
+                  thickness: 1.5,
                   color: NexusColors.backgroundColor,
                 ),
                 Padding(
