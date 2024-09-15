@@ -11,8 +11,11 @@ final class PostBottomSheetInitial extends PostBottomSheetState {
   final PostModel? post;
   final List<XFile> images;
   final bool showImages;
-  const PostBottomSheetInitial(
-      {this.post, this.images = const [], this.showImages = false});
+  const PostBottomSheetInitial({
+    this.post,
+    this.images = const [],
+    this.showImages = false,
+  });
 
   PostBottomSheetInitial copyWith(
       {PostModel? post, List<XFile>? images, bool? showImages}) {

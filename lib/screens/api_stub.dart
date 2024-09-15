@@ -56,8 +56,9 @@ class _APIStubScreenState extends State<APIStubScreen> {
           // var sampleAudio = "${path.path}/sample_audio.mp3";
           // File audioFile = await _avFile.copy(sampleAudio);
 
-          // final audioFile =
-          await _extractAudioFromVideo('assets/video/sample.mp4');
+          // *SEND VIDEO TO AUDIO*
+          // final File? audioFile =
+          //     await _extractAudioFromVideo('assets/video/video.mp4');
           // print("Sending audio");
           // final response = await APIStub().sendAudio(audioFile!);
           // print(response);
@@ -89,50 +90,44 @@ Future<File?> _extractAudioFromVideo(String videoAssetPath) async {
     // Get application documents directory
     Directory appDocDir = await getApplicationDocumentsDirectory();
 
-    // Save the video to a file
+    // Save the video to a file (temp directory)
     String videoFilePath = "${appDocDir.path}/sample.mp4";
     File videoFile = File(videoFilePath);
     await videoFile.create();
     await videoFile.writeAsBytes(videoData.buffer.asUint8List());
 
-    print("Video file created at $videoFilePath");
-
-    // Define the path for the audio file
-    String audioFilePath = "${appDocDir.path}/just_audio.mp3";
-    // print(await videoFile.length());
+    // Define the path for the audio file (temp directory)
+    String audioFilePath = "${appDocDir.path}/just_audio.aac";
 
     // Execute the FFmpeg command to extract audio
-    final command = '-i $videoFilePath -vn -ac copy $audioFilePath';
-    print(command);
-    FFmpegKit.executeAsync(command).then((session) async {
-      final returnCode = await session.getReturnCode();
+    final command =
+        '-y -v debug -i $videoFilePath -vn -af "volume=10" -acodec aac $audioFilePath';
 
-      if (ReturnCode.isSuccess(returnCode)) {
-        print("FFmpeg command successful");
+    final session = await FFmpegKit.execute(command);
+    final returnCode = await session.getReturnCode();
+    final errorMessage = await session.getFailStackTrace();
 
-        // Verify the audio file existence after FFmpeg command completion
-        if (await File(audioFilePath).exists()) {
-          print("Audio file created at $audioFilePath");
-          return File(audioFilePath);
-        } else {
-          throw Exception("Audio file was not created");
-        }
-      } else if (ReturnCode.isCancel(returnCode)) {
-        print("FFmpeg command canceled");
-        throw Exception("FFmpeg command was canceled");
+    if (ReturnCode.isSuccess(returnCode)) {
+      final audioFile = File(audioFilePath);
+
+      // * Add delay to ensure file update
+      await Future.delayed(const Duration(seconds: 1));
+
+      final fileExists = await audioFile.exists();
+      final fileLength = fileExists ? await audioFile.length() : 0;
+
+      if (fileExists && fileLength > 0) {
+        return audioFile;
       } else {
-        final errorMessage = await session.getFailStackTrace();
-        final state = await session.getState();
-
-        // Console output generated for this execution
-        // final output = await session.getOutput();
-        // print(output);
-        print("FFmpeg command failed (state: $state, error: $errorMessage)");
-        throw Exception("FFmpeg command failed: $errorMessage");
+        throw Exception(
+            "Audio file was created but has zero length or does not exist");
       }
-    });
+    } else if (ReturnCode.isCancel(returnCode)) {
+      throw Exception("FFmpeg command was canceled");
+    } else {
+      throw Exception("FFmpeg command failed: $errorMessage");
+    }
   } catch (e) {
-    print("Exception: $e");
     throw Exception("Failed to extract audio: $e");
   }
 }
@@ -146,7 +141,7 @@ class APIStub {
         'audio',
         audioFile.path,
         contentType:
-            MediaType('audio', 'mp3'), // Adjust based on your audio type
+            MediaType('audio', 'aac'), // Adjust based on your audio type
       ),
     );
     var response = await request.send();

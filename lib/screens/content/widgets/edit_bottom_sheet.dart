@@ -374,9 +374,9 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                     }).toList(),
                   ],
                   onChanged: (String? id) {
-                    context
-                        .read<ContentScreenBloc>()
-                        .add(ChangeFolder(folderId: id));
+                    context.read<ContentScreenBloc>().add(
+                          ChangeFolder(folderId: id),
+                        );
                   },
                 ),
               ),

@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart' as services;
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:nexus/screens/api_stub.dart';
 import 'package:nexus/screens/cached_image_stub.dart';
 import 'package:nexus/screens/home/home_screen.dart';
 import 'package:nexus/screens/video_stub.dart';
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       title: 'NEXUS',
       debugShowCheckedModeBanner: false,
-      home: BottomNavBar(),
+      home: APIStubScreen(),
     );
   }
 }
