@@ -157,7 +157,7 @@ class CommunityRepository {
 
   Future<void> addPost({
     required PostModel post,
-    required List<XFile> images,
+    required List<dynamic> images,
   }) async {
     try {
       // Hard-code value for now
@@ -197,70 +197,72 @@ class CommunityRepository {
     }
   }
 
-  Future<void> deleteImage({
-    required String postId,
-    required String url,
-  }) async {
-    try {
-      final docRef = FirebaseFirestore.instance.collection('posts').doc(postId);
-
-      await docRef.update({
-        'images': FieldValue.arrayRemove([url]),
-      });
-
-      // Extract the file path from the URL
-      final Uri uri = Uri.parse(url);
-      final String decodedPath = Uri.decodeFull(uri.path);
-      final List<String> segments = decodedPath.split('/');
-      final String fileName = segments.last;
-
-      // Create a reference to the file to be deleted
-      final imageRef = FirebaseStorage.instance
-          .ref()
-          .child('posts')
-          .child(postId)
-          .child(fileName);
-
-      // Delete the image
-      await imageRef.delete();
-
-      print('Image deleted successfully');
-    } catch (e) {
-      print('CANNOT DELETE IMAGE $e');
-    }
-  }
-
   Future<void> updatePost({
     required PostModel post,
-    required List<XFile> images,
+    required List<dynamic> images,
   }) async {
     try {
-      // Hard-code value for now
       final docRef =
           FirebaseFirestore.instance.collection('posts').doc(post.postId);
 
-      // Add the post document
-      await docRef.update(post.toJson());
+      // Get existing post document
+      DocumentSnapshot docSnapshot = await docRef.get();
+      Map<String, dynamic>? docData =
+          docSnapshot.data() as Map<String, dynamic>?;
+      List<dynamic> existingImages = docData?['images'] ?? [];
 
-      if (images.isNotEmpty) {
-        // Reference to the storage location
-        final storageRef =
-            FirebaseStorage.instance.ref().child('posts').child(docRef.id);
+      // Reference to the storage location
+      final storageRef =
+          FirebaseStorage.instance.ref().child('posts').child(docRef.id);
 
-        // List to hold the download URLs of the uploaded images
-        List<String> imageUrls = [];
+      // List to hold the download URLs of the uploaded images
+      List<String> imageUrls = [];
+      Set<String> currentImageUrls = {}; // To keep track of images in storage
 
-        // Upload each image and get the download URL
-        for (int i = 0; i < images.length; i++) {
+      // Upload each image and get the download URL
+      for (var image in images) {
+        if (image is XFile) {
+          // Upload the image if it's of type XFile
           String filename = const Uuid().v1();
           final imageRef = storageRef.child("$filename.jpg");
-          await imageRef.putFile(File(images[i].path));
+          await imageRef.putFile(File(image.path));
           String downloadUrl = await imageRef.getDownloadURL();
           imageUrls.add(downloadUrl);
+          currentImageUrls.add(downloadUrl);
+        } else if (image is String) {
+          // If image is of type String, it's already uploaded
+          imageUrls.add(image);
+          currentImageUrls.add(image);
         }
+      }
 
-        // Update the "images" attribute in the Firebase document
-        await docRef.update({'images': FieldValue.arrayUnion(imageUrls)});
+      // Update other attributes (description, permissions, etc.)
+      await docRef.update(post.toJson());
+
+      // Update the "images" attribute in the Firebase document
+      await docRef.update({'images': FieldValue.arrayUnion(imageUrls)});
+
+      // Clean up old images
+      List<String> existingImageUrls = List<String>.from(existingImages);
+      for (String url in existingImageUrls) {
+        if (!currentImageUrls.contains(url)) {
+          // Remove the image URL from Firestore
+          await docRef.update({
+            'images': FieldValue.arrayRemove([url])
+          });
+
+          // Delete the image from Firebase Storage
+          try {
+            final listResult = await storageRef.listAll();
+            for (final item in listResult.items) {
+              if (await item.getDownloadURL() == url) {
+                await item.delete();
+              }
+            }
+          } catch (e) {
+            print("Failed to delete image from storage: $e");
+          }
+        }
       }
 
       print('Post updated successfully');

@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       title: 'NEXUS',
       debugShowCheckedModeBanner: false,
-      home: APIStubScreen(),
+      home: BottomNavBar(),
     );
   }
 }

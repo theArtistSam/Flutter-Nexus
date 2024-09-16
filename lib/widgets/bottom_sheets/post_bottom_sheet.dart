@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:figma_squircle/figma_squircle.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -10,8 +12,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:nexus/blocs/post_bottom_sheet_bloc/bloc/post_bottom_sheet_bloc.dart';
 import 'package:nexus/models/post_model.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/bottom_sheets/delete_bottom_sheet.dart';
-import 'package:nexus/widgets/popup_menu.dart';
 import 'package:nexus/widgets/styled_widgets/styled_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_snackbar.dart';
@@ -33,9 +33,7 @@ class _PostBottomSheetState extends State<PostBottomSheet> {
   @override
   void initState() {
     controller = TextEditingController();
-    postBottomSheetBloc = PostBottomSheetBloc();
-    postBottomSheetBloc.add(FetchPost(post: widget.post));
-    controller.text = widget.post?.description ?? '';
+    postBottomSheetBloc = PostBottomSheetBloc(post: widget.post);
     super.initState();
   }
 
@@ -48,65 +46,63 @@ class _PostBottomSheetState extends State<PostBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
+    // final height = MediaQuery.of(context).size.height;
     return BlocProvider(
       create: (context) => postBottomSheetBloc,
-      child: Wrap(
-        children: [
-          SingleChildScrollView(
-            child: Container(
-              height: height - 40,
-              decoration: ShapeDecoration(
-                color: NexusColors.backgroundColor,
-                shape: const SmoothRectangleBorder(
-                  borderRadius: SmoothBorderRadius.all(
-                    SmoothRadius(
-                      cornerRadius: 20,
-                      cornerSmoothing: 0.8,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: Wrap(
+            children: [
+              Container(
+                decoration: ShapeDecoration(
+                  color: NexusColors.backgroundColor,
+                  shape: const SmoothRectangleBorder(
+                    borderRadius: SmoothBorderRadius.all(
+                      SmoothRadius(
+                        cornerRadius: 20,
+                        cornerSmoothing: 0.8,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              child: BlocBuilder<PostBottomSheetBloc, PostBottomSheetState>(
-                builder: (context, state) {
-                  final currentState = (state as PostBottomSheetInitial);
-                  final bool isPrivate =
-                      currentState.post?.permissions!.isPrivate! ?? false;
-                  final bool commentAllowed =
-                      currentState.post?.permissions!.commentAllowed! ?? true;
-                  final bool likeAllowed =
-                      currentState.post?.permissions!.likeAllowed! ?? true;
-                  final bool shareAllowed =
-                      currentState.post?.permissions!.shareAllowed! ?? true;
-                  final List<XFile> newImages = currentState.images;
-                  final List<String>? images = currentState.post?.images;
-                  final bool showImages = currentState.showImages;
-                  final bool isImagesAvailable =
-                      images != null && showImages && images.isNotEmpty;
+                child: BlocBuilder<PostBottomSheetBloc, PostBottomSheetState>(
+                  builder: (context, state) {
+                    final currentState = (state as PostBottomSheetInitial);
+                    final PostModel post = currentState.post!;
 
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Center(
-                          child: Container(
-                            width: 60,
-                            height: 5,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(
-                                20,
+                    // Post useful properties
+                    final bool isPrivate = post.permissions!.isPrivate!;
+                    final bool commentAllowed =
+                        post.permissions!.commentAllowed!;
+                    final bool likeAllowed = post.permissions!.likeAllowed!;
+                    final bool shareAllowed = post.permissions!.shareAllowed!;
+
+                    final List<dynamic> images = currentState.images;
+
+                    // *Set the description
+                    controller.text = post.description!;
+
+                    return Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(
+                            child: Container(
+                              width: 60,
+                              height: 5,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: NexusColors.borderColor,
                               ),
-                              color: NexusColors.borderColor,
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 0, 8, 0),
-                          child: Row(
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Row(
                             children: [
                               ClipOval(
                                 child: Image.asset(
@@ -179,257 +175,282 @@ class _PostBottomSheetState extends State<PostBottomSheet> {
                                   ),
                                 ),
                               ),
-                              PopupMenu(
-                                onSelected: (value) {
-                                  switch (value) {
-                                    case 'Comments':
-                                      postBottomSheetBloc.add(
-                                        AllowComments(
-                                          allowComments: !commentAllowed,
-                                        ),
+                            ],
+                          ),
+                          const SizedBox(height: 15),
+                          StyledTextfield(
+                            hintText: 'Share your thoughts...',
+                            controller: controller,
+                            maxlines: 5,
+                            onChanged: (val) => {post.description = val},
+                          ),
+                          const SizedBox(height: 15),
+                          Row(
+                            children: [
+                              StyledText(
+                                text: 'Add Images',
+                                color: NexusColors.textColor,
+                              ),
+                              const Spacer(),
+                              StyledIconButton(
+                                icon: 'add-circle',
+                                padding: 0,
+                                backgroundColor: NexusColors.backgroundColor,
+                                iconColor: NexusColors.textColor,
+                                onTap: () async {
+                                  // Use image picker to pick the image from gallery
+                                  final XFile? image =
+                                      await ImageSelector.pickImage();
+
+                                  // Ensure the image is not null before proceeding
+                                  if (image == null) {
+                                    if (context.mounted) {
+                                      StyledSnackbar.show(
+                                        context: context,
+                                        message: 'Image not picked',
                                       );
-                                      break;
-                                    case 'Likes':
-                                      postBottomSheetBloc.add(
-                                        AllowLikes(
-                                          allowLikes: !likeAllowed,
-                                        ),
+                                    }
+                                    return;
+                                  }
+
+                                  // Check if the image has already been picked
+                                  bool alreadyPicked =
+                                      images.any((pickedImage) {
+                                    if (pickedImage is XFile) {
+                                      return pickedImage.path == image.path;
+                                    }
+                                    return false; // Handle other types accordingly
+                                  });
+
+                                  bool checkLength = images.length < 5;
+
+                                  if (alreadyPicked) {
+                                    if (context.mounted) {
+                                      StyledSnackbar.show(
+                                        context: context,
+                                        message: 'Image already picked',
                                       );
-                                      break;
-                                    case 'Shares':
-                                      postBottomSheetBloc.add(
-                                        AllowShares(
-                                          allowShares: !shareAllowed,
-                                        ),
+                                    }
+                                  } else if (!checkLength) {
+                                    if (context.mounted) {
+                                      StyledSnackbar.show(
+                                        context: context,
+                                        message:
+                                            'Cannot pick more than 5 images',
                                       );
-                                      break;
-                                    default:
+                                    }
+                                  } else {
+                                    postBottomSheetBloc.add(
+                                      AddImage(file: image),
+                                    );
+                                    StyledSnackbar.show(
+                                      context: context,
+                                      message: "Image Added",
+                                    );
                                   }
                                 },
-                                items: [
-                                  PopupItem(
-                                    name: 'Comments',
-                                    value: commentAllowed,
-                                  ),
-                                  PopupItem(
-                                    name: 'Likes',
-                                    value: likeAllowed,
-                                  ),
-                                  PopupItem(
-                                    name: 'Shares',
-                                    value: shareAllowed,
-                                  ),
-                                ],
-                                icon: 'dots-circle',
                               )
                             ],
                           ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Column(
-                              children: [
-                                const SizedBox(height: 15),
-                                StyledTextfield(
-                                  hintText: 'Share your thoughts...',
-                                  controller: controller,
-                                  maxlines: 5,
-                                ),
-                                const SizedBox(height: 15),
-                                widget.post != null
-                                    ? Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 10.0),
-                                        child: Row(
-                                          children: [
-                                            StyledText(
-                                              text: 'Images',
-                                              fontSize: 16,
-                                              color: NexusColors.textColor,
-                                            ),
-                                            const Spacer(),
-                                            StyledIconButton(
-                                              icon: showImages
-                                                  ? 'arrow-circle-up'
-                                                  : 'arrow-circle-down',
-                                              iconColor: NexusColors.textColor,
-                                              backgroundColor:
-                                                  NexusColors.backgroundColor,
-                                              onTap: () {
-                                                postBottomSheetBloc.add(
-                                                  ViewImages(
-                                                    showImages: !showImages,
-                                                  ),
-                                                );
-                                              },
-                                              padding: 0,
-                                            )
-                                          ],
-                                        ),
-                                      )
-                                    : const SizedBox(),
-                                isImagesAvailable
-                                    ? imageSlider(
-                                        list: images,
-                                        isNew: false,
-                                      )
-                                    : const SizedBox(),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  children: [
-                                    StyledText(
-                                      text: 'Add Images',
-                                      color: NexusColors.textColor,
-                                    ),
-                                    const Spacer(),
-                                    StyledIconButton(
-                                      icon: 'add-circle',
-                                      padding: 0,
-                                      backgroundColor:
-                                          NexusColors.backgroundColor,
-                                      iconColor: NexusColors.textColor,
-                                      onTap: () async {
-                                        // Use image picker to pick the image from gallery
-                                        final XFile? image =
-                                            await ImageSelector.pickImage();
-
-                                        // Ensure the image is not null before proceeding
-                                        if (image == null) {
-                                          if (context.mounted) {
-                                            print("NOO");
-                                            StyledSnackbar.show(
-                                              context: context,
-                                              message: 'Image not picked',
-                                            );
-                                          }
-                                          return;
-                                        }
-
-                                        // Check if the image has already been picked
-                                        bool alreadyPicked = newImages.any(
-                                            (pickedImage) =>
-                                                pickedImage.path == image.path);
-                                        bool checkLength = newImages.length +
-                                                (images?.length ?? 0) <
-                                            5;
-
-                                        if (alreadyPicked) {
-                                          if (context.mounted) {
-                                            StyledSnackbar.show(
-                                              context: context,
-                                              message: 'Image already picked',
-                                            );
-                                          }
-                                        } else if (!checkLength) {
-                                          if (context.mounted) {
-                                            StyledSnackbar.show(
-                                              context: context,
-                                              message:
-                                                  'Cannot pick more than 5 images',
-                                            );
-                                          }
-                                        } else {
-                                          postBottomSheetBloc.add(
-                                            PickImage(file: image),
-                                          );
-                                        }
-                                      },
-                                    )
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                imageSlider(
-                                  list: newImages,
-                                  isNew: true,
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                const Spacer(),
-                                StyledButton(
-                                  text: widget.post == null
-                                      ? "Post now"
-                                      : "Update Post",
-                                  onTap: () {
-                                    String text = controller.text.trim();
-                                    if (text.isNotEmpty) {
-                                      if (widget.post == null) {
-                                        // event to add a new post
-                                        postBottomSheetBloc.add(
-                                          AddPost(text: text),
-                                        );
-
-                                        //  TODO: use bloc listner and enum
-                                        //  to wait for the post to be added
-                                        //  then use pop out of the screen
-                                        StyledSnackbar.show(
-                                          context: context,
-                                          message: "Post added",
-                                        );
-                                      } else {
-                                        // event to update the post
-
-                                        postBottomSheetBloc.add(
-                                          UpdatePost(text: text),
-                                        );
-                                        StyledSnackbar.show(
-                                          context: context,
-                                          message: "Post updated",
-                                        );
-                                      }
-                                    }
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                              ],
-                            ),
+                          const SizedBox(
+                            height: 10,
                           ),
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).padding.bottom,
-                        )
-                      ],
-                    ),
-                  );
-                },
+                          images.isEmpty
+                              ? Container(
+                                  height: 200,
+                                  decoration: ShapeDecoration(
+                                    color: NexusColors.accentColor,
+                                    shape: SmoothRectangleBorder(
+                                      borderRadius: SmoothBorderRadius(
+                                        cornerRadius: 15,
+                                        cornerSmoothing: .8,
+                                      ),
+                                    ),
+                                  ),
+                                  child: const Center(
+                                    child: StyledText(
+                                      text: 'No image',
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                )
+                              : imageSlider(
+                                  list: images,
+                                ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          StyledText(
+                            text: 'Permissions',
+                            color: NexusColors.textColor,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          allowTile(
+                            isAllowed: likeAllowed,
+                            text: 'Allow Likes',
+                            onTap: () {
+                              postBottomSheetBloc.add(
+                                AllowLikes(
+                                  allowLikes: !likeAllowed,
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          allowTile(
+                            isAllowed: shareAllowed,
+                            text: 'Allow Shares',
+                            onTap: () {
+                              postBottomSheetBloc.add(
+                                AllowShares(
+                                  allowShares: !shareAllowed,
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          allowTile(
+                            isAllowed: commentAllowed,
+                            text: 'Allow Comments',
+                            onTap: () {
+                              postBottomSheetBloc.add(
+                                AllowComments(
+                                  allowComments: !commentAllowed,
+                                ),
+                              );
+                            },
+                          ),
+                          // const Spacer(),
+                          Divider(
+                            height: 20,
+                            color: NexusColors.borderColor,
+                          ),
+                          StyledButton(
+                            text: widget.post == null
+                                ? "Post now"
+                                : "Update Post",
+                            onTap: () {
+                              String text = controller.text.trim();
+                              if (text.isNotEmpty) {
+                                if (widget.post == null) {
+                                  // event to add a new post
+                                  postBottomSheetBloc.add(
+                                    AddPost(text: text),
+                                  );
+
+                                  //  TODO: use bloc listner and enum
+                                  //  to wait for the post to be added
+                                  //  then use pop out of the screen
+                                  StyledSnackbar.show(
+                                    context: context,
+                                    message: "Post added",
+                                  );
+                                } else {
+                                  // event to update the post
+
+                                  postBottomSheetBloc.add(
+                                    UpdatePost(text: text),
+                                  );
+                                  StyledSnackbar.show(
+                                    context: context,
+                                    message: "Post updated",
+                                  );
+                                }
+                              }
+                              Navigator.pop(context);
+                            },
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).padding.bottom,
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget imageSlider({
-    required list,
-    required bool isNew,
+  Widget allowTile({
+    required bool isAllowed,
+    required String text,
+    required VoidCallback onTap,
   }) {
-    getImage(image) {
-      // * isNew refers to XFILE path
-      // * !isNew refers to String src
-      if (isNew) {
-        return Image.file(
-          File(image.path),
-          width: double.infinity,
-          fit: BoxFit.cover,
-        );
-      }
-      return Image.network(
-        image,
+    return Container(
+      decoration: ShapeDecoration(
+        color: NexusColors.accentColor,
+        shape: SmoothRectangleBorder(
+          borderRadius: SmoothBorderRadius(
+            cornerRadius: 15,
+            cornerSmoothing: .8,
+          ),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(15.0, 8, 8, 8),
+        child: Row(
+          children: [
+            StyledText(
+              text: text,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+            const Spacer(),
+            StyledIconButton(
+              icon: isAllowed ? 'tick-circle' : 'empty-circle',
+              onTap: onTap,
+              backgroundColor: NexusColors.accentColor,
+              iconColor: isAllowed
+                  ? NexusColors.textColor
+                  : NexusColors.secondaryTextColor,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget getImage({required dynamic image}) {
+    if (image is XFile) {
+      // It's an XFile, so use File widget
+      return Image.file(
+        File(image.path),
         width: double.infinity,
         fit: BoxFit.cover,
       );
     }
+    return CachedNetworkImage(
+      imageUrl: image,
+      fit: BoxFit.cover,
+      width: double.infinity,
+      progressIndicatorBuilder: (context, url, progress) => Center(
+        child: CircularProgressIndicator(
+          value: progress.progress,
+        ),
+      ),
+      errorWidget: (context, url, error) => const Icon(Icons.error),
+    );
+  }
 
+  Widget imageSlider({
+    required List<dynamic> list,
+  }) {
     return CarouselSlider(
       options: CarouselOptions(
         height: 200,
-        autoPlay: false,
+        autoPlay: true,
         viewportFraction: 1,
         enableInfiniteScroll: false,
       ),
@@ -444,39 +465,21 @@ class _PostBottomSheetState extends State<PostBottomSheet> {
               child: Stack(
                 children: [
                   ClipSmoothRect(
-                      radius: SmoothBorderRadius(
-                        cornerRadius: 10,
-                        cornerSmoothing: 0.8,
-                      ),
-                      child: getImage(image)),
+                    radius: SmoothBorderRadius(
+                      cornerRadius: 15,
+                      cornerSmoothing: 0.8,
+                    ),
+                    child: getImage(image: image),
+                  ),
                   Center(
                     child: StyledIconButton(
                       iconColor: Colors.white,
                       backgroundColor: Colors.black45,
                       icon: 'trash',
                       onTap: () {
-                        if (isNew) {
-                          postBottomSheetBloc.add(
-                            DeleteNewImage(index: index),
-                          );
-                        } else {
-                          showModalBottomSheet(
-                            isScrollControlled: true,
-                            context: context,
-                            builder: (context) => DeleteBottomSheet(
-                              title: 'Delete Image',
-                              message:
-                                  'Are you certain you want to delete this image?',
-                              onDelete: () {
-                                postBottomSheetBloc.add(
-                                  DeleteExistingImage(index: index),
-                                );
-                                // Bottom sheet
-                                Navigator.pop(context);
-                              },
-                            ),
-                          );
-                        }
+                        postBottomSheetBloc.add(
+                          RemoveImage(index: index),
+                        );
                       },
                     ),
                   ),

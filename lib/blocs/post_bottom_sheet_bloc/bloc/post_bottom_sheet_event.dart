@@ -7,6 +7,11 @@ sealed class PostBottomSheetEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class SetExistingImages extends PostBottomSheetEvent {
+  final List<String> images;
+  const SetExistingImages({required this.images});
+}
+
 class FetchPost extends PostBottomSheetEvent {
   final PostModel? post;
   const FetchPost({required this.post});
@@ -32,9 +37,9 @@ class ChangeVisibility extends PostBottomSheetEvent {
   const ChangeVisibility({required this.visibility});
 }
 
-class PickImage extends PostBottomSheetEvent {
+class AddImage extends PostBottomSheetEvent {
   final XFile file;
-  const PickImage({required this.file});
+  const AddImage({required this.file});
 }
 
 class AddPost extends PostBottomSheetEvent {
@@ -47,17 +52,7 @@ class UpdatePost extends PostBottomSheetEvent {
   const UpdatePost({required this.text});
 }
 
-class ViewImages extends PostBottomSheetEvent {
-  final bool showImages;
-  const ViewImages({required this.showImages});
-}
-
-class DeleteNewImage extends PostBottomSheetEvent {
+class RemoveImage extends PostBottomSheetEvent {
   final int index;
-  const DeleteNewImage({required this.index});
-}
-
-class DeleteExistingImage extends PostBottomSheetEvent {
-  final int index;
-  const DeleteExistingImage({required this.index});
+  const RemoveImage({required this.index});
 }

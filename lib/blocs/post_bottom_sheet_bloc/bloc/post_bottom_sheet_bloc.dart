@@ -6,42 +6,63 @@ import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nexus/models/post_model.dart';
 import 'package:nexus/repositories/community_repository.dart';
+import 'package:path/path.dart';
 
 part 'post_bottom_sheet_event.dart';
 part 'post_bottom_sheet_state.dart';
 
 class PostBottomSheetBloc
     extends Bloc<PostBottomSheetEvent, PostBottomSheetState> {
-  PostBottomSheetBloc() : super(const PostBottomSheetInitial()) {
-    on<FetchPost>(fetchPost);
+  PostBottomSheetBloc({required PostModel? post})
+      : super(
+          PostBottomSheetInitial(
+            post: post ??
+                PostModel(
+                  totalComments: 0,
+                  totalLikes: 0,
+                  totalShares: 0,
+                  description: '',
+                  likedBy: [],
+                  savedBy: [],
+                  images: [],
+                  dateCreated: DateTime.now().toString(),
+                  permissions: Permissions(
+                    isPrivate: false,
+                    commentAllowed: true,
+                    likeAllowed: true,
+                    shareAllowed: true,
+                  ),
+                ),
+          ),
+        ) {
+    on<SetExistingImages>(setExistingImages);
     on<AllowLikes>(allowLikes);
     on<AllowComments>(allowComments);
     on<AllowShares>(allowShares);
     on<ChangeVisibility>(changeVisibility);
-    on<PickImage>(pickImage);
+    on<AddImage>(addImage);
     on<AddPost>(addPost);
     on<UpdatePost>(updatePost);
-    on<ViewImages>(viewImages);
-    on<DeleteNewImage>(deleteNewImage);
-    on<DeleteExistingImage>(deleteExistingImage);
+    // on<ViewImages>(viewImages);
+    on<RemoveImage>(removeImage);
+
+    // * Add old post images to the dynamic list images
+    if (post != null) {
+      add(SetExistingImages(images: post.images!));
+    }
   }
-
-  FutureOr<void> fetchPost(
-      FetchPost event, Emitter<PostBottomSheetState> emit) {
+  FutureOr<void> setExistingImages(
+    SetExistingImages event,
+    Emitter<PostBottomSheetState> emit,
+  ) {
     final currentState = (state as PostBottomSheetInitial);
-    // if new post
-    PostModel post = PostModel(
-      permissions: Permissions(
-        isPrivate: false,
-        commentAllowed: true,
-        likeAllowed: true,
-        shareAllowed: true,
-      ),
-    );
 
-    print("WORKING");
+    // Combine the current images with the new images from the event
+    final updatedImages = List<dynamic>.from(currentState.images)
+      ..addAll(event.images);
 
-    emit(currentState.copyWith(post: event.post ?? post));
+    // Emit the new state with the updated list of images
+    emit(currentState.copyWith(post: currentState.post, images: updatedImages));
   }
 
   FutureOr<void> allowLikes(
@@ -103,28 +124,20 @@ class PostBottomSheetBloc
     emit(currentState.copyWith(post: updatedPost));
   }
 
-  FutureOr<void> pickImage(
-      PickImage event, Emitter<PostBottomSheetState> emit) {
+  FutureOr<void> addImage(AddImage event, Emitter<PostBottomSheetState> emit) {
     final currentState = state as PostBottomSheetInitial;
-    // print(event.file?.path);
-    final updatedImages = List<XFile>.from(currentState.images)
+    final updatedImages = List<dynamic>.from(currentState.images)
       ..add(event.file);
-    //  * Post is being used becuse by defauly it would get null
+    //  * Post is being used becuse by default it would get null
     emit(currentState.copyWith(post: currentState.post, images: updatedImages));
   }
 
   FutureOr<void> addPost(
       AddPost event, Emitter<PostBottomSheetState> emit) async {
     final currentState = state as PostBottomSheetInitial;
-    final PostModel post = PostModel(
-      totalLikes: 0,
-      totalComments: 0,
-      totalShares: 0,
-      images: [],
-      likedBy: [],
-      savedBy: [],
+
+    final PostModel post = currentState.post!.copyWith(
       description: event.text,
-      dateCreated: DateTime.now().toString(),
       permissions: currentState.post!.permissions,
     );
     try {
@@ -137,23 +150,13 @@ class PostBottomSheetBloc
     }
   }
 
-  FutureOr<void> viewImages(
-      ViewImages event, Emitter<PostBottomSheetState> emit) {
-    final currentState = state as PostBottomSheetInitial;
-    emit(
-      currentState.copyWith(
-        post: currentState.post,
-        showImages: event.showImages,
-      ),
-    );
-  }
-
   FutureOr<void> updatePost(
       UpdatePost event, Emitter<PostBottomSheetState> emit) async {
     final currentState = state as PostBottomSheetInitial;
-    final PostModel post = currentState.post!;
-    post.dateCreated = DateTime.now().toString();
-    post.description = event.text;
+    final PostModel post = currentState.post!.copyWith(
+      dateCreated: DateTime.now().toString(),
+      description: event.text,
+    );
     try {
       await CommunityRepository().updatePost(
         post: post,
@@ -164,31 +167,13 @@ class PostBottomSheetBloc
     }
   }
 
-  FutureOr<void> deleteNewImage(
-      DeleteNewImage event, Emitter<PostBottomSheetState> emit) {
+  FutureOr<void> removeImage(
+    RemoveImage event,
+    Emitter<PostBottomSheetState> emit,
+  ) {
     final currentState = state as PostBottomSheetInitial;
-    final updatedImages = List<XFile>.from(currentState.images);
+    final updatedImages = List<dynamic>.from(currentState.images);
     updatedImages.removeAt(event.index);
     emit(currentState.copyWith(post: currentState.post, images: updatedImages));
-  }
-
-  FutureOr<void> deleteExistingImage(
-      DeleteExistingImage event, Emitter<PostBottomSheetState> emit) async {
-    final currentState = state as PostBottomSheetInitial;
-
-    // Create a new list with the images, then remove the image at the specified index
-    List<String> updatedImages = List<String>.from(currentState.post!.images!);
-    String url = updatedImages.removeAt(event.index);
-
-    await CommunityRepository().deleteImage(
-      postId: currentState.post!.postId!,
-      url: url,
-    );
-
-    // Create an updated post model with the new list of images
-    PostModel updatedPost = currentState.post!.copyWith(images: updatedImages);
-
-    // Emit the new state with the updated post
-    emit(currentState.copyWith(post: updatedPost));
   }
 }

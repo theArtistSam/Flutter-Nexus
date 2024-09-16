@@ -9,23 +9,26 @@ sealed class PostBottomSheetState extends Equatable {
 
 final class PostBottomSheetInitial extends PostBottomSheetState {
   final PostModel? post;
-  final List<XFile> images;
-  final bool showImages;
+  final List<dynamic> images;
+  // final List<XFile> images;
+  // final bool showImages;
   const PostBottomSheetInitial({
-    this.post,
+    required this.post,
     this.images = const [],
-    this.showImages = false,
+    // this.showImages = false,
   });
 
-  PostBottomSheetInitial copyWith(
-      {PostModel? post, List<XFile>? images, bool? showImages}) {
+  PostBottomSheetInitial copyWith({
+    PostModel? post,
+    List<dynamic>? images,
+  }) {
     return PostBottomSheetInitial(
       post: post ?? PostModel(),
       images: images ?? this.images,
-      showImages: showImages ?? this.showImages,
+      // showImages: showImages ?? this.showImages,
     );
   }
 
   @override
-  List<Object> get props => [post ?? PostModel(), images, showImages];
+  List<Object> get props => [post ?? PostModel(), images];
 }
