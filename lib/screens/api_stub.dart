@@ -23,18 +23,18 @@ class _APIStubScreenState extends State<APIStubScreen> {
     return Scaffold(
       body: GestureDetector(
         onTap: () async {
-          // final tempDir = await getTemporaryDirectory();
+          final tempDir = await getTemporaryDirectory();
 
           // *SEND IMAGE*
           // Make sure to call this in an async context (e.g., an async function)
-          // final filePath =
-          //     await _copyAssetToFile('assets/images/content.png', tempDir);
-          // if (filePath != null) {
-          //   print("Sending image");
-          //   print(filePath);
-          //   final response = await APIStub().sendImage(File(filePath));
-          //   print(response);
-          // }
+          final filePath =
+              await _copyAssetToFile('assets/images/text-image.png', tempDir);
+          if (filePath != null) {
+            print("Sending image");
+            print(filePath);
+            final response = await APIStub().sendImage(File(filePath));
+            print(response);
+          }
 
           // *SEND AUDIO*
           // Make sure to call this in an async context (e.g., an async function)
@@ -158,7 +158,10 @@ class APIStub {
 
   Future<String> sendImage(File imageFile) async {
     var request = http.MultipartRequest(
-        'POST', Uri.parse('http://192.168.32.35:8000/upload-image/'));
+        // 'POST', Uri.parse('http://192.168.32.35:8000/image-to-text/'));
+        'POST',
+        Uri.parse(
+            'https://f7b9-115-186-152-233.ngrok-free.app/image-to-text/'));
     request.files.add(
       await http.MultipartFile.fromPath(
         'image',

@@ -46,7 +46,7 @@ class _PostBottomSheetState extends State<PostBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    // final height = MediaQuery.of(context).size.height;
+    final height = MediaQuery.of(context).size.height;
     return BlocProvider(
       create: (context) => postBottomSheetBloc,
       child: SingleChildScrollView(
@@ -56,6 +56,7 @@ class _PostBottomSheetState extends State<PostBottomSheet> {
           child: Wrap(
             children: [
               Container(
+                height: height - 50,
                 decoration: ShapeDecoration(
                   color: NexusColors.backgroundColor,
                   shape: const SmoothRectangleBorder(
@@ -327,7 +328,7 @@ class _PostBottomSheetState extends State<PostBottomSheet> {
                               );
                             },
                           ),
-                          // const Spacer(),
+                          const Spacer(),
                           Divider(
                             height: 20,
                             color: NexusColors.borderColor,

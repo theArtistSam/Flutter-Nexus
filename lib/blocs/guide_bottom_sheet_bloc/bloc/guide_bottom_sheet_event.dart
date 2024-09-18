@@ -14,7 +14,6 @@ class StartTimer extends GuideBottomSheetEvent {
 
 class TogglePauseResume extends GuideBottomSheetEvent {
   final bool value;
-  // final double endTime;
   const TogglePauseResume({required this.value});
 }
 

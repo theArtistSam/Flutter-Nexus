@@ -325,22 +325,4 @@ class _GuideBottomSheetState extends State<GuideBottomSheet> {
       ]),
     );
   }
-
-  Widget guideLine() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 2.5),
-      child: Container(
-        height: 5,
-        decoration: ShapeDecoration(
-          color: Colors.white,
-          shape: SmoothRectangleBorder(
-            borderRadius: SmoothBorderRadius(
-              cornerRadius: 40,
-              // cornerSmoothing: .8,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }

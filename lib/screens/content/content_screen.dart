@@ -13,6 +13,7 @@ import 'package:nexus/screens/content/widgets/content_configure_tabs.dart';
 import 'package:nexus/screens/content/widgets/edit_bottom_sheet.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/bottom_sheets/content_configure_bottom_sheet.dart';
+import 'package:nexus/widgets/bottom_sheets/video_bottom_sheet.dart';
 import 'package:nexus/widgets/content_tile.dart';
 import 'package:nexus/widgets/styled_widgets/styled_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
@@ -117,20 +118,19 @@ class _ContentScreenState extends State<ContentScreen> {
                   );
                 },
               ),
-              Positioned(
-                child: Container(
-                  height: 410,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.black.withOpacity(.3), // Start color (0% black)
-                        Colors.black.withOpacity(0.5), // End color (90% black)
-                      ],
-                    ),
-                    // borderRadius: BorderRadius.circular(15),
+
+              Container(
+                height: 410,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black.withOpacity(.3), // Start color (0% black)
+                      Colors.black.withOpacity(0.5), // End color (90% black)
+                    ],
                   ),
+                  // borderRadius: BorderRadius.circular(15),
                 ),
               ),
               // Appbar
@@ -234,14 +234,20 @@ class _ContentScreenState extends State<ContentScreen> {
                       //     ),
                       //   ),
                       // ),
-                      const Spacer(),
+
+                      // contentType: isVideo
+
                       // contentTyle: isAudio
                       // Container(
                       //   decoration: ShapeDecoration(
-                      //       color: Colors.black26,
-                      //       shape: SmoothRectangleBorder(
-                      //           borderRadius: SmoothBorderRadius(
-                      //               cornerRadius: 15, cornerSmoothing: .8))),
+                      //     color: Colors.black26,
+                      //     shape: SmoothRectangleBorder(
+                      //       borderRadius: SmoothBorderRadius(
+                      //         cornerRadius: 15,
+                      //         cornerSmoothing: .8,
+                      //       ),
+                      //     ),
+                      //   ),
                       //   child: Padding(
                       //     padding: const EdgeInsets.all(2),
                       //     child: Slider(
@@ -265,10 +271,23 @@ class _ContentScreenState extends State<ContentScreen> {
                       // contentIconButton('View complete image', 'maximize', () {}),
 
                       // contentType: isDocument
+                      // contentIconButton(
+                      //   'View complete document',
+                      //   'sticky-note',
+                      //   () {},
+                      // ),
                       contentIconButton(
-                        'View complete document',
-                        'sticky-note',
-                        () {},
+                        'Listen complete audio',
+                        'audio',
+                        () {
+                          showModalBottomSheet(
+                              isScrollControlled: true,
+                              context: context,
+                              builder: (context) {
+                                return const VideoBottomSheet();
+                              } // Add actual content
+                              );
+                        },
                       ),
 
                       const SizedBox(
@@ -283,6 +302,7 @@ class _ContentScreenState extends State<ContentScreen> {
                   ),
                 ),
               ),
+
               DraggableScrollableSheet(
                 initialChildSize: (screenHeight - 410 + 40) / screenHeight,
                 minChildSize: (screenHeight - 410 + 40) / screenHeight,

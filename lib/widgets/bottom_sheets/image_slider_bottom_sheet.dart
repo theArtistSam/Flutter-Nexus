@@ -8,8 +8,8 @@ import 'package:photo_view/photo_view_gallery.dart';
 
 // ignore: must_be_immutable
 class ImageSliderBottomSheet extends StatelessWidget {
-  ImageSliderBottomSheet({super.key, required this.images});
-  List<String> images;
+  const ImageSliderBottomSheet({super.key, required this.images});
+  final List<String> images;
 
   @override
   Widget build(BuildContext context) {
