@@ -12,6 +12,7 @@ import 'package:nexus/models/folder_model.dart';
 import 'package:nexus/screens/content/widgets/content_configure_tabs.dart';
 import 'package:nexus/screens/content/widgets/edit_bottom_sheet.dart';
 import 'package:nexus/utils/constants.dart';
+import 'package:nexus/widgets/bottom_sheets/audio_bottom_sheet.dart';
 import 'package:nexus/widgets/bottom_sheets/content_configure_bottom_sheet.dart';
 import 'package:nexus/widgets/bottom_sheets/video_bottom_sheet.dart';
 import 'package:nexus/widgets/content_tile.dart';
@@ -284,7 +285,7 @@ class _ContentScreenState extends State<ContentScreen> {
                               isScrollControlled: true,
                               context: context,
                               builder: (context) {
-                                return const VideoBottomSheet();
+                                return const AudioBottomSheet();
                               } // Add actual content
                               );
                         },
