@@ -285,7 +285,9 @@ class _ContentScreenState extends State<ContentScreen> {
                               isScrollControlled: true,
                               context: context,
                               builder: (context) {
-                                return const AudioBottomSheet();
+                                return const AudioBottomSheet(
+                                    url:
+                                        'https://firebasestorage.googleapis.com/v0/b/nexus-ef4c1.appspot.com/o/guides%2FUNs6mWLneQQNMXLuGiX7%2Fsample-audio.mp3?alt=media&token=d05241f3-226a-46fa-a1d0-ccfd9ddc1a7e');
                               } // Add actual content
                               );
                         },
