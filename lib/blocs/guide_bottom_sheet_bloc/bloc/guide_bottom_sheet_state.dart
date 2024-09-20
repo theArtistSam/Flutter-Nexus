@@ -11,33 +11,32 @@ final class GuideBottomSheetInitial extends GuideBottomSheetState {
   final double sliderValue;
   final double elapsedValue;
   final bool isPaused;
-  final GuideModel guide;
   final double duration;
-
+  final bool isLiked;
   const GuideBottomSheetInitial({
     this.sliderValue = 0,
     this.isPaused = false,
     this.elapsedValue = 0,
-    required this.guide,
     this.duration = 0,
+    required this.isLiked,
   });
 
   GuideBottomSheetInitial copyWith({
     double? sliderValue,
     bool? isPaused,
     double? elapsedValue,
-    GuideModel? guide,
+    bool? isLiked,
     double? duration,
   }) {
     return GuideBottomSheetInitial(
       sliderValue: sliderValue ?? this.sliderValue,
       elapsedValue: elapsedValue ?? this.elapsedValue,
       isPaused: isPaused ?? this.isPaused,
-      guide: guide ?? this.guide,
       duration: duration ?? this.duration,
+      isLiked: isLiked ?? this.isLiked,
     );
   }
 
   @override
-  List<Object> get props => [sliderValue, isPaused, guide, duration];
+  List<Object> get props => [sliderValue, isPaused, duration, isLiked];
 }

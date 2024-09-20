@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:path/path.dart' as path;
 
 part 'upload_bottom_sheet_event.dart';
 part 'upload_bottom_sheet_state.dart';
@@ -11,23 +13,24 @@ class UploadBottomSheetBloc
   UploadBottomSheetBloc() : super(const UploadBottomSheetInitial()) {
     on<Select>(select);
     on<ToggleSelectFile>(toggleSelectFile);
-    on<UploadFilesLocal>(uploadFilesLocal);
     on<SelectAiFeature>(selectAiFeature);
     on<RemoveSelectedFiles>(removeSelectedFiles);
+    on<PickFile>(pickFile);
   }
 
   FutureOr<void> select(Select event, Emitter<UploadBottomSheetState> emit) {
     final currentState = state as UploadBottomSheetInitial;
 
     // Create a new list of files with all boolean values set to false
-    final List<Map<String, bool>> updatedFiles = currentState.files.map((file) {
+    final List<Map<File, bool>> updatedFiles =
+        currentState.pickedFiles.map((file) {
       final key = file.keys.first;
       return {key: false};
     }).toList();
 
     emit(currentState.copyWith(
       isSelected: !currentState.isSelected,
-      files: updatedFiles,
+      pickedFiles: updatedFiles,
     ));
   }
 
@@ -36,24 +39,19 @@ class UploadBottomSheetBloc
     final currentState = state as UploadBottomSheetInitial;
 
     // Create a new list by mapping the current files
-    final List<Map<String, bool>> updatedFiles = currentState.files.map((file) {
-      if (file.containsKey(event.fileName)) {
-        // Toggle the selected status
-        return {event.fileName: !file[event.fileName]!};
+    final updatedFiles = currentState.pickedFiles.map((fileMap) {
+      // Check if the fileMap contains the file with the name from the event
+      if (fileMap.containsKey(event.file)) {
+        final file = fileMap.keys.first; // Get the file
+        final isSelected = fileMap[file]!; // Get the current selection status
+
+        // Toggle the selection status
+        return {file: !isSelected};
       }
-      return file;
+      return fileMap;
     }).toList();
 
-    emit(currentState.copyWith(files: updatedFiles));
-  }
-
-  FutureOr<void> uploadFilesLocal(
-      UploadFilesLocal event, Emitter<UploadBottomSheetState> emit) {
-    final currentState = state as UploadBottomSheetInitial;
-
-    final List<Map<String, bool>> updatedFiles = List.from(currentState.files);
-    updatedFiles.add(event.file);
-    emit(currentState.copyWith(files: updatedFiles));
+    emit(currentState.copyWith(pickedFiles: updatedFiles));
   }
 
   FutureOr<void> selectAiFeature(
@@ -67,17 +65,33 @@ class UploadBottomSheetBloc
     final currentState = state as UploadBottomSheetInitial;
 
     // Filter out files where the boolean value is true
-    final List<Map<String, bool>> updatedFiles =
-        currentState.files.where((file) => file.values.first == false).toList();
+    final List<Map<File, bool>> updatedFiles = currentState.pickedFiles
+        .where((fileMap) => fileMap.values.first == false)
+        .toList();
 
-    if (updatedFiles.isEmpty) {
+    // Emit the updated state with the remaining files
+    emit(currentState.copyWith(
+      pickedFiles: updatedFiles,
+      isSelected: updatedFiles.isNotEmpty,
+    ));
+  }
+
+  FutureOr<void> pickFile(
+    PickFile event,
+    Emitter<UploadBottomSheetState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is UploadBottomSheetInitial) {
+      // Create a mutable copy of the pickedFiles list
+      final updatedFiles = List<Map<File, bool>>.from(currentState.pickedFiles);
+
+      // Add the new file to the mutable list
+      updatedFiles.add({event.file: false});
+
+      // Emit the updated state with the modified files list
       emit(currentState.copyWith(
-        files: updatedFiles,
-        isSelected: !currentState.isSelected,
+        pickedFiles: updatedFiles, // Ensure this is the mutable updated list
       ));
-    } else {
-      // Emit the updated state with the remaining files
-      emit(currentState.copyWith(files: updatedFiles));
     }
   }
 }

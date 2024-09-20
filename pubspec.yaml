@@ -65,6 +65,7 @@ dependencies:
   cached_network_image: ^3.4.0
   flutter_audio_waveforms: ^1.2.1+8
   audio_waveforms: ^1.0.5
+  file_picker: ^8.1.2
 
 dev_dependencies:
   flutter_test:

@@ -10,26 +10,26 @@ sealed class UploadBottomSheetState extends Equatable {
 final class UploadBottomSheetInitial extends UploadBottomSheetState {
   final bool isSelected;
   final String aiFeature;
-  final List<Map<String, bool>> files;
+  final List<Map<File, bool>> pickedFiles;
 
   const UploadBottomSheetInitial({
     this.isSelected = false,
     this.aiFeature = 'Summarization',
-    this.files = const [],
+    this.pickedFiles = const [],
   });
 
   UploadBottomSheetInitial copyWith({
     bool? isSelected,
     String? aiFeature,
-    List<Map<String, bool>>? files,
+    List<Map<File, bool>>? pickedFiles,
   }) {
     return UploadBottomSheetInitial(
       isSelected: isSelected ?? this.isSelected,
       aiFeature: aiFeature ?? this.aiFeature,
-      files: files ?? this.files,
+      pickedFiles: pickedFiles ?? this.pickedFiles,
     );
   }
 
   @override
-  List<Object> get props => [isSelected, aiFeature, files];
+  List<Object> get props => [isSelected, aiFeature, pickedFiles];
 }

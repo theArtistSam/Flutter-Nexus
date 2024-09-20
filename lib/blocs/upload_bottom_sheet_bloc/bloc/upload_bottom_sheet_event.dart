@@ -10,13 +10,18 @@ sealed class UploadBottomSheetEvent extends Equatable {
 class Select extends UploadBottomSheetEvent {}
 
 class ToggleSelectFile extends UploadBottomSheetEvent {
-  final String fileName;
-  const ToggleSelectFile({required this.fileName});
+  final File file;
+  const ToggleSelectFile({required this.file});
 }
 
 class SelectAiFeature extends UploadBottomSheetEvent {
   final String aiFeature;
   const SelectAiFeature({required this.aiFeature});
+}
+
+class PickFile extends UploadBottomSheetEvent {
+  final File file;
+  const PickFile({required this.file});
 }
 
 class UploadFilesLocal extends UploadBottomSheetEvent {

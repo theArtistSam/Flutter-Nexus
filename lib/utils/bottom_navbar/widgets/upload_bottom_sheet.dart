@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:figma_squircle/figma_squircle.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -9,7 +12,7 @@ import 'package:nexus/widgets/styled_widgets/styled_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_snackbar.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
-import 'package:uuid/uuid.dart';
+import 'package:path/path.dart' as path;
 
 class UploadBottomSheet extends StatefulWidget {
   const UploadBottomSheet({super.key});
@@ -30,6 +33,32 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
   void dispose() {
     uploadBottomSheetBloc.close();
     super.dispose();
+  }
+
+  // Function to pick files and return them
+// Function to pick a single file and return it
+  Future<File?> _pickFile() async {
+    // Pick a single file
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: [
+        'mp3',
+        'aac',
+        'mkv',
+        'mp4',
+        'doc',
+        'pdf',
+        'jpeg',
+        'png'
+      ],
+    );
+
+    // If a file was picked, return it as a File object
+    if (result != null && result.files.isNotEmpty) {
+      return File(result.files.single.path!); // Return the picked file
+    }
+
+    return null; // Return null if no file was picked
   }
 
   @override
@@ -64,8 +93,9 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
                 builder: (context, state) {
                   final currentState = state as UploadBottomSheetInitial;
                   final selectionEnabled = currentState.isSelected;
-                  final files = currentState.files;
                   final aiFeature = currentState.aiFeature;
+                  final pickedFiles = currentState.pickedFiles;
+                  print(">>>>${pickedFiles.length}");
 
                   return Column(children: [
                     Container(
@@ -94,7 +124,7 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
                                 cornerSmoothing: .8,
                               ),
                               onTap: () {
-                                if (files.isNotEmpty) {
+                                if (pickedFiles.isNotEmpty) {
                                   uploadBottomSheetBloc.add(Select());
                                 }
                               },
@@ -185,7 +215,7 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
                             ),
                             child: Column(
                               children: [
-                                files.isNotEmpty
+                                pickedFiles.isNotEmpty
                                     ? ListView.separated(
                                         padding: const EdgeInsets.symmetric(
                                           vertical: 5,
@@ -193,7 +223,7 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
                                         physics:
                                             const NeverScrollableScrollPhysics(),
                                         shrinkWrap: true,
-                                        itemCount: files.length,
+                                        itemCount: pickedFiles.length,
                                         separatorBuilder: (context, index) {
                                           return Divider(
                                             height: 10,
@@ -202,13 +232,10 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
                                           );
                                         },
                                         itemBuilder: (context, index) {
-                                          final String fileName = currentState
-                                              .files[index].keys.first;
-                                          final isSelected = currentState
-                                              .files[index][fileName]!;
-                                          return uploadItem(
-                                            type: 'image',
-                                            fileName: fileName,
+                                          final isSelected =
+                                              pickedFiles[index].values.first;
+                                          return _uploadItem(
+                                            file: pickedFiles[index].keys.first,
                                             selectionEnabled: selectionEnabled,
                                             isSelected: isSelected,
                                           );
@@ -239,21 +266,47 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
                                           cornerRadius: 10,
                                           cornerSmoothing: 0.8,
                                         ),
-                                        onTap: () {
-                                          if (files.length < 5) {
-                                            uploadBottomSheetBloc.add(
-                                              UploadFilesLocal(
-                                                file: {
-                                                  'file_${const Uuid().v1().substring(0, 8)}':
-                                                      false,
-                                                },
-                                              ),
-                                            );
+                                        onTap: () async {
+                                          if (pickedFiles.length < 5) {
+                                            final File? file =
+                                                await _pickFile();
+
+                                            if (file != null) {
+                                              String fileName =
+                                                  path.basename(file.path);
+
+                                              // TODO: FOR NOW Based on the same name
+
+                                              final bool isPicked = pickedFiles
+                                                  .any((pickedFile) =>
+                                                      path.basename(pickedFile
+                                                          .keys.first.path) ==
+                                                      fileName);
+
+                                              // Check if the file is already picked
+                                              if (isPicked) {
+                                                StyledSnackbar.show(
+                                                  context: context,
+                                                  message:
+                                                      'File already picked!',
+                                                );
+                                              } else {
+                                                // Add the file to the bloc
+                                                uploadBottomSheetBloc.add(
+                                                  PickFile(file: file),
+                                                );
+                                              }
+                                            } else {
+                                              StyledSnackbar.show(
+                                                context: context,
+                                                message: 'File not picked!',
+                                              );
+                                            }
                                           } else {
                                             StyledSnackbar.show(
                                               context: context,
                                               message:
-                                                  'Cannot add more than 5 files',
+                                                  'Cannot pick more than 5 files!',
                                             );
                                           }
                                         },
@@ -382,12 +435,38 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
     );
   }
 
-  Widget uploadItem({
-    required String type,
-    required String fileName,
+  String _getExtensionIcon({required String extension}) {
+    switch (extension.toLowerCase()) {
+      case '.png':
+      case '.jpeg':
+      case '.jpg': // Consider adding .jpg as well
+        return 'image'; // Return image icon or identifier
+      case '.mp3':
+      case '.aac':
+        return 'audio'; // Return audio icon or identifier
+      case '.mkv':
+      case '.mp4':
+        return 'video'; // Return video icon or identifier
+      case '.doc':
+      case '.docx':
+      case '.pdf':
+        return 'document'; // Return document icon or identifier
+      default:
+        return 'unknown'; // Return default icon for unsupported types
+    }
+  }
+
+  Widget _uploadItem({
+    required File file,
     required bool isSelected,
     required bool selectionEnabled,
   }) {
+    final String filePath = file.path;
+    String fileName = path.basename(filePath);
+    final String fileExtension = path.extension(filePath);
+    if (fileName.length > 25) {
+      fileName = "${fileName.substring(0, 22)}...";
+    }
     return Container(
       decoration: ShapeDecoration(
         color: NexusColors.accentColor,
@@ -416,7 +495,7 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
               ),
               child: Center(
                 child: SvgPicture.asset(
-                  'assets/icons/$type.svg',
+                  'assets/icons/${_getExtensionIcon(extension: fileExtension)}.svg',
                   // COLOR: FIX
                   color: NexusColors.isDark
                       ? Colors.white
@@ -434,8 +513,7 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
                 ? StyledIconButton(
                     icon: isSelected ? 'tick-square-filled' : 'tick-square',
                     onTap: () {
-                      uploadBottomSheetBloc
-                          .add(ToggleSelectFile(fileName: fileName));
+                      uploadBottomSheetBloc.add(ToggleSelectFile(file: file));
                     },
                     iconColor: isSelected
                         ? NexusColors.textColor

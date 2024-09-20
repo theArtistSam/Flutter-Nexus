@@ -13,9 +13,13 @@ class GuideBottomSheetBloc
     extends Bloc<GuideBottomSheetEvent, GuideBottomSheetState> {
   Timer? _timer;
   int _currentValue = 0;
-  // final GuideModel guide;
   GuideBottomSheetBloc({required GuideModel guide})
-      : super(GuideBottomSheetInitial(guide: guide)) {
+      : super(
+          GuideBottomSheetInitial(
+            // For now hard-code value
+            isLiked: guide.likedBy!.contains('Bd4umkyLqOLnMpdOLZ0E'),
+          ),
+        ) {
     on<UpdateSlider>(updateSlider);
     on<StartTimer>(startTimer);
     on<TogglePauseResume>(togglePauseResume);
@@ -81,11 +85,8 @@ class GuideBottomSheetBloc
       LikeGuide event, Emitter<GuideBottomSheetState> emit) async {
     final currentState = (state as GuideBottomSheetInitial);
     try {
+      emit(currentState.copyWith(isLiked: true));
       await CommunityRepository().likeGuide(guideId: event.guideId);
-      List<String> likedBy =
-          await CommunityRepository().getLikedBy(guideId: event.guideId);
-      final guide = currentState.guide.copyWith(likedBy: likedBy);
-      emit(currentState.copyWith(guide: guide));
       print("GUIDE LIKED SUCCESSFULLY");
     } catch (e) {
       print("SOME ERROR OCCURED $e");
@@ -96,11 +97,8 @@ class GuideBottomSheetBloc
       DislikeGuide event, Emitter<GuideBottomSheetState> emit) async {
     final currentState = (state as GuideBottomSheetInitial);
     try {
+      emit(currentState.copyWith(isLiked: false));
       await CommunityRepository().dislikeGuide(guideId: event.guideId);
-      List<String> likedBy =
-          await CommunityRepository().getLikedBy(guideId: event.guideId);
-      final guide = currentState.guide.copyWith(likedBy: likedBy);
-      emit(currentState.copyWith(guide: guide));
       print("GUIDE DISLIKED SUCCESSFULLY");
     } catch (e) {
       print("SOME ERROR OCCURED $e");

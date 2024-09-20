@@ -36,6 +36,7 @@ class _GuideBottomSheetState extends State<GuideBottomSheet> {
     if (widget.guide.type == 'video') {
       _initVideoPlayerController(link: widget.guide.link!);
     } else {
+      // When the type is Image
       videoPlayerController = null;
       guideBottomSheetBloc.add(const StartTimer());
     }
@@ -52,12 +53,10 @@ class _GuideBottomSheetState extends State<GuideBottomSheet> {
 
   Future<void> _initVideoPlayerController({required String link}) async {
     videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(link));
-    await videoPlayerController!
-        .initialize(); // Ensure controller is initialized
-    final duration =
-        videoPlayerController!.value.duration.inMilliseconds / 1000.0;
+    // Ensure controller is initialized
+    await videoPlayerController!.initialize();
     videoPlayerController!.play();
-    guideBottomSheetBloc.add(StartTimer(endTime: duration));
+    setState(() {});
   }
 
   @override
@@ -85,244 +84,238 @@ class _GuideBottomSheetState extends State<GuideBottomSheet> {
           child: BlocBuilder<GuideBottomSheetBloc, GuideBottomSheetState>(
             builder: (context, state) {
               final isPaused = (state as GuideBottomSheetInitial).isPaused;
-              final bool isLiked =
-                  (state).guide.likedBy!.contains('Bd4umkyLqOLnMpdOLZ0E');
-              return Stack(
-                // alignment: Alignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      guideBottomSheetBloc.add(
-                        const TogglePauseResume(
-                          value: true,
-                        ),
-                      );
-                      if (videoPlayerController != null) {
-                        videoPlayerController!.pause();
-                      }
-                    },
-                    child: AspectRatio(
-                      aspectRatio: 9 / 16,
-                      child: widget.guide.type == 'video'
-                          ? (videoPlayerController != null &&
-                                  videoPlayerController!.value.isInitialized
-                              ? ClipRRect(
-                                  borderRadius: const SmoothBorderRadius.all(
-                                    SmoothRadius(
-                                      cornerRadius: 20,
-                                      cornerSmoothing: .8,
-                                    ),
-                                  ),
-                                  child: VideoPlayer(videoPlayerController!),
-                                )
-                              : const Center(
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                ))
-                          : ClipRRect(
-                              borderRadius: const SmoothBorderRadius.all(
-                                SmoothRadius(
-                                  cornerRadius: 20,
-                                  cornerSmoothing: .8,
-                                ),
-                              ),
-                              child: Container(
-                                color: NexusColors.accentColorDark,
-                                child: CachedNetworkImage(
-                                  imageUrl: widget.guide.link!,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                  progressIndicatorBuilder:
-                                      (context, url, progress) => Center(
-                                    child: CircularProgressIndicator(
-                                      value: progress.progress,
-                                    ),
-                                  ),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
-                                ),
-                              ),
-                            ),
-                    ),
-                  ),
-                  Column(
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        height: 30,
-                        decoration: const BoxDecoration(
-                          borderRadius: SmoothBorderRadius.only(
-                            topLeft: SmoothRadius(
-                              cornerRadius: 20,
-                              cornerSmoothing: .8,
-                            ),
-                            topRight: SmoothRadius(
-                              cornerRadius: 20,
-                              cornerSmoothing: .8,
-                            ),
-                          ),
-                          // color: Colors.black,
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Color.fromRGBO(0, 0, 0, .5),
-                              Color.fromRGBO(0, 0, 0, 0),
-                            ],
-                          ),
-                        ),
-                        child: Center(
-                          child: Container(
-                            width: 60,
-                            height: 5,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
+              final isLiked = state.isLiked;
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 60,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.white,
                       ),
-                      const Spacer(),
-                      isPaused
-                          ? Center(
-                              child: StyledIconButton(
-                                icon: 'play',
-                                height: 30,
-                                backgroundColor: Colors.black.withOpacity(.5),
-                                onTap: () {
-                                  guideBottomSheetBloc.add(
-                                    const TogglePauseResume(value: false),
-                                  );
-                                  if (videoPlayerController
-                                          ?.value.isInitialized ??
-                                      false) {
-                                    videoPlayerController!.play();
-                                  }
-                                },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          // Image
+                          GestureDetector(
+                            onTap: () {
+                              guideBottomSheetBloc.add(
+                                const TogglePauseResume(
+                                  value: true,
+                                ),
+                              );
+                              if (videoPlayerController != null) {
+                                videoPlayerController!.pause();
+                              }
+                            },
+                            child: AspectRatio(
+                              aspectRatio: 9 / 16,
+                              child: _getContentTile(
+                                isVideo: widget.guide.type == 'video',
                               ),
-                            )
-                          : const SizedBox(),
-                      const Spacer(),
-                      Container(
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Color.fromRGBO(0, 0, 0, 0),
-                              Color.fromRGBO(0, 0, 0, .85),
-                            ],
+                            ),
                           ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 20,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  StyledText(
-                                    text: widget.guide.title!,
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                  ),
-                                  const Spacer(),
-                                  StyledIconButton(
-                                    icon: isLiked ? 'heart-filled' : 'heart',
+                          isPaused
+                              ? Center(
+                                  child: StyledIconButton(
+                                    icon: 'play',
+                                    backgroundColor:
+                                        Colors.black.withOpacity(.5),
                                     onTap: () {
-                                      String guideId = widget.guide.guideId!;
-                                      if (isLiked) {
-                                        guideBottomSheetBloc.add(
-                                          DislikeGuide(guideId: guideId),
-                                        );
-                                      } else {
-                                        guideBottomSheetBloc.add(
-                                          LikeGuide(guideId: guideId),
-                                        );
+                                      guideBottomSheetBloc.add(
+                                        const TogglePauseResume(value: false),
+                                      );
+                                      if (videoPlayerController
+                                              ?.value.isInitialized ??
+                                          false) {
+                                        videoPlayerController!.play();
                                       }
                                     },
-                                    iconColor: Colors.white,
-                                    backgroundColor: Colors.transparent,
-                                  )
-                                ],
-                              ),
-
-                              const SizedBox(
-                                height: 5,
-                              ), // * Fix This
-                              SizedBox(
-                                height: 40,
-                                child: StyledText(
-                                  text: widget.guide.description!,
-                                  color: Colors.white.withOpacity(.5),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
+                                  ),
+                                )
+                              : const SizedBox(),
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Color.fromRGBO(0, 0, 0, 0),
+                                    Color.fromRGBO(0, 0, 0, .85),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(
-                                height: 15,
-                              ),
-                              BlocBuilder<GuideBottomSheetBloc,
-                                  GuideBottomSheetState>(
-                                builder: (context, state) {
-                                  final sliderValue =
-                                      (state as GuideBottomSheetInitial)
-                                          .sliderValue;
-                                  final duration = (state).duration;
-
-                                  return TweenAnimationBuilder<double>(
-                                    tween: Tween<double>(
-                                        begin: 0, end: sliderValue),
-                                    duration: const Duration(seconds: 1),
-                                    builder: (context, value, child) {
-                                      return SliderTheme(
-                                        data: SliderTheme.of(context).copyWith(
-                                          thumbShape:
-                                              const RoundSliderThumbShape(
-                                            enabledThumbRadius: 0.0,
-                                          ),
-                                          overlayShape:
-                                              const RoundSliderOverlayShape(
-                                            overlayRadius: 0.0,
-                                          ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 15,
+                                  vertical: 20,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        StyledText(
+                                          text: widget.guide.title!,
+                                          color: Colors.white,
+                                          fontSize: 18,
                                         ),
-                                        child: Slider(
-                                          activeColor: Colors.white,
-                                          inactiveColor:
-                                              Colors.white.withOpacity(.50),
-                                          min: 0,
-                                          max: widget.guide.type == 'image'
-                                              ? 15
-                                              : duration.ceilToDouble(),
-                                          value: value,
-                                          onChanged: (newValue) {
-                                            // * Do not allow user the change slider value.
+                                        StyledIconButton(
+                                          icon: isLiked
+                                              ? 'heart-filled'
+                                              : 'heart',
+                                          onTap: () {
+                                            String guideId =
+                                                widget.guide.guideId!;
+                                            if (isLiked) {
+                                              guideBottomSheetBloc.add(
+                                                DislikeGuide(guideId: guideId),
+                                              );
+                                            } else {
+                                              guideBottomSheetBloc.add(
+                                                LikeGuide(guideId: guideId),
+                                              );
+                                            }
                                           },
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
+                                          iconColor: Colors.white,
+                                          backgroundColor: Colors.transparent,
+                                        )
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ), // * Fix This
+                                    StyledText(
+                                      text: widget.guide.description!,
+                                      color: Colors.white.withOpacity(.5),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ],
+                                ),
                               ),
-                              SizedBox(
-                                height: bottomPadding + 5,
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                    const SizedBox(height: 10),
+                    _getSlider(isVideo: widget.guide.type == 'video'),
+                    SizedBox(
+                      height: bottomPadding + 5,
+                    ),
+                  ],
+                ),
               );
             },
           ),
         )
       ]),
+    );
+  }
+
+  Widget _getContentTile({required bool isVideo}) {
+    if (isVideo) {
+      // If controller is initialized -> then display video
+      if (videoPlayerController != null &&
+          videoPlayerController!.value.isInitialized) {
+        return VideoPlayer(videoPlayerController!);
+      }
+      // else display circular progress indicator
+      return const Center(
+        child: CircularProgressIndicator(
+          color: Colors.white,
+        ),
+      );
+    }
+    return Container(
+      color: NexusColors.accentColorDark,
+      child: CachedNetworkImage(
+        imageUrl: widget.guide.link!,
+        width: double.infinity,
+        fit: BoxFit.cover,
+        progressIndicatorBuilder: (context, url, progress) => Center(
+          child: CircularProgressIndicator(
+            value: progress.progress,
+          ),
+        ),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
+      ),
+    );
+  }
+
+  Widget _getSlider({required bool isVideo}) {
+    if (isVideo) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15),
+          child: SizedBox(
+            height: 5,
+            child: VideoProgressIndicator(
+              videoPlayerController!,
+              padding: EdgeInsets.zero,
+              allowScrubbing: true,
+              colors: const VideoProgressColors(
+                playedColor: Colors.white,
+                bufferedColor: Colors.white24,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    return BlocBuilder<GuideBottomSheetBloc, GuideBottomSheetState>(
+      builder: (context, state) {
+        final sliderValue = (state as GuideBottomSheetInitial).sliderValue;
+        final duration = (state).duration;
+        return TweenAnimationBuilder<double>(
+          tween: Tween<double>(begin: 0, end: sliderValue),
+          duration: const Duration(seconds: 1),
+          builder: (context, value, child) {
+            return SliderTheme(
+              data: SliderTheme.of(context).copyWith(
+                thumbShape: const RoundSliderThumbShape(
+                  enabledThumbRadius: 0.0,
+                ),
+                overlayShape: const RoundSliderOverlayShape(
+                  overlayRadius: 0.0,
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10.0,
+                ),
+                child: Slider(
+                  activeColor: Colors.white,
+                  inactiveColor: Colors.white.withOpacity(.50),
+                  min: 0,
+                  max: widget.guide.type == 'image'
+                      ? 15
+                      : duration.ceilToDouble(),
+                  value: value,
+                  onChanged: (newValue) {
+                    // * Do not allow user the change slider value.
+                  },
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

@@ -145,6 +145,7 @@ class _VideoBottomSheetState extends State<VideoBottomSheet> {
                           valueListenable: _controller,
                           builder: (context, VideoPlayerValue value, child) {
                             return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 StyledText(
                                   text: _videoDuration(value.position),
@@ -152,7 +153,7 @@ class _VideoBottomSheetState extends State<VideoBottomSheet> {
                                   fontWeight: FontWeight.w500,
                                   color: Colors.white,
                                 ),
-                                const Spacer(),
+                                // const Spacer(),
                                 StyledText(
                                   text: _videoDuration(
                                       _controller.value.duration),

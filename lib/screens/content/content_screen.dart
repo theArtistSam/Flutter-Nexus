@@ -278,18 +278,19 @@ class _ContentScreenState extends State<ContentScreen> {
                       //   () {},
                       // ),
                       contentIconButton(
-                        'Listen complete audio',
-                        'audio',
-                        () {
+                        title: 'Listen complete audio',
+                        icon: 'audio',
+                        onTap: () {
                           showModalBottomSheet(
-                              isScrollControlled: true,
-                              context: context,
-                              builder: (context) {
-                                return const AudioBottomSheet(
-                                    url:
-                                        'https://firebasestorage.googleapis.com/v0/b/nexus-ef4c1.appspot.com/o/guides%2FUNs6mWLneQQNMXLuGiX7%2Fsample-audio.mp3?alt=media&token=d05241f3-226a-46fa-a1d0-ccfd9ddc1a7e');
-                              } // Add actual content
-                              );
+                            isScrollControlled: true,
+                            context: context,
+                            builder: (context) {
+                              // return const AudioBottomSheet(
+                              //     url:
+                              //         'https://firebasestorage.googleapis.com/v0/b/nexus-ef4c1.appspot.com/o/guides%2FUNs6mWLneQQNMXLuGiX7%2Fsample-audio.mp3?alt=media&token=d05241f3-226a-46fa-a1d0-ccfd9ddc1a7e');
+                              return VideoBottomSheet();
+                            }, // Add actual content
+                          );
                         },
                       ),
 
@@ -320,14 +321,18 @@ class _ContentScreenState extends State<ContentScreen> {
     );
   }
 
-  contentIconButton(title, icon, onTap) => Material(
+  contentIconButton(
+          {required String title,
+          required String icon,
+          required VoidCallback onTap}) =>
+      Material(
         color: Colors.transparent,
         child: InkWell(
           borderRadius: SmoothBorderRadius(cornerRadius: 15),
           onTap: onTap,
           child: Ink(
             decoration: ShapeDecoration(
-              color: Colors.black26,
+              color: Colors.black45,
               shape: SmoothRectangleBorder(
                 borderRadius: SmoothBorderRadius(
                   cornerRadius: 15,
