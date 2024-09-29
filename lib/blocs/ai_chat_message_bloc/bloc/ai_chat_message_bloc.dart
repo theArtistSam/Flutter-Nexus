@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:nexus/models/chat_model.dart';
 import 'package:nexus/repositories/chat_repository.dart';
 import 'package:nexus/repositories/extractive_model_repository.dart';
+import 'package:nexus/services/extractive_model_service.dart';
 
 part 'ai_chat_message_event.dart';
 part 'ai_chat_message_state.dart';
@@ -118,12 +119,15 @@ class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
     }
   }
 
+  // * Check this later
   FutureOr<void> addResponseMessage(
-      AddResponseMessage event, Emitter<AiChatMessageState> emit) async {
+    AddResponseMessage event,
+    Emitter<AiChatMessageState> emit,
+  ) async {
     try {
-      final String responseMessage = await ExtractiveModelRepository()
-          .sendRequest(text: event.text, length: 'medium');
-
+      // * Change this to Extractive Model Service
+      final String responseMessage = await ExtractiveModelService()
+          .sendText(text: event.text, length: 'medium');
       await AIChatRepository().addChatMessage(
         userId: 'Bd4umkyLqOLnMpdOLZ0E',
         documentId: event.documentId,

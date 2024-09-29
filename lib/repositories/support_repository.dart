@@ -10,9 +10,13 @@ import 'package:uuid/uuid.dart';
 class SupportRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Stream<List<SupportModel>> getAllIssues(
-      {Query Function(Query)? queryBuilder}) {
-    Query query = _firestore.collection('support');
+  Stream<List<SupportModel>> getAllIssues({
+    Query Function(Query)? queryBuilder,
+  }) {
+    // TODO: Change the user_id afterwards for dynamic system
+    Query query = _firestore
+        .collection('support')
+        .where('user_id', isEqualTo: "Bd4umkyLqOLnMpdOLZ0E");
 
     // Apply the optional query builder if provided
     if (queryBuilder != null) {

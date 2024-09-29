@@ -275,7 +275,7 @@ class _AIChatMessageScreenState extends State<AIChatMessageScreen> {
           children: [
             Divider(
               height: 0,
-              color: NexusColors.borderColor,
+              color: NexusColors.secondaryTextColor.withOpacity(.15),
             ),
             Container(
               decoration: BoxDecoration(
@@ -320,6 +320,7 @@ class _AIChatMessageScreenState extends State<AIChatMessageScreen> {
                             documentId: widget.chat.chatId!,
                           ));
 
+                          // TODO: Better be automatated from the bloc side
                           // Add response message
                           aiChatMessageBloc.add(AddResponseMessage(
                             text: message,

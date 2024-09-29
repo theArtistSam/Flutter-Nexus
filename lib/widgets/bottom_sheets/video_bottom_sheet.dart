@@ -8,8 +8,8 @@ import 'package:photo_view/photo_view_gallery.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoBottomSheet extends StatefulWidget {
-  const VideoBottomSheet({super.key});
-
+  const VideoBottomSheet({super.key, required this.url});
+  final String url;
   @override
   State<VideoBottomSheet> createState() => _VideoBottomSheetState();
 }
@@ -18,10 +18,7 @@ class _VideoBottomSheetState extends State<VideoBottomSheet> {
   late VideoPlayerController _controller;
   @override
   void initState() {
-    _initVideoPlayerController(
-      link:
-          'https://firebasestorage.googleapis.com/v0/b/nexus-ef4c1.appspot.com/o/guides%2FUNs6mWLneQQNMXLuGiX7%2Fvideo.mp4?alt=media&token=5961a384-60be-4f67-b6dc-4fd51aa10606',
-    );
+    _initVideoPlayerController(link: widget.url);
 
     super.initState();
   }

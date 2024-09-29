@@ -1,27 +1,21 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:nexus/blocs/content_screen_bloc/bloc/content_screen_bloc.dart';
 import 'package:nexus/models/content_model.dart';
-import 'package:nexus/models/folder_model.dart';
-import 'package:nexus/screens/content/widgets/content_configure_tabs.dart';
 import 'package:nexus/screens/content/widgets/edit_bottom_sheet.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/bottom_sheets/audio_bottom_sheet.dart';
 import 'package:nexus/widgets/bottom_sheets/content_configure_bottom_sheet.dart';
+import 'package:nexus/widgets/bottom_sheets/image_slider_bottom_sheet.dart';
 import 'package:nexus/widgets/bottom_sheets/video_bottom_sheet.dart';
-import 'package:nexus/widgets/content_tile.dart';
-import 'package:nexus/widgets/styled_widgets/styled_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_snackbar.dart';
 import 'package:nexus/widgets/styled_widgets/styled_tabs.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
-import 'package:nexus/widgets/styled_widgets/styled_textfield.dart';
 
 // ignore: must_be_immutable
 class ContentScreen extends StatefulWidget {
@@ -33,53 +27,17 @@ class ContentScreen extends StatefulWidget {
 }
 
 class _ContentScreenState extends State<ContentScreen> {
-  bool isOriginalDisplayed = false;
   late ContentScreenBloc contentScreenBloc;
-
-  late AudioPlayer player;
-  bool isPlaying = false;
-  Duration position = Duration.zero;
-  Duration duration = Duration.zero;
 
   @override
   void initState() {
     contentScreenBloc = ContentScreenBloc(content: widget.content);
-
-    // Create the audio player.
-    player = AudioPlayer();
-
-    // Set the release mode to keep the source after playback has completed.
-    player.setReleaseMode(ReleaseMode.stop);
-
-    // Start the player as soon as the app is displayed.
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await player.setSource(AssetSource('audio/sample-audio.mp3'));
-    });
-
-    // Listen to states of audio player
-    player.onPlayerStateChanged.listen((state) {
-      isPlaying = state == PlayerState.playing;
-    });
-
-    // Listen to duration and position changes
-    player.onDurationChanged.listen((newDuration) {
-      setState(() {
-        duration = newDuration;
-      });
-    });
-
-    player.onPositionChanged.listen((newPosition) {
-      setState(() {
-        position = newPosition;
-      });
-    });
     super.initState();
   }
 
   @override
   void dispose() {
     contentScreenBloc.close();
-    player.dispose();
     super.dispose();
   }
 
@@ -216,91 +174,44 @@ class _ContentScreenState extends State<ContentScreen> {
                         ],
                       ),
                       const Spacer(),
-                      // GestureDetector(
-                      //   onTap: () async {
-                      //     isPlaying
-                      //         ? await player.pause()
-                      //         : await player.resume();
-                      //     setState(() {
-                      //       isPlaying = !isPlaying;
-                      //     });
-                      //   },
-                      //   child: Center(
-                      //     child: SvgPicture.asset(
-                      //       isPlaying
-                      //           ? 'assets/icons/pause.svg'
-                      //           : 'assets/icons/play.svg',
-                      //       height: 45,
-                      //       color: Colors.white,
-                      //     ),
-                      //   ),
-                      // ),
-
-                      // contentType: isVideo
-
-                      // contentTyle: isAudio
-                      // Container(
-                      //   decoration: ShapeDecoration(
-                      //     color: Colors.black26,
-                      //     shape: SmoothRectangleBorder(
-                      //       borderRadius: SmoothBorderRadius(
-                      //         cornerRadius: 15,
-                      //         cornerSmoothing: .8,
-                      //       ),
-                      //     ),
-                      //   ),
-                      //   child: Padding(
-                      //     padding: const EdgeInsets.all(2),
-                      //     child: Slider(
-                      //       thumbColor: Colors.white,
-                      //       activeColor: Colors.white,
-                      //       inactiveColor: Colors.white54,
-                      //       min: 0,
-                      //       max: duration.inSeconds.toDouble(),
-                      //       value: position.inSeconds.toDouble(),
-                      //       onChanged: (value) async {
-                      //         final newPosition =
-                      //             Duration(seconds: value.toInt());
-                      //         await player.seek(newPosition);
-                      //         // Resume playback if necessary
-                      //       },
-                      //     ),
-                      //   ),
-                      // ),
-
-                      // contentType: isImage
-                      // contentIconButton('View complete image', 'maximize', () {}),
-
-                      // contentType: isDocument
-                      // contentIconButton(
-                      //   'View complete document',
-                      //   'sticky-note',
-                      //   () {},
-                      // ),
                       contentIconButton(
-                        title: 'Listen complete audio',
-                        icon: 'audio',
+                        title: _buttonText(type: widget.content.type!),
+                        icon: widget.content.type!,
                         onTap: () {
-                          showModalBottomSheet(
-                            isScrollControlled: true,
-                            context: context,
-                            builder: (context) {
-                              // return const AudioBottomSheet(
-                              //     url:
-                              //         'https://firebasestorage.googleapis.com/v0/b/nexus-ef4c1.appspot.com/o/guides%2FUNs6mWLneQQNMXLuGiX7%2Fsample-audio.mp3?alt=media&token=d05241f3-226a-46fa-a1d0-ccfd9ddc1a7e');
-                              return VideoBottomSheet();
-                            }, // Add actual content
-                          );
+                          final String? link = widget.content.link;
+                          final String type = widget.content.type!;
+
+                          if (link == null) {
+                            StyledSnackbar.show(
+                                context: context,
+                                message:
+                                    '${type[0].toUpperCase() + type.substring(1)} file is still uploading');
+                          } else {
+                            showModalBottomSheet(
+                              isScrollControlled: true,
+                              context: context,
+                              builder: (context) {
+                                return _contentPlayerBottomSheet(
+                                  type: type,
+                                  link: link,
+                                );
+                              }, // Add actual content
+                            );
+                          }
                         },
                       ),
-
                       const SizedBox(
                         height: 10,
                       ),
-                      StyledText(
-                        text: widget.content.title ?? '',
-                        color: NexusColors.textColorLight,
-                        fontSize: 18,
+                      BlocBuilder<ContentScreenBloc, ContentScreenState>(
+                        builder: (context, state) {
+                          final currentState = state as ContentScreenInitial;
+                          return StyledText(
+                            text: currentState.content.title ?? '',
+                            color: NexusColors.textColorLight,
+                            fontSize: 18,
+                          );
+                        },
                       )
                     ],
                   ),
@@ -321,10 +232,44 @@ class _ContentScreenState extends State<ContentScreen> {
     );
   }
 
-  contentIconButton(
-          {required String title,
-          required String icon,
-          required VoidCallback onTap}) =>
+  Widget _contentPlayerBottomSheet({
+    required String type,
+    required String link,
+  }) {
+    switch (type) {
+      case 'audio':
+        return AudioBottomSheet(url: link);
+      case 'video':
+        return VideoBottomSheet(
+          url: link,
+        );
+      case 'document':
+        return SizedBox();
+      default:
+        return ImageSliderBottomSheet(images: [link]);
+    }
+  }
+
+  String _buttonText({required String type}) {
+    switch (type) {
+      case 'audio':
+        return 'Listen complete audio';
+      case 'video':
+        return 'Watch complete video';
+      case 'document':
+        return 'View complete document';
+      case 'image':
+        return 'View complete image';
+      default:
+        return '';
+    }
+  }
+
+  contentIconButton({
+    required String title,
+    required String icon,
+    required VoidCallback onTap,
+  }) =>
       Material(
         color: Colors.transparent,
         child: InkWell(

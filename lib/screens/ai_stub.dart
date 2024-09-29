@@ -17,11 +17,13 @@ class Sample extends StatefulWidget {
 class _SampleState extends State<Sample> {
   String? extractedText;
   String? outputText;
+
   Future<void> _extractWordText() async {
     try {
       final bytes = await rootBundle.load("assets/files/sample-doc.docx");
-      final text =
-          docxToText(bytes.buffer.asUint8List()); // Use buffer.asUint8List()
+      final text = docxToText(
+        bytes.buffer.asUint8List(),
+      ); // Use buffer.asUint8List()
 
       // ExtractiveModel output = await ExtractiveModelRepository()
       //     .sendRequest(text: text, length: 'short');

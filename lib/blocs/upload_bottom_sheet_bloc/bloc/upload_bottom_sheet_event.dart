@@ -34,3 +34,7 @@ class UploadFilesDrive extends UploadBottomSheetEvent {}
 class RemoveSelectedFiles extends UploadBottomSheetEvent {}
 
 class ProceedUpload extends UploadBottomSheetEvent {}
+
+class GetResponse extends UploadBottomSheetEvent {}
+
+class UploadFiles extends UploadBottomSheetEvent {}

@@ -4,13 +4,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nexus/models/content_model.dart';
+import 'package:workmanager/workmanager.dart';
+// import 'package:workmanager/workmanager.dart';
 
 class ContentRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   //  Now the function also takes a query as a parameter
-  Stream<List<ContentModel>> getAllContents(
-      {Query Function(Query)? queryBuilder}) {
+  Stream<List<ContentModel>> getAllContents({
+    Query Function(Query)? queryBuilder,
+  }) {
     Query query = _firestore
         .collection('users')
         .doc('Bd4umkyLqOLnMpdOLZ0E')
@@ -31,12 +34,33 @@ class ContentRepository {
 
   Future<String> deleteContent({required String contentId}) async {
     try {
-      await _firestore
+      // Firestore reference
+      final docRef = _firestore
           .collection('users')
           .doc('Bd4umkyLqOLnMpdOLZ0E')
           .collection('content')
-          .doc(contentId)
-          .delete();
+          .doc(contentId);
+
+      // Delete Firestore document
+      await docRef.delete();
+
+      // Reference to Firebase Storage path
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child('users')
+          .child('Bd4umkyLqOLnMpdOLZ0E')
+          .child('content')
+          .child(contentId);
+
+      // Check if the file exists in Firebase Storage and delete it
+      try {
+        await storageRef.delete();
+        print("File deleted from Firebase Storage.");
+      } catch (e) {
+        print(
+            "No file found in Firebase Storage for contentId: $contentId, or deletion failed: $e");
+      }
+
       return 'Success';
     } catch (e) {
       return 'Failed to delete content: ${e.toString()}';
@@ -87,6 +111,108 @@ class ContentRepository {
     }
   }
 
+  // Future<void> uploadContentList({
+  //   required String userId,
+  //   required List<ContentModel> contentList,
+  //   required List<File> files,
+  // }) async {
+  //   try {
+  //     // Create a new document in Firestore and get its reference
+  //     for (var content in contentList) {
+  //       // upload each content on Firebase
+  //       final docRef = await FirebaseFirestore.instance
+  //           .collection('users')
+  //           .doc(userId)
+  //           .collection('content')
+  //           .add(content.toJson());
+
+  //       // Get the generated document ID
+  //       String contentId = docRef.id;
+
+  //       // Update the content Id with in the list as well
+  //       content.contentId = contentId;
+
+  //       // Update the Firestore document with the content ID
+  //       await docRef.update({'content_id': contentId});
+  //     }
+
+  //     // *Now we need to upload the files one by one as a background
+  //     // * we can verfiy the files by their name as content.title == fileName
+
+  //     //  * One the files have been uploaded
+
+  //     // we need to update the link property to firebase and add the file links there
+
+  //     // Now, upload the file to Firebase Storage
+  //     final storageRef = FirebaseStorage.instance
+  //         .ref()
+  //         .child('users')
+  //         .child(userId)
+  //         .child('content')
+  //         .child(contentId);
+
+  //     // Upload the file to Firebase Storage
+  //     UploadTask uploadTask = storageRef.putFile(file);
+  //     TaskSnapshot snapshot = await uploadTask;
+  //     String downloadUrl = await snapshot.ref.getDownloadURL();
+
+  //     // Once the file is uploaded, update the Firestore document with the download link
+  //     await docRef.update({'link': downloadUrl});
+
+  //     print('Content and file uploaded successfully.');
+  //   } catch (e) {
+  //     print("SOME ERROR: $e");
+  //   }
+  // }
+
+  Future<void> uploadContentList({
+    required String userId,
+    required List<ContentModel> contentList,
+    required List<File> files,
+  }) async {
+    try {
+      print("+++>${contentList.length}");
+
+      for (var content in contentList) {
+        // Upload metadata to Firestore
+        final docRef = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .collection('content')
+            .add(content.toJson());
+
+        // Get the generated document ID
+        String contentId = docRef.id;
+
+        // Update the content ID
+        content.contentId = contentId;
+        await docRef.update({'content_id': contentId});
+
+        // TODO: Implement the following using background service
+        // Match the file to the content title (if needed)
+        File? matchedFile = files.firstWhere(
+          (file) => file.path.split('/').last == content.title,
+          orElse: () => throw Exception("No matching file found"),
+        );
+
+        // Schedule background upload task
+        Workmanager().registerOneOffTask(
+          'upload_task_$contentId', // Unique task identifier
+          'backgroundUploadTask', // Background task name
+          inputData: {
+            'userId': userId,
+            'contentId': contentId,
+            'filePath': matchedFile.path,
+          },
+        );
+      }
+
+      print('Content uploaded. Files will be uploaded in the background.');
+    } catch (e) {
+      print("Error during content upload: $e");
+    }
+  }
+
   Future<ContentModel> getContentById({
     required String userId,
     required String contentId,
@@ -116,10 +242,10 @@ class ContentRepository {
         contentId: 'content1',
         extractedText: 'Text 1',
         dateUpdated: '2024-05-01',
-        translation: Translation(
+        translation: ContentConfigure(
             text: 'Translated Text 1',
             status: Status(isLiked: true, isDisliked: false)),
-        summarization: Translation(
+        summarization: ContentConfigure(
             text: 'Summarized Text 1',
             status: Status(isLiked: true, isDisliked: false)),
         type: 'Type 1',
@@ -134,10 +260,10 @@ class ContentRepository {
         contentId: 'content2',
         extractedText: 'Text 2',
         dateUpdated: '2024-05-02',
-        translation: Translation(
+        translation: ContentConfigure(
             text: 'Translated Text 2',
             status: Status(isLiked: false, isDisliked: true)),
-        summarization: Translation(
+        summarization: ContentConfigure(
             text: 'Summarized Text 2',
             status: Status(isLiked: false, isDisliked: true)),
         type: 'Type 2',
@@ -152,10 +278,10 @@ class ContentRepository {
         contentId: 'content3',
         extractedText: 'Text 3',
         dateUpdated: '2024-05-03',
-        translation: Translation(
+        translation: ContentConfigure(
             text: 'Translated Text 3',
             status: Status(isLiked: true, isDisliked: false)),
-        summarization: Translation(
+        summarization: ContentConfigure(
             text: 'Summarized Text 3',
             status: Status(isLiked: true, isDisliked: false)),
         type: 'Type 3',
@@ -170,10 +296,10 @@ class ContentRepository {
         contentId: 'content4',
         extractedText: 'Text 4',
         dateUpdated: '2024-05-04',
-        translation: Translation(
+        translation: ContentConfigure(
             text: 'Translated Text 4',
             status: Status(isLiked: false, isDisliked: true)),
-        summarization: Translation(
+        summarization: ContentConfigure(
             text: 'Summarized Text 4',
             status: Status(isLiked: false, isDisliked: true)),
         type: 'Type 4',
@@ -188,10 +314,10 @@ class ContentRepository {
         contentId: 'content5',
         extractedText: 'Text 5',
         dateUpdated: '2024-05-05',
-        translation: Translation(
+        translation: ContentConfigure(
             text: 'Translated Text 5',
             status: Status(isLiked: true, isDisliked: false)),
-        summarization: Translation(
+        summarization: ContentConfigure(
             text: 'Summarized Text 5',
             status: Status(isLiked: true, isDisliked: false)),
         type: 'Type 5',

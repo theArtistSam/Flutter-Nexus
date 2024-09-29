@@ -23,7 +23,7 @@ class ContentTile extends StatelessWidget {
   final String title;
   final String date;
   final String icon;
-  final String thumbnail;
+  final String? thumbnail;
   final VoidCallback onTap;
 
   @override
@@ -39,17 +39,25 @@ class ContentTile extends StatelessWidget {
                 cornerRadius: 15,
                 cornerSmoothing: 0.8,
               ),
-              child: CachedNetworkImage(
-                imageUrl: thumbnail,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                progressIndicatorBuilder: (context, url, progress) => Center(
-                  child: CircularProgressIndicator(
-                    value: progress.progress,
-                  ),
-                ),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-              ),
+              child: thumbnail == null
+                  ? Image.asset(
+                      'assets/images/content.png',
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    )
+                  : CachedNetworkImage(
+                      imageUrl: thumbnail!,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      progressIndicatorBuilder: (context, url, progress) =>
+                          Center(
+                        child: CircularProgressIndicator(
+                          value: progress.progress,
+                        ),
+                      ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                    ),
             ),
           ),
           Positioned.fill(

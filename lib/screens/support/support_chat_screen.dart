@@ -299,7 +299,7 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
                 children: [
                   Divider(
                     height: 0,
-                    color: NexusColors.borderColor,
+                    color: NexusColors.secondaryTextColor.withOpacity(.15),
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -620,7 +620,7 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+            padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

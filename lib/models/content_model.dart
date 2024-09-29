@@ -2,8 +2,8 @@ class ContentModel {
   String? contentId;
   String? extractedText;
   String? dateUpdated;
-  Translation? translation;
-  Translation? summarization;
+  ContentConfigure? translation;
+  ContentConfigure? summarization;
   String? type;
   String? title;
   String? folderId;
@@ -30,10 +30,10 @@ class ContentModel {
     extractedText = json['extracted_text'];
     dateUpdated = json['date_updated'];
     translation = json['translation'] != null
-        ? Translation.fromJson(json['translation'])
+        ? ContentConfigure.fromJson(json['translation'])
         : null;
     summarization = json['summarization'] != null
-        ? Translation.fromJson(json['summarization'])
+        ? ContentConfigure.fromJson(json['summarization'])
         : null;
     type = json['type'];
     title = json['title'];
@@ -67,8 +67,8 @@ class ContentModel {
     String? contentId,
     String? extractedText,
     String? dateUpdated,
-    Translation? translation,
-    Translation? summarization,
+    ContentConfigure? translation,
+    ContentConfigure? summarization,
     String? type,
     String? title,
     String? folderId,
@@ -92,13 +92,13 @@ class ContentModel {
   }
 }
 
-class Translation {
+class ContentConfigure {
   String? text;
   Status? status;
 
-  Translation({this.text, this.status});
+  ContentConfigure({this.text, this.status});
 
-  Translation.fromJson(Map<String, dynamic> json) {
+  ContentConfigure.fromJson(Map<String, dynamic> json) {
     text = json['text'];
     status = json['status'] != null ? Status.fromJson(json['status']) : null;
   }

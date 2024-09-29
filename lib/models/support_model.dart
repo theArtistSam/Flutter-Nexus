@@ -8,14 +8,15 @@ class SupportModel {
   String? _issueStatus;
   List<Message>? _conversation;
 
-  SupportModel(
-      {String? userId,
-      String? issueId,
-      String? issueOpenedTime,
-      String? issueClosedTime,
-      String? issueCategory,
-      String? issueStatus,
-      List<Message>? conversation}) {
+  SupportModel({
+    String? userId,
+    String? issueId,
+    String? issueOpenedTime,
+    String? issueClosedTime,
+    String? issueCategory,
+    String? issueStatus,
+    List<Message>? conversation,
+  }) {
     if (userId != null) {
       _userId = userId;
     }

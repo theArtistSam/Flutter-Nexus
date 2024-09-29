@@ -6,14 +6,17 @@ import 'package:nexus/screens/api_stub.dart';
 import 'package:nexus/screens/cached_image_stub.dart';
 import 'package:nexus/screens/home/home_screen.dart';
 import 'package:nexus/screens/video_stub.dart';
+import 'package:nexus/services/background_upload_service.dart';
 import 'package:nexus/utils/bottom_navbar/bottom_navbar.dart';
+import 'package:workmanager/workmanager.dart';
+// import 'package:workmanager/workmanager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   // Load the .env file
   await dotenv.load(fileName: ".env");
 
+  // Initialize Firebase in the background isolate
   await Firebase.initializeApp(
     options: FirebaseOptions(
       apiKey: dotenv.env['FIREBASE_API_KEY']!,
@@ -22,6 +25,13 @@ void main() async {
       projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
       storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET']!,
     ),
+  );
+
+  // Initialize Workmanager
+  Workmanager().initialize(
+    // The top-level function that handles background tasks
+    backgroundUploadService,
+    isInDebugMode: true, // Set this to false in production
   );
   runApp(const MyApp());
 }

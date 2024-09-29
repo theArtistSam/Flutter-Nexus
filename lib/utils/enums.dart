@@ -5,3 +5,5 @@ enum ContentStatus { loading, failure, success }
 enum LibraryStatus { loading, failure, success }
 
 enum TagsStatus { loading, failure, success, alreadyExists }
+
+enum ReturnResponseStatus { processing, failure, initial, success }

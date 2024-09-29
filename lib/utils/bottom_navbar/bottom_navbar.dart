@@ -95,7 +95,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   decoration: BoxDecoration(
                     border: Border(
                       top: BorderSide(
-                        color: NexusColors.borderColor,
+                        color: NexusColors.secondaryTextColor.withOpacity(.15),
                         width: 1,
                       ),
                     ),
