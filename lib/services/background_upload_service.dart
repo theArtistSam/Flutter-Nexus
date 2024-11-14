@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:nexus/services/firebase_init_service.dart';
+import 'package:nexus/widgets/styled_widgets/styled_snackbar.dart';
 import 'package:workmanager/workmanager.dart'; // Import Firebase Core
 
 // The top-level function that handles background tasks
@@ -11,31 +13,26 @@ import 'package:workmanager/workmanager.dart'; // Import Firebase Core
 void backgroundUploadService() {
   Workmanager().executeTask((task, inputData) async {
     try {
-      // Initialize Firebase in the background isolate
-      await Firebase.initializeApp(
-        options: FirebaseOptions(
-          apiKey: dotenv.env['FIREBASE_API_KEY']!,
-          appId: dotenv.env['FIREBASE_APP_ID']!,
-          messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
-          projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
-          storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET']!,
-        ),
-      );
+      print("WORKING:::");
+
+      // Initalize firebase
+      await FirebaseInitService.init();
 
       // Retrieve parameters passed from the main thread
       String? userId = inputData?['userId'];
       String? contentId = inputData?['contentId'];
       String? filePath = inputData?['filePath'];
-
       if (userId != null && contentId != null && filePath != null) {
         // Prepare to upload file to Firebase Storage
+        String filename = filePath.split('/').last;
         File file = File(filePath);
         final storageRef = FirebaseStorage.instance
             .ref()
             .child('users')
             .child(userId)
             .child('content')
-            .child(contentId);
+            .child(contentId)
+            .child(filename);
 
         // Upload the file to Firebase Storage
         UploadTask uploadTask = storageRef.putFile(file);

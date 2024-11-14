@@ -8,7 +8,7 @@ class StyledText extends StatelessWidget {
     super.key,
     required this.text,
     this.fontSize = 16,
-    this.fontWeight = FontWeight.w600,
+    this.fontWeight = FontWeight.w500,
     this.color,
     this.align = TextAlign.left,
     this.isUrdu = false,

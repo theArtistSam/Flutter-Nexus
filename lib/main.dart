@@ -4,28 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:nexus/screens/api_stub.dart';
 import 'package:nexus/screens/cached_image_stub.dart';
+import 'package:nexus/screens/onboarding/onboarding_screen.dart';
 import 'package:nexus/screens/home/home_screen.dart';
 import 'package:nexus/screens/video_stub.dart';
 import 'package:nexus/services/background_upload_service.dart';
+import 'package:nexus/services/firebase_init_service.dart';
 import 'package:nexus/utils/bottom_navbar/bottom_navbar.dart';
 import 'package:workmanager/workmanager.dart';
 // import 'package:workmanager/workmanager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Load the .env file
-  await dotenv.load(fileName: ".env");
 
-  // Initialize Firebase in the background isolate
-  await Firebase.initializeApp(
-    options: FirebaseOptions(
-      apiKey: dotenv.env['FIREBASE_API_KEY']!,
-      appId: dotenv.env['FIREBASE_APP_ID']!,
-      messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
-      projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
-      storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET']!,
-    ),
-  );
+  // Initalize firebase
+  await FirebaseInitService.init();
 
   // Initialize Workmanager
   Workmanager().initialize(
@@ -59,7 +51,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       title: 'NEXUS',
       debugShowCheckedModeBanner: false,
-      home: BottomNavBar(),
+      home: OnboardingScreen(),
     );
   }
 }

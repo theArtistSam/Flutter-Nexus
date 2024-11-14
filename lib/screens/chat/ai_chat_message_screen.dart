@@ -8,6 +8,7 @@ import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/bottom_sheets/content_configure_bottom_sheet.dart';
 import 'package:nexus/widgets/bottom_sheets/delete_bottom_sheet.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_snackbar.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 import 'package:nexus/widgets/styled_widgets/styled_textfield.dart';
 
@@ -313,21 +314,28 @@ class _AIChatMessageScreenState extends State<AIChatMessageScreen> {
                       onTap: () async {
                         if (_textEditingController.text.isNotEmpty) {
                           String message = _textEditingController.text.trim();
-                          // Add the original messsage
-                          aiChatMessageBloc.add(AddOriginalMessage(
-                            text: message,
-                            messageType: 'original',
-                            documentId: widget.chat.chatId!,
-                          ));
+                          if (message.split(" ").length > 15) {
+                            // Add the original messsage
+                            aiChatMessageBloc.add(AddOriginalMessage(
+                              text: message,
+                              messageType: 'original',
+                              documentId: widget.chat.chatId!,
+                            ));
 
-                          // TODO: Better be automatated from the bloc side
-                          // Add response message
-                          aiChatMessageBloc.add(AddResponseMessage(
-                            text: message,
-                            documentId: widget.chat.chatId!,
-                          ));
+                            // TODO: Better be automatated from the bloc side
+                            // Add response message
+                            aiChatMessageBloc.add(AddResponseMessage(
+                              text: message,
+                              documentId: widget.chat.chatId!,
+                            ));
 
-                          _textEditingController.text = '';
+                            _textEditingController.text = '';
+                          } else {
+                            StyledSnackbar.show(
+                              context: context,
+                              message: "Message too short to summarize!",
+                            );
+                          }
                         }
                       },
                     )

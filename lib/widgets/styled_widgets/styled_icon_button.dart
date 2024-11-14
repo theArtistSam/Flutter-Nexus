@@ -6,7 +6,7 @@ import 'package:nexus/utils/constants.dart';
 
 // ignore: must_be_immutable
 class StyledIconButton extends StatelessWidget {
-  StyledIconButton({
+  const StyledIconButton({
     super.key,
     this.backgroundColor = NexusColors.primaryColorLight,
     this.iconColor = Colors.white,
@@ -18,14 +18,14 @@ class StyledIconButton extends StatelessWidget {
     required this.onTap,
   });
 
-  String icon;
-  Color backgroundColor;
-  Color? borderColor;
-  Color iconColor;
-  bool isBordered;
-  double padding;
-  double height;
-  VoidCallback onTap;
+  final String icon;
+  final Color backgroundColor;
+  final Color? borderColor;
+  final Color iconColor;
+  final bool isBordered;
+  final double padding;
+  final double height;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {

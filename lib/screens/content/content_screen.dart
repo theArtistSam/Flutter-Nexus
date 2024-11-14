@@ -177,7 +177,7 @@ class _ContentScreenState extends State<ContentScreen> {
                       contentIconButton(
                         title: _buttonText(type: widget.content.type!),
                         icon: widget.content.type!,
-                        onTap: () {
+                        onTap: () async {
                           final String? link = widget.content.link;
                           final String type = widget.content.type!;
 
@@ -187,16 +187,29 @@ class _ContentScreenState extends State<ContentScreen> {
                                 message:
                                     '${type[0].toUpperCase() + type.substring(1)} file is still uploading');
                           } else {
-                            showModalBottomSheet(
-                              isScrollControlled: true,
-                              context: context,
-                              builder: (context) {
-                                return _contentPlayerBottomSheet(
-                                  type: type,
-                                  link: link,
-                                );
-                              }, // Add actual content
-                            );
+                            if (type == 'document') {
+                              // * use url launcher to download the file
+                              // "https://firebasestorage.googleapis.com/v0/b/nexus-ef4c1.appspot.com/o/users%2FBd4umkyLqOLnMpdOLZ0E%2Fcontent%2Fc3QGMiK0Hhka3iLmXso7%2Fsample-doc.docx?alt=media&token=c29ac290-893b-458d-8a76-14f478559543"
+
+                              //  the attribute is coming as a link
+
+                              // TODO: Develop a document previewer for opening docs
+                              StyledSnackbar.show(
+                                context: context,
+                                message: 'Impelmenting document viewer!!',
+                              );
+                            } else {
+                              showModalBottomSheet(
+                                isScrollControlled: true,
+                                context: context,
+                                builder: (context) {
+                                  return _contentPlayerBottomSheet(
+                                    type: type,
+                                    link: link,
+                                  );
+                                }, // Add actual content
+                              );
+                            }
                           }
                         },
                       ),

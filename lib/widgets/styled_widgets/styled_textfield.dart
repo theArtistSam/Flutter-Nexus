@@ -12,6 +12,7 @@ class StyledTextfield extends StatelessWidget {
     required this.hintText,
     required this.controller,
     this.maxlines = 1,
+    this.isPassword = false,
     this.onChanged,
   });
 
@@ -20,6 +21,7 @@ class StyledTextfield extends StatelessWidget {
   final int maxlines;
   final TextEditingController controller;
   final void Function(String)? onChanged;
+  final bool isPassword;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -47,6 +49,7 @@ class StyledTextfield extends StatelessWidget {
                 : const SizedBox(),
             Expanded(
               child: TextField(
+                obscureText: isPassword,
                 controller: controller,
                 minLines: 1,
                 maxLines: maxlines,
@@ -59,16 +62,16 @@ class StyledTextfield extends StatelessWidget {
                       : null,
                   hintStyle: GoogleFonts.poppins(
                     fontSize: 16,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w400,
                     // COLOR: FIX
                     color: NexusColors.isDark
-                        ? Colors.white
+                        ? NexusColors.secondaryTextColor
                         : NexusColors.primaryColorLight,
                   ),
                 ),
                 style: GoogleFonts.poppins(
                   fontSize: 16,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w400,
                   // COLOR: FIX
                   color: NexusColors.isDark
                       ? Colors.white

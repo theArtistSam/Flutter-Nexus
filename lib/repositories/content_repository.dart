@@ -34,31 +34,44 @@ class ContentRepository {
 
   Future<String> deleteContent({required String contentId}) async {
     try {
-      // Firestore reference
+      // Firestore reference to the content document
       final docRef = _firestore
           .collection('users')
-          .doc('Bd4umkyLqOLnMpdOLZ0E')
+          .doc('Bd4umkyLqOLnMpdOLZ0E') // Use actual userId
           .collection('content')
           .doc(contentId);
 
-      // Delete Firestore document
+      // Delete the Firestore document
       await docRef.delete();
+      print("Document deleted from Firestore.");
 
-      // Reference to Firebase Storage path
+      // Reference to the Firebase Storage folder
       final storageRef = FirebaseStorage.instance
           .ref()
           .child('users')
-          .child('Bd4umkyLqOLnMpdOLZ0E')
+          .child('Bd4umkyLqOLnMpdOLZ0E') // Use actual userId
           .child('content')
           .child(contentId);
 
-      // Check if the file exists in Firebase Storage and delete it
+      // List all files in the folder (contentId)
+      final ListResult result = await storageRef.listAll();
+
+      // Loop through each file and delete it
+      for (var fileRef in result.items) {
+        try {
+          await fileRef.delete();
+          print("File ${fileRef.fullPath} deleted from Firebase Storage.");
+        } catch (e) {
+          print("Error deleting file ${fileRef.fullPath}: $e");
+        }
+      }
+
+      // Optionally: You can try to delete the folder itself if it's empty
       try {
-        await storageRef.delete();
-        print("File deleted from Firebase Storage.");
+        await storageRef.delete(); // This will only work if the folder is empty
+        print("Folder deleted successfully.");
       } catch (e) {
-        print(
-            "No file found in Firebase Storage for contentId: $contentId, or deletion failed: $e");
+        print("Folder could not be deleted or doesn't exist: $e");
       }
 
       return 'Success';
@@ -110,60 +123,6 @@ class ContentRepository {
       print("SOME ERROR: $e");
     }
   }
-
-  // Future<void> uploadContentList({
-  //   required String userId,
-  //   required List<ContentModel> contentList,
-  //   required List<File> files,
-  // }) async {
-  //   try {
-  //     // Create a new document in Firestore and get its reference
-  //     for (var content in contentList) {
-  //       // upload each content on Firebase
-  //       final docRef = await FirebaseFirestore.instance
-  //           .collection('users')
-  //           .doc(userId)
-  //           .collection('content')
-  //           .add(content.toJson());
-
-  //       // Get the generated document ID
-  //       String contentId = docRef.id;
-
-  //       // Update the content Id with in the list as well
-  //       content.contentId = contentId;
-
-  //       // Update the Firestore document with the content ID
-  //       await docRef.update({'content_id': contentId});
-  //     }
-
-  //     // *Now we need to upload the files one by one as a background
-  //     // * we can verfiy the files by their name as content.title == fileName
-
-  //     //  * One the files have been uploaded
-
-  //     // we need to update the link property to firebase and add the file links there
-
-  //     // Now, upload the file to Firebase Storage
-  //     final storageRef = FirebaseStorage.instance
-  //         .ref()
-  //         .child('users')
-  //         .child(userId)
-  //         .child('content')
-  //         .child(contentId);
-
-  //     // Upload the file to Firebase Storage
-  //     UploadTask uploadTask = storageRef.putFile(file);
-  //     TaskSnapshot snapshot = await uploadTask;
-  //     String downloadUrl = await snapshot.ref.getDownloadURL();
-
-  //     // Once the file is uploaded, update the Firestore document with the download link
-  //     await docRef.update({'link': downloadUrl});
-
-  //     print('Content and file uploaded successfully.');
-  //   } catch (e) {
-  //     print("SOME ERROR: $e");
-  //   }
-  // }
 
   Future<void> uploadContentList({
     required String userId,
