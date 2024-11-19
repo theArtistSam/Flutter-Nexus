@@ -5,7 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class NexusColors {
-  static bool isDark = true;
+  static bool isDark = false;
 
   static const primaryColorLight = Color(0XFF2A4E8F);
   static const backgroundColorLight = Color(0XFFFFFFFF);

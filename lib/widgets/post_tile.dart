@@ -32,6 +32,7 @@ class PostTile extends StatelessWidget {
     final isSaved = post.savedBy!.contains(userId);
     final isSelfPost = post.userId! == userId;
 
+    print(post.postId);
     print(isSelfPost);
 
     return BlocProvider(
@@ -155,21 +156,25 @@ class PostTile extends StatelessWidget {
                                       cornerRadius: 15,
                                       cornerSmoothing: .8,
                                     ),
-                                    child: CachedNetworkImage(
-                                      imageUrl: post.images?[0] ?? '',
-                                      fit: BoxFit.cover,
-                                      width: double.infinity,
-                                      progressIndicatorBuilder:
-                                          (context, url, progress) => SizedBox(
-                                        height: 100,
-                                        child: Center(
-                                          child: CircularProgressIndicator(
-                                            value: progress.progress,
+                                    child: AspectRatio(
+                                      aspectRatio: 4 / 5,
+                                      child: CachedNetworkImage(
+                                        imageUrl: post.images?[0] ?? '',
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                        progressIndicatorBuilder:
+                                            (context, url, progress) =>
+                                                SizedBox(
+                                          height: 100,
+                                          child: Center(
+                                            child: CircularProgressIndicator(
+                                              value: progress.progress,
+                                            ),
                                           ),
                                         ),
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(Icons.error),
                                       ),
-                                      errorWidget: (context, url, error) =>
-                                          const Icon(Icons.error),
                                     ),
                                   )
                                 : const SizedBox(),
@@ -298,8 +303,9 @@ class PostTile extends StatelessWidget {
                                     );
                                   } else {
                                     StyledSnackbar.show(
-                                        context: context,
-                                        message: "Comments disabled");
+                                      context: context,
+                                      message: "Comments disabled",
+                                    );
                                   }
                                 },
                               ),

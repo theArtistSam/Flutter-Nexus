@@ -4,6 +4,7 @@ class UserModel {
   String? password;
   String? firstName;
   String? lastName;
+  String? startDate;
   AccountStatus? accountStatus;
   String? profilePic;
   String? backgroundPic;
@@ -11,20 +12,23 @@ class UserModel {
   Guides? guides;
   AppCustomization? appCustomization;
 
-  UserModel(
-      {this.userId,
-      this.email,
-      this.password,
-      this.firstName,
-      this.lastName,
-      this.accountStatus,
-      this.profilePic,
-      this.backgroundPic,
-      this.biography,
-      this.guides,
-      this.appCustomization});
+  UserModel({
+    this.userId,
+    this.email,
+    this.password,
+    this.firstName,
+    this.lastName,
+    this.accountStatus,
+    this.profilePic,
+    this.backgroundPic,
+    this.biography,
+    this.startDate,
+    this.guides,
+    this.appCustomization,
+  });
 
   UserModel.fromJson(Map<String, dynamic> json) {
+    startDate = json["start_date"];
     userId = json['user_id'];
     email = json['email'];
     password = json['password'];
@@ -44,6 +48,7 @@ class UserModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data["start_date"] = startDate;
     data['user_id'] = userId;
     data['email'] = email;
     data['password'] = password;
@@ -83,26 +88,6 @@ class AccountStatus {
     return data;
   }
 }
-
-// ! for not not required!
-// class Community {
-//   List<String>? posts;
-//   List<String>? savedPosts;
-
-//   Community({this.posts, this.savedPosts});
-
-//   Community.fromJson(Map<String, dynamic> json) {
-//     posts = json['posts'].cast<String>();
-//     savedPosts = json['saved_posts'].cast<String>();
-//   }
-
-//   Map<String, dynamic> toJson() {
-//     final Map<String, dynamic> data = <String, dynamic>{};
-//     data['posts'] = posts;
-//     data['saved_posts'] = savedPosts;
-//     return data;
-//   }
-// }
 
 class Guides {
   List<String>? viewedGuides;

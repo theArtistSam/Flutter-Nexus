@@ -2,6 +2,7 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:nexus/screens/profile/profile_screen.dart';
 import 'package:nexus/screens/support/support_screen.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/styled_widgets/styled_button.dart';
@@ -93,7 +94,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (builder) => const ProfileScreen(
+                            userId: 'Bd4umkyLqOLnMpdOLZ0E',
+                          ),
+                        ),
+                      );
+                    },
                     borderRadius: const SmoothBorderRadius.all(
                       SmoothRadius(
                         cornerRadius: 15,

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nexus/models/user_model.dart';
 import 'package:nexus/models/premium_user_model.dart';
+import 'package:nexus/repositories/community_repository.dart';
 
 class UserRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -24,6 +25,32 @@ class UserRepository {
     } catch (e) {
       print('Error getting users: $e');
       return [];
+    }
+  }
+
+  Future<UserModel?> getUserById({required String id}) async {
+    try {
+      DocumentSnapshot docSnapshot =
+          await _firestore.collection('users').doc(id).get();
+
+      if (docSnapshot.exists) {
+        Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+        AccountStatus accountStatus =
+            AccountStatus.fromJson(data['account_status']);
+
+        if (accountStatus.isPremium == true) {
+          print(data.toString());
+          return PremiumUserModel.fromJson(data);
+        } else {
+          return UserModel.fromJson(data);
+        }
+      } else {
+        print('User with id $id not found.');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching user with id $id: $e');
+      return null;
     }
   }
 

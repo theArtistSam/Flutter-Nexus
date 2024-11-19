@@ -82,6 +82,7 @@ class _StyledTabsState extends State<StyledTabs> {
                               child: Center(
                                 child: StyledText(
                                   text: widget.leftTabText,
+                                  fontSize: 14,
                                   color: isLeftSelected
                                       ? NexusColors.textColorLight
                                       : NexusColors.textColor,
@@ -116,6 +117,7 @@ class _StyledTabsState extends State<StyledTabs> {
                               child: Center(
                                 child: StyledText(
                                   text: widget.rightTabText,
+                                  fontSize: 14,
                                   color: !isLeftSelected
                                       ? NexusColors.textColorLight
                                       : NexusColors.textColor,

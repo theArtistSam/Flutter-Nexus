@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -11,20 +10,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:nexus/blocs/community_bloc/bloc/community_bloc.dart';
 import 'package:nexus/models/guide_model.dart';
 import 'package:nexus/models/post_model.dart';
-import 'package:nexus/widgets/bottom_sheets/comment_bottom_sheet.dart';
-import 'package:nexus/screens/settings/settings_screen.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/bottom_sheets/delete_bottom_sheet.dart';
 import 'package:nexus/widgets/bottom_sheets/guide_bottom_sheet.dart';
-import 'package:nexus/widgets/bottom_sheets/image_slider_bottom_sheet.dart';
-import 'package:nexus/widgets/popup_menu.dart';
 import 'package:nexus/widgets/bottom_sheets/post_bottom_sheet.dart';
 import 'package:nexus/widgets/post_tile.dart';
-import 'package:nexus/widgets/styled_widgets/styled_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_snackbar.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
-import 'package:nexus/widgets/styled_widgets/styled_textfield.dart';
 
 // ignore: must_be_immutable
 class CommunityScreen extends StatefulWidget {
@@ -313,10 +305,14 @@ class _CommunityScreenState extends State<CommunityScreen> {
                             const SizedBox(height: 10),
                         itemBuilder: (BuildContext context, int index) {
                           PostModel postModel = postList[index];
-                          return PostTile(
-                            post: postModel,
-                            userId: 'Bd4umkyLqOLnMpdOLZ0E',
-                          );
+
+                          // TODO: Find a better way to fix the post id null
+                          return postModel.postId == null
+                              ? SizedBox()
+                              : PostTile(
+                                  post: postModel,
+                                  userId: 'Bd4umkyLqOLnMpdOLZ0E',
+                                );
                         },
                       );
                     },

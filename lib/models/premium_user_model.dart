@@ -3,38 +3,25 @@ import 'package:nexus/models/user_model.dart';
 class PremiumUserModel extends UserModel {
   List<Card>? billingInfos;
   String? subscriptionPlan;
-  String? startDate;
   String? lastPaymentDate;
 
   PremiumUserModel({
-    String? userId,
-    String? email,
-    String? password,
-    String? firstName,
-    String? lastName,
-    AccountStatus? accountStatus,
-    String? profilePic,
-    String? backgroundPic,
-    String? biography,
-    Guides? guides,
-    AppCustomization? appCustomization,
+    super.userId,
+    super.email,
+    super.password,
+    super.firstName,
+    super.lastName,
+    super.accountStatus,
+    super.profilePic,
+    super.backgroundPic,
+    super.biography,
+    super.startDate,
+    super.guides,
+    super.appCustomization,
     this.billingInfos,
     this.subscriptionPlan,
-    this.startDate,
     this.lastPaymentDate,
-  }) : super(
-          userId: userId,
-          email: email,
-          password: password,
-          firstName: firstName,
-          lastName: lastName,
-          accountStatus: accountStatus,
-          profilePic: profilePic,
-          backgroundPic: backgroundPic,
-          biography: biography,
-          guides: guides,
-          appCustomization: appCustomization,
-        );
+  });
 
   PremiumUserModel.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     if (json['billing_infos'] != null) {
@@ -44,7 +31,6 @@ class PremiumUserModel extends UserModel {
       });
     }
     subscriptionPlan = json['subscription_plan'];
-    startDate = json['start_date'];
     lastPaymentDate = json['last_payment_date'];
   }
 
@@ -55,7 +41,6 @@ class PremiumUserModel extends UserModel {
       data['billing_infos'] = billingInfos!.map((v) => v.toJson()).toList();
     }
     data['subscription_plan'] = subscriptionPlan;
-    data['start_date'] = startDate;
     data['last_payment_date'] = lastPaymentDate;
     return data;
   }
@@ -68,12 +53,13 @@ class Card {
   String? expiryDate;
   bool? isActivated;
 
-  Card(
-      {this.name,
-      this.cardNumber,
-      this.cvv,
-      this.expiryDate,
-      this.isActivated});
+  Card({
+    this.name,
+    this.cardNumber,
+    this.cvv,
+    this.expiryDate,
+    this.isActivated,
+  });
 
   Card.fromJson(Map<String, dynamic> json) {
     name = json['name'];
