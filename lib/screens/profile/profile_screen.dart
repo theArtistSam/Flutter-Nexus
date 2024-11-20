@@ -7,13 +7,16 @@ import 'package:image_picker/image_picker.dart';
 import 'package:nexus/blocs/profile_screen_bloc/bloc/profile_screen_bloc.dart';
 import 'package:nexus/models/post_model.dart';
 import 'package:nexus/models/user_model.dart';
+import 'package:nexus/screens/profile/widgets/profile_edit_bottom_sheet.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/bottom_sheets/post_bottom_sheet.dart';
 import 'package:nexus/widgets/popup_menu.dart';
 import 'package:nexus/widgets/post_tile.dart';
+import 'package:nexus/widgets/styled_widgets/styled_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_snackbar.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
+import 'package:nexus/widgets/styled_widgets/styled_textfield.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({
@@ -102,7 +105,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           isScrollControlled: true,
                                           context: context,
                                           builder: (context) {
-                                            return _editBottomSheet();
+                                            return BlocProvider.value(
+                                              value: profileScreenBloc,
+                                              child: ProfileEditBottomSheet(),
+                                            );
                                           } // Add actual content
                                           ).whenComplete(
                                         () {
@@ -339,165 +345,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _editBottomSheet() {
-    return Wrap(
-      children: [
-        Container(
-          height: MediaQuery.of(context).size.height - 50,
-          decoration: ShapeDecoration(
-            color: NexusColors.backgroundColor,
-            shape: const SmoothRectangleBorder(
-              borderRadius: SmoothBorderRadius.only(
-                topLeft: SmoothRadius(
-                  cornerRadius: 20,
-                  cornerSmoothing: 0.8,
-                ),
-                topRight: SmoothRadius(
-                  cornerRadius: 20,
-                  cornerSmoothing: 0.8,
-                ),
-              ),
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 15,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 60,
-                    height: 5,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: NexusColors.borderColor,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 7),
-                  child: Row(
-                    children: [
-                      StyledText(
-                        text: 'Edit Profile',
-                        color: NexusColors.textColor,
-                        fontSize: 20,
-                      ),
-                      const Spacer(),
-                      PopupMenu(
-                        onSelected: (value) async {
-                          switch (value) {
-                            case 'Edit thumbnail':
-                              // Use image picker to pick the image from gallery
-                              final XFile? image =
-                                  await ImageSelector.pickImage();
-
-                              if (image != null) {
-                                if (context.mounted) {
-                                  // context.read<ContentScreenBloc>().add(
-                                  //       AddThumbnail(file: image),
-                                  //     );
-                                }
-                              } else {
-                                if (context.mounted) {
-                                  StyledSnackbar.show(
-                                    context: context,
-                                    message: "Image not selected",
-                                  );
-                                }
-                              }
-                              break;
-                            default:
-                          }
-                        },
-                        items: const [
-                          PopupItem(name: 'Edit Profile'),
-                          PopupItem(name: 'Edit Background'),
-                        ],
-                        icon: 'dots-circle',
-                      )
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      StyledText(
-                        text: 'Background',
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      //             Stack(
-                      //   alignment: Alignment.center,
-                      //   children: [
-                      //     ClipRRect(
-                      //       borderRadius: SmoothBorderRadius(
-                      //         cornerRadius: 15,
-                      //         cornerSmoothing: 0.8,
-                      //       ),
-                      //       child: image != null
-                      //           ? Image.file(
-                      //               File(image.path),
-                      //               height: 180,
-                      //               width: double.infinity,
-                      //               fit: BoxFit.cover,
-                      //             )
-                      //           : CachedNetworkImage(
-                      //               imageUrl: content.thumbnail ?? '',
-                      //               fit: BoxFit.cover,
-                      //               width: double.infinity,
-                      //               height: 180,
-                      //               progressIndicatorBuilder: (context, url, progress) =>
-                      //                   Center(
-                      //                 child: CircularProgressIndicator(
-                      //                   value: progress.progress,
-                      //                 ),
-                      //               ),
-                      //               errorWidget: (context, url, error) =>
-                      //                   const Icon(Icons.error),
-                      //             ),
-                      //     ),
-                      //     image != null
-                      //         ? StyledIconButton(
-                      //             icon: 'trash',
-                      //             onTap: () {
-                      //               context.read<ContentScreenBloc>().add(
-                      //                     RemoveThumbnail(),
-                      //                   );
-                      //             },
-                      //             backgroundColor: Colors.black45,
-                      //           )
-                      //         : StyledIconButton(
-                      //             icon: 'maximize',
-                      //             onTap: () {
-                      //               showModalBottomSheet(
-                      //                 isScrollControlled: true,
-                      //                 context: context,
-                      //                 builder: (builder) => ImageSliderBottomSheet(
-                      //                   images: [content.thumbnail!],
-                      //                 ),
-                      //               );
-                      //             },
-                      //             backgroundColor: Colors.black45,
-                      //           )
-                      //   ],
-                      // ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        )
-      ],
-    );
-  }
+  // Widget _editBottomSheet() {
+  //   return   }
 }
