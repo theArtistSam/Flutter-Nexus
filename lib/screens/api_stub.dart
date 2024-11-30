@@ -8,7 +8,6 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:http_parser/http_parser.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class APIStubScreen extends StatefulWidget {
   const APIStubScreen({super.key});

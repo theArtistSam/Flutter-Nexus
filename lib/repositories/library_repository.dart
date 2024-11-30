@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nexus/models/content_model.dart';
 import 'package:nexus/models/folder_model.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:rxdart/rxdart.dart';
 
 class LibraryRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

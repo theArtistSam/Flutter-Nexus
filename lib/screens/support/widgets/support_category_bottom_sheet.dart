@@ -1,12 +1,7 @@
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:nexus/blocs/support_category_bottom_sheet_bloc/bloc/support_category_bottom_sheet_bloc.dart';
-import 'package:nexus/blocs/support_bloc/bloc/support_bloc.dart';
-import 'package:nexus/blocs/support_chat_bloc/bloc/support_chat_bloc.dart';
-import 'package:nexus/models/category_model.dart';
 import 'package:nexus/repositories/support_repository.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/category_tile.dart';

@@ -9,13 +9,14 @@ sealed class StyledTabsState extends Equatable {
 
 // ignore: must_be_immutable
 class StyledTabsInitial extends StyledTabsState {
-  bool isLeftSelected;
+  final bool isLeftSelected;
 
-  StyledTabsInitial({this.isLeftSelected = true});
+  const StyledTabsInitial({required this.isLeftSelected});
 
   StyledTabsInitial copyWith({bool? isLeftSelected}) {
     return StyledTabsInitial(
-        isLeftSelected: isLeftSelected ?? this.isLeftSelected);
+      isLeftSelected: isLeftSelected ?? this.isLeftSelected,
+    );
   }
 
   @override

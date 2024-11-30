@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nexus/screens/otp/otp_screen.dart';
-import 'package:nexus/screens/reset_password/reset_password_screen.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/styled_widgets/styled_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';

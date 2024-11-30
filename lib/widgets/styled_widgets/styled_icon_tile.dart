@@ -6,7 +6,7 @@ import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 
 // ignore: must_be_immutable
 class StyledIconTile extends StatelessWidget {
-  StyledIconTile({
+  const StyledIconTile({
     super.key,
     required this.icon,
     required this.text,

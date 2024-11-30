@@ -3,20 +3,15 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:nexus/blocs/profile_screen_bloc/bloc/profile_screen_bloc.dart';
 import 'package:nexus/models/post_model.dart';
 import 'package:nexus/models/user_model.dart';
 import 'package:nexus/screens/profile/widgets/profile_edit_bottom_sheet.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/bottom_sheets/post_bottom_sheet.dart';
-import 'package:nexus/widgets/popup_menu.dart';
 import 'package:nexus/widgets/post_tile.dart';
-import 'package:nexus/widgets/styled_widgets/styled_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
-import 'package:nexus/widgets/styled_widgets/styled_snackbar.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
-import 'package:nexus/widgets/styled_widgets/styled_textfield.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({

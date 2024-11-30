@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nexus/models/user_model.dart';
 import 'package:nexus/models/premium_user_model.dart';
-import 'package:nexus/repositories/community_repository.dart';
 
 class UserRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

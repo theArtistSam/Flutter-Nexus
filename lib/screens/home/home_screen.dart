@@ -5,26 +5,18 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:nexus/blocs/home_screen_bloc/bloc/home_screen_bloc.dart';
 import 'package:nexus/models/content_model.dart';
 import 'package:nexus/models/guide_model.dart';
 import 'package:nexus/screens/content/content_screen.dart';
-import 'package:nexus/screens/home/widgets/content_upload_tile.dart';
 import 'package:nexus/screens/settings/settings_screen.dart';
-import 'package:nexus/utils/enums.dart';
 import 'package:nexus/widgets/bottom_sheets/guide_bottom_sheet.dart';
 import 'package:nexus/widgets/content_tile.dart';
 import 'package:nexus/screens/home/widgets/guide_tile.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
-import 'package:nexus/widgets/styled_widgets/styled_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
-import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_tile.dart';
-import 'package:nexus/widgets/styled_widgets/styled_tabs.dart';
 
 class HomeScreen extends StatefulWidget {
   // ignore: use_key_in_widget_constructors

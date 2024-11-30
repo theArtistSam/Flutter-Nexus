@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:nexus/models/content_model.dart';
 import 'package:nexus/models/user_model.dart';
 import 'package:nexus/repositories/chat_repository.dart';
-import 'package:nexus/repositories/comment_repository.dart';
-import 'package:nexus/repositories/community_repository.dart';
-import 'package:nexus/repositories/content_repository.dart';
-import 'package:nexus/repositories/support_repository.dart';
-import 'package:nexus/repositories/user_repository.dart';
 
 class DatabaseStub extends StatefulWidget {
+  const DatabaseStub({super.key});
+
   @override
   _DatabaseStubState createState() => _DatabaseStubState();
 }

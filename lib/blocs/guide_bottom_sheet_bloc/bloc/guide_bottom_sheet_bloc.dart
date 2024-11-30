@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:nexus/models/guide_model.dart';
 import 'package:nexus/repositories/community_repository.dart';
 

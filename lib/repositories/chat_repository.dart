@@ -3,8 +3,6 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nexus/models/chat_model.dart';
-import 'package:nexus/models/support_model.dart';
-import 'package:nexus/repositories/extractive_model_repository.dart';
 
 class AIChatRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -166,8 +164,8 @@ class AIChatRepository {
             : null,
         translationConfig: chatType == 'Translation'
             ? TranslationConfig(
-                sourceLanguage: 'English',
-                targetLanguage: 'Urdu',
+                sourceLanguages: ['English'],
+                targetLanguages: ['Urdu'],
               )
             : null,
       );
@@ -276,6 +274,48 @@ class AIChatRepository {
       print('Added successfully');
     } catch (e) {
       print('Error adding chat: $e');
+    }
+  }
+
+  Future<void> updateSummarizationConfig({
+    required String chatId,
+    required SummarizationConfig summarizationConfig,
+  }) async {
+    try {
+      DocumentReference docRef = _firestore
+          .collection('users')
+          .doc('Bd4umkyLqOLnMpdOLZ0E') // Consider making the user ID dynamic
+          .collection('chat')
+          .doc(chatId);
+
+      await docRef.update({
+        'summarization_config': summarizationConfig.toJson(),
+      });
+
+      print('Summarization Config updated successfully');
+    } catch (e) {
+      print('Failed to update Summarization Config: $e');
+    }
+  }
+
+  Future<void> updateTranslationConfig({
+    required String chatId,
+    required TranslationConfig translationConfig,
+  }) async {
+    try {
+      DocumentReference docRef = _firestore
+          .collection('users')
+          .doc('Bd4umkyLqOLnMpdOLZ0E') // Consider making the user ID dynamic
+          .collection('chat')
+          .doc(chatId);
+
+      await docRef.update({
+        'translation_config': translationConfig.toJson(),
+      });
+
+      print('Translation Config updated successfully');
+    } catch (e) {
+      print('Failed to update Summarization Config: $e');
     }
   }
 }

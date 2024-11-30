@@ -1,10 +1,8 @@
 import 'package:figma_squircle/figma_squircle.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
-import 'package:photo_view/photo_view_gallery.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoBottomSheet extends StatefulWidget {

@@ -5,13 +5,20 @@ import 'package:equatable/equatable.dart';
 import 'package:nexus/models/chat_model.dart';
 import 'package:nexus/repositories/chat_repository.dart';
 import 'package:nexus/repositories/extractive_model_repository.dart';
+import 'package:nexus/services/abstractive_model_service.dart';
 import 'package:nexus/services/extractive_model_service.dart';
+import 'package:nexus/services/translation_model_service.dart';
 
 part 'ai_chat_message_event.dart';
 part 'ai_chat_message_state.dart';
 
 class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
-  AiChatMessageBloc() : super(const AiChatMessageInitial()) {
+  final ChatModel chat;
+  AiChatMessageBloc({required this.chat})
+      : super(AiChatMessageInitial(
+          summarizationConfig: chat.summarizationConfig,
+          translationConfig: chat.translationConfig,
+        )) {
     on<FetchMessages>(fetchMessages);
     on<ToggleLike>(toggleLike);
     on<ToggleDisike>(toggleDisike);
@@ -20,6 +27,10 @@ class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
     on<AddOriginalMessage>(addOriginalMessage);
     on<AddResponseMessage>(addResponseMessage);
     on<DeleteAIChat>(deleteAIChat);
+    on<UpdateSummarizationConfig>(updateSummarizationConfig);
+    on<UpdateTranslationConfig>(updateTranslationConfig);
+
+    add(FetchMessages(documentId: chat.chatId!));
   }
 
   FutureOr<void> fetchMessages(
@@ -125,15 +136,57 @@ class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
     Emitter<AiChatMessageState> emit,
   ) async {
     try {
-      // * Change this to Extractive Model Service
-      final String responseMessage = await ExtractiveModelService()
-          .sendText(text: event.text, length: 'medium');
-      await AIChatRepository().addChatMessage(
-        userId: 'Bd4umkyLqOLnMpdOLZ0E',
-        documentId: event.documentId,
-        text: responseMessage.trim(),
-        messageType: 'response',
-      );
+      final currentState = state as AiChatMessageInitial;
+
+      String responseMessage;
+      // check the type of messsage
+      if (chat.chatType == 'Translation') {
+        //  TODO: Use this for the future functionality
+        // final TranslationConfig config = currentState.translationConfig!;
+        // final List<String> sourceLanguages = config.sourceLanguages!;
+        // final List<String> targetLanguages = config.targetLanguages!;
+
+        responseMessage =
+            await TrasnlationModelService().sendText(text: event.text);
+        print(responseMessage);
+// // * Change this to Extractive Model Service
+        await AIChatRepository().addChatMessage(
+          userId: 'Bd4umkyLqOLnMpdOLZ0E',
+          documentId: event.documentId,
+          text: responseMessage.trim(),
+          messageType: 'response',
+        );
+
+        // TODO: Send request to the translation model
+      } else {
+        final SummarizationConfig config = currentState.summarizationConfig!;
+        final String modelType = config.type!;
+        final String length = config.length!;
+
+        if (modelType == 'extractive') {
+          responseMessage = await ExtractiveModelService()
+              .sendText(text: event.text, length: length);
+
+// * Change this to Extractive Model Service
+          await AIChatRepository().addChatMessage(
+            userId: 'Bd4umkyLqOLnMpdOLZ0E',
+            documentId: event.documentId,
+            text: responseMessage.trim(),
+            messageType: 'response',
+          );
+        } else {
+          responseMessage = await AbstractiveModelService()
+              .sendText(text: event.text, length: length);
+
+          // * Change this to Abstractive Model Service
+          await AIChatRepository().addChatMessage(
+            userId: 'Bd4umkyLqOLnMpdOLZ0E',
+            documentId: event.documentId,
+            text: responseMessage.trim(),
+            messageType: 'response',
+          );
+        }
+      }
     } catch (e) {
       print("SOME ERROR WHILE ADDING CHAT MESSAGE $e");
     }
@@ -146,5 +199,19 @@ class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
     } catch (e) {
       print("SOME SHITTY ERROR WHILE DELETE $e");
     }
+  }
+
+  FutureOr<void> updateSummarizationConfig(
+      UpdateSummarizationConfig event, Emitter<AiChatMessageState> emit) {
+    final currentState = state as AiChatMessageInitial;
+    emit(currentState.copyWith(summarizationConfig: event.summarizationConfig));
+  }
+
+  FutureOr<void> updateTranslationConfig(
+    UpdateTranslationConfig event,
+    Emitter<AiChatMessageState> emit,
+  ) {
+    final currentState = state as AiChatMessageInitial;
+    emit(currentState.copyWith(translationConfig: event.translationConfig));
   }
 }

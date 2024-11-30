@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus/blocs/ai_chat_message_bloc/bloc/ai_chat_message_bloc.dart';
 import 'package:nexus/models/chat_model.dart';
-import 'package:nexus/repositories/extractive_model_repository.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/bottom_sheets/content_configure_bottom_sheet.dart';
+import 'package:nexus/widgets/bottom_sheets/summarization_config/summarization_config_bottom_sheet.dart';
+import 'package:nexus/widgets/bottom_sheets/translation_config_bottom_sheet.dart';
 import 'package:nexus/widgets/bottom_sheets/delete_bottom_sheet.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_snackbar.dart';
@@ -29,8 +29,7 @@ class _AIChatMessageScreenState extends State<AIChatMessageScreen> {
   void initState() {
     _textEditingController = TextEditingController();
     _scrollController = ScrollController();
-    aiChatMessageBloc = AiChatMessageBloc();
-    aiChatMessageBloc.add(FetchMessages(documentId: widget.chat.chatId!));
+    aiChatMessageBloc = AiChatMessageBloc(chat: widget.chat);
     super.initState();
   }
 
@@ -174,11 +173,39 @@ class _AIChatMessageScreenState extends State<AIChatMessageScreen> {
                   height: 20,
                   icon: 'configure',
                   onTap: () {
-                    showModalBottomSheet(
-                      isScrollControlled: true,
-                      context: context,
-                      builder: (context) => const ContentConfigureBottomSheet(),
-                    );
+                    final state =
+                        aiChatMessageBloc.state as AiChatMessageInitial;
+
+                    // TODO: We have to manage both of the configs
+                    if (widget.chat.chatType == "Translation") {
+                      print("Now we gonna open translation config!");
+                      showModalBottomSheet(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (context) => TranslationConfigBottomSheet(
+                          chatId: widget.chat.chatId!,
+                          translationConfig: state.translationConfig!,
+                        ),
+                      );
+                    } else {
+                      final SummarizationConfig summarizationConfig =
+                          state.summarizationConfig!;
+                      showModalBottomSheet(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (context) => SummarizationConfigBottomSheet(
+                          onConfirm: ({
+                            required SummarizationConfig summarizationConfig,
+                          }) {
+                            // Add an event to update the summarization config.
+                            aiChatMessageBloc.add(UpdateSummarizationConfig(
+                                summarizationConfig: summarizationConfig));
+                          },
+                          chatId: widget.chat.chatId!,
+                          summarizationConfig: summarizationConfig,
+                        ),
+                      );
+                    }
                   },
                 ),
               ],

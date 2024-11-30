@@ -5,7 +5,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:nexus/blocs/content_screen_bloc/bloc/content_screen_bloc.dart';
 import 'package:nexus/blocs/upload_bottom_sheet_bloc/bloc/upload_bottom_sheet_bloc.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/utils/enums.dart';
@@ -113,7 +112,7 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
                   final filesLength = pickedFiles.length;
                   final count = currentState.count;
 
-                  print(">>>>${filesLength}");
+                  print(">>>>$filesLength");
                   print("<<<<${currentState.content.length}");
 
                   if (status == ReturnResponseStatus.initial) {

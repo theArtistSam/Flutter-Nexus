@@ -1,6 +1,5 @@
 // ignore_for_file: deprecated_member_use, file_names
 
-import 'dart:ffi';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:figma_squircle/figma_squircle.dart';

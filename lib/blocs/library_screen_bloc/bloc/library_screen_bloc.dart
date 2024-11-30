@@ -6,8 +6,6 @@ import 'package:nexus/models/content_model.dart';
 import 'package:nexus/models/folder_model.dart';
 import 'package:nexus/repositories/content_repository.dart';
 import 'package:nexus/repositories/folder_repository.dart';
-import 'package:nexus/repositories/library_repository.dart';
-import 'package:nexus/screens/library/library_screen.dart';
 import 'package:nexus/utils/enums.dart';
 // import 'package:flutter/material.dart';
 

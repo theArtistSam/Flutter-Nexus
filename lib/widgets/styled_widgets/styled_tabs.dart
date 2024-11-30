@@ -7,16 +7,18 @@ import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 
 // ignore: must_be_immutable
 class StyledTabs extends StatefulWidget {
-  StyledTabs({
+  const StyledTabs({
     super.key,
     required this.leftTabText,
     required this.rightTabText,
+    this.isLeftSelected = true,
     this.changeState,
   });
 
-  String leftTabText;
-  String rightTabText;
-  void Function(bool isLeftSelected)? changeState;
+  final String leftTabText;
+  final String rightTabText;
+  final bool isLeftSelected;
+  final void Function(bool isLeftSelected)? changeState;
 
   @override
   State<StyledTabs> createState() => _StyledTabsState();
@@ -27,7 +29,7 @@ class _StyledTabsState extends State<StyledTabs> {
 
   @override
   void initState() {
-    styledTabsBloc = StyledTabsBloc();
+    styledTabsBloc = StyledTabsBloc(isLeftSelected: widget.isLeftSelected);
     super.initState();
   }
 
@@ -49,8 +51,11 @@ class _StyledTabsState extends State<StyledTabs> {
               decoration: ShapeDecoration(
                 color: NexusColors.accentColor,
                 shape: SmoothRectangleBorder(
-                    borderRadius: SmoothBorderRadius(
-                        cornerRadius: 15, cornerSmoothing: 0.8)),
+                  borderRadius: SmoothBorderRadius(
+                    cornerRadius: 15,
+                    cornerSmoothing: 0.8,
+                  ),
+                ),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
@@ -74,23 +79,27 @@ class _StyledTabsState extends State<StyledTabs> {
                                 ? NexusColors.primaryColor
                                 : NexusColors.accentColor,
                             shape: SmoothRectangleBorder(
-                                borderRadius: SmoothBorderRadius(
-                                    cornerRadius: 10, cornerSmoothing: 0.8)),
+                              borderRadius: SmoothBorderRadius(
+                                cornerRadius: 10,
+                                cornerSmoothing: 0.8,
+                              ),
+                            ),
                           ),
                           child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Center(
-                                child: StyledText(
-                                  text: widget.leftTabText,
-                                  fontSize: 14,
-                                  color: isLeftSelected
-                                      ? NexusColors.textColorLight
-                                      : NexusColors.textColor,
-                                  fontWeight: isLeftSelected
-                                      ? FontWeight.w600
-                                      : FontWeight.w500,
-                                ),
-                              )),
+                            padding: const EdgeInsets.all(10.0),
+                            child: Center(
+                              child: StyledText(
+                                text: widget.leftTabText,
+                                fontSize: 14,
+                                color: isLeftSelected
+                                    ? NexusColors.textColorLight
+                                    : NexusColors.textColor,
+                                fontWeight: isLeftSelected
+                                    ? FontWeight.w600
+                                    : FontWeight.w500,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -109,23 +118,25 @@ class _StyledTabsState extends State<StyledTabs> {
                                 ? NexusColors.primaryColor
                                 : NexusColors.accentColor,
                             shape: SmoothRectangleBorder(
-                                borderRadius: SmoothBorderRadius(
-                                    cornerRadius: 10, cornerSmoothing: 0.8)),
+                              borderRadius: SmoothBorderRadius(
+                                  cornerRadius: 10, cornerSmoothing: 0.8),
+                            ),
                           ),
                           child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Center(
-                                child: StyledText(
-                                  text: widget.rightTabText,
-                                  fontSize: 14,
-                                  color: !isLeftSelected
-                                      ? NexusColors.textColorLight
-                                      : NexusColors.textColor,
-                                  fontWeight: !isLeftSelected
-                                      ? FontWeight.w600
-                                      : FontWeight.w500,
-                                ),
-                              )),
+                            padding: const EdgeInsets.all(10.0),
+                            child: Center(
+                              child: StyledText(
+                                text: widget.rightTabText,
+                                fontSize: 14,
+                                color: !isLeftSelected
+                                    ? NexusColors.textColorLight
+                                    : NexusColors.textColor,
+                                fontWeight: !isLeftSelected
+                                    ? FontWeight.w600
+                                    : FontWeight.w500,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     )

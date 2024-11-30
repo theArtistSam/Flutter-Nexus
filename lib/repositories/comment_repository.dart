@@ -1,10 +1,6 @@
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:nexus/models/comment_model.dart';
-import 'package:nexus/models/content_model.dart';
-import 'package:nexus/models/post_model.dart';
 
 class CommentRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

@@ -76,3 +76,17 @@ class DeleteAIChat extends AiChatMessageEvent {
   final String chatId;
   const DeleteAIChat({required this.chatId});
 }
+
+class UpdateSummarizationConfig extends AiChatMessageEvent {
+  final SummarizationConfig summarizationConfig;
+  const UpdateSummarizationConfig({
+    required this.summarizationConfig,
+  });
+}
+
+class UpdateTranslationConfig extends AiChatMessageEvent {
+  final TranslationConfig translationConfig;
+  const UpdateTranslationConfig({
+    required this.translationConfig,
+  });
+}

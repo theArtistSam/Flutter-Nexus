@@ -7,7 +7,9 @@ part 'styled_tabs_event.dart';
 part 'styled_tabs_state.dart';
 
 class StyledTabsBloc extends Bloc<StyledTabsEvent, StyledTabsState> {
-  StyledTabsBloc() : super(StyledTabsInitial()) {
+  final bool isLeftSelected;
+  StyledTabsBloc({required this.isLeftSelected})
+      : super(StyledTabsInitial(isLeftSelected: isLeftSelected)) {
     on<ToggleTabs>(toggleTabs);
   }
 

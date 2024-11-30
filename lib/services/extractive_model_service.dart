@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:nexus/utils/endpoint.dart';
 import 'package:http_parser/http_parser.dart';
 
 class ExtractiveModelService {
@@ -18,7 +17,8 @@ class ExtractiveModelService {
       //     await Endpoint(documentId: 'FNJAQivoRd7ouJOcQesX').getEndpoint();
 
       // https://0b24-111-68-99-41.ngrok-free.app
-      const endpoint = "https://0b24-111-68-99-41.ngrok-free.app/get-response/";
+      const endpoint =
+          "https://bb8b-103-149-240-49.ngrok-free.app/get-response/";
 
       final uri = Uri.parse(endpoint);
       final headers = {'Content-Type': 'application/json'};

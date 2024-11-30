@@ -31,12 +31,12 @@ class ExtractiveModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['model_name'] = this._modelName;
-    if (this._arguments != null) {
-      data['arguments'] = this._arguments!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['model_name'] = _modelName;
+    if (_arguments != null) {
+      data['arguments'] = _arguments!.toJson();
     }
-    data['text'] = this._text;
+    data['text'] = _text;
     return data;
   }
 }
@@ -46,7 +46,7 @@ class Arguments {
 
   Arguments({String? sentences}) {
     if (sentences != null) {
-      this._sentences = sentences;
+      _sentences = sentences;
     }
   }
 
@@ -58,8 +58,8 @@ class Arguments {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['sentences'] = this._sentences;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['sentences'] = _sentences;
     return data;
   }
 }

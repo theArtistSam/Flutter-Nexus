@@ -9,7 +9,6 @@ import 'package:nexus/models/content_model.dart';
 import 'package:nexus/screens/content/widgets/edit_bottom_sheet.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/bottom_sheets/audio_bottom_sheet.dart';
-import 'package:nexus/widgets/bottom_sheets/content_configure_bottom_sheet.dart';
 import 'package:nexus/widgets/bottom_sheets/image_slider_bottom_sheet.dart';
 import 'package:nexus/widgets/bottom_sheets/video_bottom_sheet.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
@@ -162,12 +161,12 @@ class _ContentScreenState extends State<ContentScreen> {
                           StyledIconButton(
                             icon: 'setting-filled',
                             onTap: () => {
-                              showModalBottomSheet(
-                                  isScrollControlled: true,
-                                  context: context,
-                                  builder: (context) =>
-                                      const ContentConfigureBottomSheet() // Add actual content
-                                  )
+                              // showModalBottomSheet(
+                              //     isScrollControlled: true,
+                              //     context: context,
+                              //     builder: (context) =>
+                              //         const SummarizationConfigBottomSheet() // Add actual content
+                              //     )
                             },
                             backgroundColor: Colors.black26,
                           )

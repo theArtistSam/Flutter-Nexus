@@ -1,10 +1,7 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:docx_to_text/docx_to_text.dart';
 import 'package:flutter/services.dart';
-import 'package:nexus/models/extractive_model.dart';
-import 'package:nexus/repositories/extractive_model_repository.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 class Sample extends StatefulWidget {

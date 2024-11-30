@@ -1,11 +1,8 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:nexus/services/firebase_init_service.dart';
-import 'package:nexus/widgets/styled_widgets/styled_snackbar.dart';
 import 'package:workmanager/workmanager.dart'; // Import Firebase Core
 
 // The top-level function that handles background tasks

@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:nexus/models/chat_model.dart';
 import 'package:nexus/models/content_model.dart';
 import 'package:nexus/repositories/content_repository.dart';
 import 'package:nexus/services/extractive_model_service.dart';
@@ -372,12 +371,12 @@ class UploadBottomSheetBloc
         extractedText: extractedText,
         dateUpdated: DateTime.now().toString(),
         translation: !isSummarization
-            ? ContentConfigure(
+            ? Translation(
                 text: responseText,
                 status: Status(isLiked: false, isDisliked: false))
             : null,
         summarization: isSummarization
-            ? ContentConfigure(
+            ? Summarization(
                 text: responseText,
                 status: Status(isLiked: false, isDisliked: false))
             : null,

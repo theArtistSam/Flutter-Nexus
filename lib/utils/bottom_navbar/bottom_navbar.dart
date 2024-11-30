@@ -1,5 +1,4 @@
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
-import 'package:awesome_bottom_bar/tab_item.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,14 +13,11 @@ import 'package:nexus/screens/home/widgets/content_upload_tile.dart';
 import 'package:nexus/screens/library/library_screen.dart';
 import 'package:nexus/utils/bottom_navbar/widgets/upload_bottom_sheet.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/popup_menu.dart';
-import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 import 'package:nexus/widgets/styled_widgets/styled_button.dart';
-import 'package:nexus/widgets/styled_widgets/styled_tabs.dart';
 
 class BottomNavBar extends StatefulWidget {
-  const BottomNavBar({Key? key}) : super(key: key);
+  const BottomNavBar({super.key});
 
   @override
   State<BottomNavBar> createState() => _BottomNavBarState();

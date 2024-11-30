@@ -1,11 +1,9 @@
 import 'package:figma_squircle/figma_squircle.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nexus/screens/profile/profile_screen.dart';
 import 'package:nexus/screens/support/support_screen.dart';
 import 'package:nexus/utils/constants.dart';
-import 'package:nexus/widgets/styled_widgets/styled_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 

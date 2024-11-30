@@ -371,7 +371,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                               : NexusColors.primaryColor,
                         ),
                       );
-                    }).toList(),
+                    }),
                   ],
                   onChanged: (String? id) {
                     context.read<ContentScreenBloc>().add(

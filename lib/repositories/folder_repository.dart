@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:nexus/blocs/folder_bottom_sheet_bloc/bloc/folder_bottom_sheet_bloc.dart';
 import 'package:nexus/models/content_model.dart';
 import 'package:nexus/models/folder_model.dart';
 import 'package:nexus/repositories/content_repository.dart';

@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
-import 'package:nexus/models/extractive_model.dart';
 
 class ExtractiveModelRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
