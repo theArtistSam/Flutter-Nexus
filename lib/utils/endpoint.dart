@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Endpoint {
-  String documentId;
+  final String documentId;
   Endpoint({required this.documentId});
 
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;

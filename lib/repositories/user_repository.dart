@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nexus/models/user_model.dart';
 import 'package:nexus/models/premium_user_model.dart';
 
@@ -50,6 +54,65 @@ class UserRepository {
     } catch (e) {
       print('Error fetching user with id $id: $e');
       return null;
+    }
+  }
+
+  Future<void> updateUser({
+    required UserModel user,
+    required XFile? profileImage,
+    required XFile? backgroundImage,
+  }) async {
+    try {
+      // Initialize variables to store image URLs
+      String? profileURL;
+      String? backgroundURL;
+
+      // Update the user model in Firestore first
+      await _firestore
+          .collection('users')
+          .doc(user.userId)
+          .update(user.toJson());
+      print('User with id ${user.userId} updated successfully in Firestore');
+
+      // Upload the profile picture if provided
+      if (profileImage != null) {
+        final profileRef = FirebaseStorage.instance
+            .ref()
+            .child('users')
+            .child(user.userId!) // Use dynamic user ID
+            .child(
+                'picture.${profileImage.path.split('.').last}'); // Save as 'picture'
+
+        await profileRef.putFile(File(profileImage.path));
+        profileURL = await profileRef.getDownloadURL();
+
+        // Update the profile picture URL in Firestore
+        await _firestore.collection('users').doc(user.userId).update({
+          'profile_pic': profileURL,
+        });
+        print('Profile picture updated for user ${user.userId}');
+      }
+
+      // Upload the background image if provided
+      if (backgroundImage != null) {
+        final backgroundRef = FirebaseStorage.instance
+            .ref()
+            .child('users')
+            .child(user.userId!) // Use dynamic user ID
+            .child(
+                'background.${backgroundImage.path.split('.').last}'); // Save as 'background'
+
+        await backgroundRef.putFile(File(backgroundImage.path));
+        backgroundURL = await backgroundRef.getDownloadURL();
+
+        // Update the background image URL in Firestore
+        await _firestore.collection('users').doc(user.userId).update({
+          'background_pic': backgroundURL,
+        });
+        print('Background image updated for user ${user.userId}');
+      }
+    } catch (e) {
+      print('Error updating user with id ${user.userId}: $e');
     }
   }
 

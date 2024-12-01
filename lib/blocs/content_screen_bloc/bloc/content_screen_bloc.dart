@@ -162,7 +162,9 @@ class ContentScreenBloc extends Bloc<ContentScreenEvent, ContentScreenState> {
     final currentState = state as ContentScreenInitial;
     try {
       await ContentRepository().updateContent(
-          content: currentState.content, image: currentState.image);
+        content: currentState.content,
+        image: currentState.image,
+      );
 
       // Update the state
       add(FetchContent());

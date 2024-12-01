@@ -7,7 +7,6 @@ import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:docx_to_text/docx_to_text.dart';
 
 class Extraction {
-  
   static Future<String> extractWordText({required File docxFile}) async {
     try {
       // * Load the file from the file system (passed as an argument)
@@ -51,7 +50,7 @@ class Extraction {
     }
   }
 
-  // * So far no extension is being used, be let's see if it works 
+  // * So far no extension is being used, be let's see if it works
   static Future<File?> extractAudioFromVideo({required File videoFile}) async {
     try {
       // Ensure the video file exists

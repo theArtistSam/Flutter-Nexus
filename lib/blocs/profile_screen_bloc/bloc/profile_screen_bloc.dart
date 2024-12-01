@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nexus/models/post_model.dart';
 import 'package:nexus/models/user_model.dart';
 import 'package:nexus/repositories/community_repository.dart';
@@ -16,6 +17,12 @@ class ProfileScreenBloc extends Bloc<ProfileScreenEvent, ProfileScreenState> {
       : super(ProfileScreenInitial(userId: userId)) {
     on<FetchUserData>(fetchUserData);
     on<FetchUserPosts>(fetchUserPosts);
+    on<AddProfileImage>(addProfileImage);
+    on<AddBackgroundImage>(addBackgroundImage);
+    on<RemoveProfileImage>(removeProfileImage);
+    on<RemoveBackgroundImage>(removeBackgroundImage);
+    on<UpdateUserCredientials>(updateUserCredientials);
+    on<RevertChanges>(revertChanges);
 
     add(FetchUserPosts());
     add(FetchUserData());
@@ -49,5 +56,68 @@ class ProfileScreenBloc extends Bloc<ProfileScreenEvent, ProfileScreenState> {
       // Handle Error States
       print("Error fetching user posts: $e");
     }
+  }
+
+  FutureOr<void> addProfileImage(
+    AddProfileImage event,
+    Emitter<ProfileScreenState> emit,
+  ) {
+    final currentState = state as ProfileScreenInitial;
+    emit(currentState.copyWith(
+      profileImage: event.image,
+      user: currentState.user,
+    ));
+  }
+
+  FutureOr<void> addBackgroundImage(
+    AddBackgroundImage event,
+    Emitter<ProfileScreenState> emit,
+  ) {
+    final currentState = state as ProfileScreenInitial;
+    emit(currentState.copyWith(
+      backgroundImage: event.image,
+      user: currentState.user,
+    ));
+  }
+
+  FutureOr<void> removeProfileImage(
+    RemoveProfileImage event,
+    Emitter<ProfileScreenState> emit,
+  ) {
+    final currentState = state as ProfileScreenInitial;
+    emit(currentState.copyWith(user: currentState.user));
+  }
+
+  FutureOr<void> removeBackgroundImage(
+    RemoveBackgroundImage event,
+    Emitter<ProfileScreenState> emit,
+  ) {
+    final currentState = state as ProfileScreenInitial;
+    emit(currentState.copyWith(user: currentState.user));
+  }
+
+  FutureOr<void> updateUserCredientials(
+    UpdateUserCredientials event,
+    Emitter<ProfileScreenState> emit,
+  ) async {
+    final currentState = state as ProfileScreenInitial;
+
+    try {
+      await UserRepository().updateUser(
+        user: currentState.user!,
+        profileImage: currentState.profileImage,
+        backgroundImage: currentState.backgroundImage,
+      );
+// Update the state
+      add(FetchUserData());
+    } catch (e) {
+      print("Some Error has gotten occured!");
+    }
+  }
+
+  FutureOr<void> revertChanges(
+      RevertChanges event, Emitter<ProfileScreenState> emit) {
+    final currentState = state as ProfileScreenInitial;
+    emit(currentState.copyWith(user: event.user));
   }
 }

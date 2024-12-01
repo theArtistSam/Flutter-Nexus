@@ -11,6 +11,7 @@ import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/bottom_sheets/post_bottom_sheet.dart';
 import 'package:nexus/widgets/post_tile.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
+import 'package:nexus/widgets/styled_widgets/styled_snackbar.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -64,6 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           imageUrl: user?.backgroundPic ?? '',
                           fit: BoxFit.cover,
                           height: 250,
+                          width: double.infinity,
                           placeholder: (BuildContext context, String url) =>
                               Container(
                             width: double.infinity,
@@ -96,22 +98,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     icon: 'pencil-filled',
                                     height: 20,
                                     onTap: () {
+                                      bool isConfirmed = false;
+                                      final state = (profileScreenBloc.state
+                                          as ProfileScreenInitial);
+                                      final UserModel user = state.user!;
+
                                       showModalBottomSheet(
                                           isScrollControlled: true,
                                           context: context,
                                           builder: (context) {
                                             return BlocProvider.value(
                                               value: profileScreenBloc,
-                                              child: ProfileEditBottomSheet(),
+                                              child: ProfileEditBottomSheet(
+                                                onConfirm: () {
+                                                  isConfirmed = true;
+                                                  // Add an event to update content
+                                                  profileScreenBloc.add(
+                                                    UpdateUserCredientials(),
+                                                  );
+                                                  StyledSnackbar.show(
+                                                    context: context,
+                                                    message: "Content updated",
+                                                  );
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
                                             );
                                           } // Add actual content
                                           ).whenComplete(
                                         () {
-                                          // if (!isConfirmed) {
-                                          //   contentScreenBloc.add(
-                                          //     RevertChanges(content: content),
-                                          //   );
-                                          // }
+                                          if (!isConfirmed) {
+                                            profileScreenBloc.add(
+                                              RevertChanges(user: user),
+                                            );
+                                          }
                                         },
                                       );
                                     },
