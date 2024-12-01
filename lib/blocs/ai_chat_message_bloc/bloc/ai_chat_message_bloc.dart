@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:nexus/models/chat_model.dart';
 import 'package:nexus/repositories/chat_repository.dart';
-import 'package:nexus/repositories/extractive_model_repository.dart';
+import 'package:nexus/repositories/model_repository.dart';
 import 'package:nexus/services/abstractive_model_service.dart';
 import 'package:nexus/services/extractive_model_service.dart';
 import 'package:nexus/services/translation_model_service.dart';
@@ -81,38 +81,76 @@ class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
   FutureOr<void> updateUpVoteStatus(
       UpdateUpVoteStatus event, Emitter<AiChatMessageState> emit) async {
     try {
-      // * Update the upvote status
+      final currentState = state as AiChatMessageInitial;
+
+      ModelRepository modelRepo;
+
+      if (chat.chatType == 'Translation') {
+        // Translation model repository
+        modelRepo = ModelRepository(documentId: 'zkb0ysUiZpKSFcnoaoQD');
+      } else {
+        // Summarization model repository
+        if (currentState.summarizationConfig!.type! == 'extractive') {
+          modelRepo = ModelRepository(documentId: 'FNJAQivoRd7ouJOcQesX');
+        } else {
+          modelRepo = ModelRepository(documentId: 'FigG5uIMlUEw1IAlSsBr');
+        }
+      }
+
+      // Update upvote and downvote status
       if (event.dislikeStatus) {
-        await ExtractiveModelRepository().incrementUpVote();
-        await ExtractiveModelRepository().decrementDownVote();
+        await modelRepo
+            .incrementUpVote(); // Increment upvote for dislike action
+        await modelRepo
+            .decrementDownVote(); // Decrement downvote for dislike action
       } else {
         if (event.likeStatus) {
-          await ExtractiveModelRepository().incrementUpVote();
+          await modelRepo.incrementUpVote(); // Increment upvote for like action
         } else {
-          await ExtractiveModelRepository().decrementUpVote();
+          await modelRepo.decrementUpVote(); // Decrement upvote when no like
         }
       }
     } catch (e) {
-      print("NOT BEING ABLE TO UPDATE UPVOTE STATUS $e");
+      print("NOT ABLE TO UPDATE UPVOTE STATUS: $e");
     }
   }
 
   FutureOr<void> updateDownVoteStatus(
       UpdateDownVoteStatus event, Emitter<AiChatMessageState> emit) async {
     try {
-      // * Update the downvote status
+      final currentState = state as AiChatMessageInitial;
+
+      // Determine the correct ModelRepository based on the chat type and summarization type
+      ModelRepository modelRepo;
+
+      if (chat.chatType == 'Translation') {
+        // Translation model repository
+        modelRepo = ModelRepository(documentId: 'zkb0ysUiZpKSFcnoaoQD');
+      } else {
+        // Summarization model repository
+        if (currentState.summarizationConfig!.type! == 'extractive') {
+          modelRepo = ModelRepository(documentId: 'FNJAQivoRd7ouJOcQesX');
+        } else {
+          modelRepo = ModelRepository(documentId: 'FigG5uIMlUEw1IAlSsBr');
+        }
+      }
+
+      // Update downvote and upvote status
       if (event.likeStatus) {
-        await ExtractiveModelRepository().incrementDownVote();
-        await ExtractiveModelRepository().decrementUpVote();
+        await modelRepo
+            .incrementDownVote(); // Increment downvote for like action
+        await modelRepo.decrementUpVote(); // Decrement upvote for like action
       } else {
         if (event.dislikeStatus) {
-          await ExtractiveModelRepository().incrementDownVote();
+          await modelRepo
+              .incrementDownVote(); // Increment downvote for dislike action
         } else {
-          await ExtractiveModelRepository().decrementDownVote();
+          await modelRepo
+              .decrementDownVote(); // Decrement downvote when neither like nor dislike
         }
       }
     } catch (e) {
-      print("NOT BEING ABLE TO UPDATE UPVOTE STATUS $e");
+      print("NOT ABLE TO UPDATE DOWNVOTE STATUS: $e");
     }
   }
 

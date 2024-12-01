@@ -160,7 +160,7 @@ class AIChatRepository {
           )
         ],
         summarizationConfig: chatType == 'Summarization'
-            ? SummarizationConfig(length: 'medium')
+            ? SummarizationConfig(length: 'medium', type: 'extractive')
             : null,
         translationConfig: chatType == 'Translation'
             ? TranslationConfig(

@@ -18,7 +18,7 @@ class ExtractiveModelService {
 
       // https://0b24-111-68-99-41.ngrok-free.app
       const endpoint =
-          "https://bb8b-103-149-240-49.ngrok-free.app/get-response/";
+          "https://e372-115-186-169-16.ngrok-free.app/get-response/";
 
       final uri = Uri.parse(endpoint);
       final headers = {'Content-Type': 'application/json'};
