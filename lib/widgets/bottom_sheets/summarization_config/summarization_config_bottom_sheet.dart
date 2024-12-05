@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus/blocs/summarization_config_bloc/bloc/summarization_config_bloc.dart';
 import 'package:nexus/models/chat_model.dart';
+import 'package:nexus/models/model_configs/summarization_config.dart';
 import 'package:nexus/widgets/bottom_sheets/summarization_config/content_configure_tabs.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/styled_widgets/styled_button.dart';
@@ -14,12 +15,12 @@ class SummarizationConfigBottomSheet extends StatefulWidget {
   const SummarizationConfigBottomSheet({
     super.key,
     required this.summarizationConfig,
-    required this.chatId,
+    required this.docId,
     required this.onConfirm,
   });
 
   final SummarizationConfig summarizationConfig;
-  final String chatId;
+  final String docId;
   final void Function({required SummarizationConfig summarizationConfig})
       onConfirm;
   @override
@@ -33,7 +34,7 @@ class _SummarizationConfigBottomSheetState
   @override
   void initState() {
     summarizationConfigBloc = SummarizationConfigBloc(
-        summarizationConfig: widget.summarizationConfig, chatId: widget.chatId);
+        summarizationConfig: widget.summarizationConfig, chatId: widget.docId);
     super.initState();
   }
 
@@ -133,15 +134,9 @@ class _SummarizationConfigBottomSheetState
                         final state = summarizationConfigBloc.state
                             as SummarizationConfigInitial;
 
-                        summarizationConfigBloc.add(
-                          UpdateSummarizationConfig(),
-                        );
                         Navigator.pop(context);
-                        // TODO: Update this!!
-                        StyledSnackbar.show(
-                            context: context, message: "Chat Updated!");
-                        // Navigator.pop(context);
-                        // * Use the fn callback to update
+
+                        // * Use the fn callback to update the state
                         widget.onConfirm(
                             summarizationConfig: state.summarizationConfig);
                       },

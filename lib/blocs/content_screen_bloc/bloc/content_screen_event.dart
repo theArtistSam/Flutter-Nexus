@@ -21,11 +21,6 @@ class ToggleContainerView extends ContentScreenEvent {
   ToggleContainerView({required this.isOriginal});
 }
 
-class ToggleLikeDislike extends ContentScreenEvent {
-  bool isLiked;
-  ToggleLikeDislike({required this.isLiked});
-}
-
 class AddTag extends ContentScreenEvent {
   String tag;
   AddTag({
@@ -60,3 +55,36 @@ class RevertChanges extends ContentScreenEvent {
 class UpdateContent extends ContentScreenEvent {}
 
 class FetchContent extends ContentScreenEvent {}
+
+class LikeContent extends ContentScreenEvent {
+  final bool value;
+  const LikeContent({required this.value});
+}
+
+class DislikeContent extends ContentScreenEvent {
+  final bool value;
+  const DislikeContent({required this.value});
+}
+
+class UpdateUpVoteStatus extends ContentScreenEvent {
+  final bool likeStatus;
+  final bool dislikeStatus;
+  const UpdateUpVoteStatus({
+    required this.likeStatus,
+    required this.dislikeStatus,
+  });
+}
+
+class UpdateDownVoteStatus extends ContentScreenEvent {
+  final bool likeStatus;
+  final bool dislikeStatus;
+  const UpdateDownVoteStatus({
+    required this.likeStatus,
+    required this.dislikeStatus,
+  });
+}
+
+class UpdateSummarizationConfig extends ContentScreenEvent {
+  final SummarizationConfig config;
+  const UpdateSummarizationConfig({required this.config});
+}

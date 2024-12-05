@@ -3,6 +3,8 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nexus/models/chat_model.dart';
+import 'package:nexus/models/model_configs/summarization_config.dart';
+import 'package:nexus/models/model_configs/translation_config.dart';
 
 class AIChatRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -257,6 +259,7 @@ class AIChatRepository {
         conversation: conversations,
         chatType: 'Translation', // or 'Translation'
         summarizationConfig: SummarizationConfig(
+          type: 'extractive',
           length: 'Medium',
           // sentences: 3,
           // style: 'balanced',

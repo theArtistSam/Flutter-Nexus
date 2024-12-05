@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:nexus/models/chat_model.dart';
+import 'package:nexus/models/model_configs/summarization_config.dart';
+import 'package:nexus/models/model_configs/translation_config.dart';
 import 'package:nexus/repositories/chat_repository.dart';
 import 'package:nexus/repositories/model_repository.dart';
 import 'package:nexus/services/abstractive_model_service.dart';
@@ -51,7 +53,9 @@ class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
   }
 
   FutureOr<void> toggleLike(
-      ToggleLike event, Emitter<AiChatMessageState> emit) async {
+    ToggleLike event,
+    Emitter<AiChatMessageState> emit,
+  ) async {
     try {
       await AIChatRepository().toggleLike(
         index: event.index,
@@ -79,7 +83,9 @@ class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
   }
 
   FutureOr<void> updateUpVoteStatus(
-      UpdateUpVoteStatus event, Emitter<AiChatMessageState> emit) async {
+    UpdateUpVoteStatus event,
+    Emitter<AiChatMessageState> emit,
+  ) async {
     try {
       final currentState = state as AiChatMessageInitial;
 
@@ -231,7 +237,9 @@ class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
   }
 
   FutureOr<void> deleteAIChat(
-      DeleteAIChat event, Emitter<AiChatMessageState> emit) async {
+    DeleteAIChat event,
+    Emitter<AiChatMessageState> emit,
+  ) async {
     try {
       await AIChatRepository().deleteAIChat(chatId: event.chatId);
     } catch (e) {
@@ -240,8 +248,19 @@ class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
   }
 
   FutureOr<void> updateSummarizationConfig(
-      UpdateSummarizationConfig event, Emitter<AiChatMessageState> emit) {
+    UpdateSummarizationConfig event,
+    Emitter<AiChatMessageState> emit,
+  ) async {
     final currentState = state as AiChatMessageInitial;
+
+    try {
+      await AIChatRepository().updateSummarizationConfig(
+        chatId: chat.chatId!,
+        summarizationConfig: event.summarizationConfig,
+      );
+    } catch (e) {
+      print("Some error occurred $e");
+    }
     emit(currentState.copyWith(summarizationConfig: event.summarizationConfig));
   }
 

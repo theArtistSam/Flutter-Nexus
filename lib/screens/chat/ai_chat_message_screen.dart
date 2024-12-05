@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus/blocs/ai_chat_message_bloc/bloc/ai_chat_message_bloc.dart';
 import 'package:nexus/models/chat_model.dart';
+import 'package:nexus/models/model_configs/summarization_config.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/bottom_sheets/summarization_config/summarization_config_bottom_sheet.dart';
 import 'package:nexus/widgets/bottom_sheets/translation_config_bottom_sheet.dart';
@@ -178,7 +179,6 @@ class _AIChatMessageScreenState extends State<AIChatMessageScreen> {
 
                     // TODO: We have to manage both of the configs
                     if (widget.chat.chatType == "Translation") {
-                      print("Now we gonna open translation config!");
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,
@@ -200,8 +200,10 @@ class _AIChatMessageScreenState extends State<AIChatMessageScreen> {
                             // Add an event to update the summarization config.
                             aiChatMessageBloc.add(UpdateSummarizationConfig(
                                 summarizationConfig: summarizationConfig));
+                            StyledSnackbar.show(
+                                context: context, message: "Chat Updated!");
                           },
-                          chatId: widget.chat.chatId!,
+                          docId: widget.chat.chatId!,
                           summarizationConfig: summarizationConfig,
                         ),
                       );

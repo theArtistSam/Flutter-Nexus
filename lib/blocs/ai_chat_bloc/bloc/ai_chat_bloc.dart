@@ -13,12 +13,14 @@ class AiChatBloc extends Bloc<AiChatEvent, AiChatState> {
     on<FetchChats>(fetchChats);
   }
 
-  FutureOr<void> fetchChats(FetchChats event, Emitter<AiChatState> emit) {
+  FutureOr<void> fetchChats(FetchChats event, Emitter<AiChatState> emit) async {
     final currentState = state as AiChatInitial;
 
     try {
       Stream<List<ChatModel>> messageList =
           AIChatRepository().getAllChats(userId: 'Bd4umkyLqOLnMpdOLZ0E');
+
+      // print(await messageList.length);
       emit(currentState.copyWith(messages: messageList));
 
       print('LOADING ... ');

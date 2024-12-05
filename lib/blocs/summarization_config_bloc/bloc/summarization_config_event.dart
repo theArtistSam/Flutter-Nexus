@@ -17,5 +17,3 @@ class ChangeSummarizationStyle extends SummarizationConfigEvent {
   final bool isExtractive;
   const ChangeSummarizationStyle({required this.isExtractive});
 }
-
-class UpdateSummarizationConfig extends SummarizationConfigEvent {}

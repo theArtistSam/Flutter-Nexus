@@ -2,14 +2,11 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:nexus/blocs/summarization_config_bloc/bloc/summarization_config_bloc.dart';
 import 'package:nexus/blocs/translation_config_bloc/bloc/translation_config_bloc.dart';
-import 'package:nexus/models/chat_model.dart';
-import 'package:nexus/widgets/bottom_sheets/summarization_config/content_configure_tabs.dart';
+import 'package:nexus/models/model_configs/translation_config.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/styled_widgets/styled_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_snackbar.dart';
-import 'package:nexus/widgets/styled_widgets/styled_tabs.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 
 class TranslationConfigBottomSheet extends StatefulWidget {

@@ -1,3 +1,6 @@
+import 'package:nexus/models/model_configs/summarization_config.dart';
+import 'package:nexus/models/model_configs/translation_config.dart';
+
 class ChatModel {
   String? userId;
   String? chatId;
@@ -95,62 +98,6 @@ class ResponseStatus {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['is_liked'] = isLiked;
     data['is_disliked'] = isDisliked;
-    return data;
-  }
-}
-
-class SummarizationConfig {
-  String? type;
-  String? length;
-
-  SummarizationConfig({this.type, this.length});
-
-  SummarizationConfig.fromJson(Map<String, dynamic> json) {
-    type = json['type'];
-    length = json['length'];
-  }
-  SummarizationConfig copyWith({
-    String? type,
-    String? length,
-  }) {
-    return SummarizationConfig(
-      type: type ?? this.type,
-      length: length ?? this.length,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['type'] = type;
-    data['length'] = length;
-    return data;
-  }
-}
-
-class TranslationConfig {
-  List<String>? sourceLanguages;
-  List<String>? targetLanguages;
-
-  TranslationConfig({this.sourceLanguages, this.targetLanguages});
-
-  TranslationConfig.fromJson(Map<String, dynamic> json) {
-    sourceLanguages = json['source_languages'].cast<String>();
-    targetLanguages = json['target_languages'].cast<String>();
-  }
-  TranslationConfig copyWith({
-    List<String>? sourceLanguages,
-    List<String>? targetLanguages,
-  }) {
-    return TranslationConfig(
-      sourceLanguages: sourceLanguages ?? this.sourceLanguages,
-      targetLanguages: targetLanguages ?? this.targetLanguages,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['source_languages'] = sourceLanguages;
-    data['target_languages'] = targetLanguages;
     return data;
   }
 }

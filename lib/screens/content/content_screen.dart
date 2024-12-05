@@ -1,15 +1,19 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:figma_squircle/figma_squircle.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nexus/blocs/content_screen_bloc/bloc/content_screen_bloc.dart';
 import 'package:nexus/models/content_model.dart';
+import 'package:nexus/models/model_configs/translation_config.dart';
 import 'package:nexus/screens/content/widgets/edit_bottom_sheet.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/bottom_sheets/audio_bottom_sheet.dart';
 import 'package:nexus/widgets/bottom_sheets/image_slider_bottom_sheet.dart';
+import 'package:nexus/widgets/bottom_sheets/summarization_config/summarization_config_bottom_sheet.dart';
+import 'package:nexus/widgets/bottom_sheets/translation_config_bottom_sheet.dart';
 import 'package:nexus/widgets/bottom_sheets/video_bottom_sheet.dart';
 import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_snackbar.dart';
@@ -160,13 +164,50 @@ class _ContentScreenState extends State<ContentScreen> {
                           ),
                           StyledIconButton(
                             icon: 'setting-filled',
-                            onTap: () => {
-                              // showModalBottomSheet(
-                              //     isScrollControlled: true,
-                              //     context: context,
-                              //     builder: (context) =>
-                              //         const SummarizationConfigBottomSheet() // Add actual content
-                              //     )
+                            onTap: () {
+                              final state = contentScreenBloc.state
+                                  as ContentScreenInitial;
+                              final ContentModel content = state.content;
+                              final bool isTranslation = state.isLeftSelected;
+
+                              if (isTranslation) {
+                                showModalBottomSheet(
+                                  isScrollControlled: true,
+                                  context: context,
+                                  builder: (context) =>
+                                      // TODO: Future Update!
+                                      TranslationConfigBottomSheet(
+                                    chatId: content.contentId!,
+                                    translationConfig: TranslationConfig(
+                                      sourceLanguages: ['English'],
+                                      targetLanguages: ['Urdu'],
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                showModalBottomSheet(
+                                  isScrollControlled: true,
+                                  context: context,
+                                  builder: (context) =>
+                                      SummarizationConfigBottomSheet(
+                                    onConfirm: (
+                                        {required summarizationConfig}) {
+                                      contentScreenBloc.add(
+                                        UpdateSummarizationConfig(
+                                          config: summarizationConfig,
+                                        ),
+                                      );
+
+                                      StyledSnackbar.show(
+                                          context: context,
+                                          message: "Content Updated!");
+                                    },
+                                    docId: content.contentId!,
+                                    summarizationConfig: content
+                                        .summarization!.summarizationConfig!,
+                                  ),
+                                );
+                              }
                             },
                             backgroundColor: Colors.black26,
                           )
@@ -330,8 +371,10 @@ class _ContentScreenState extends State<ContentScreen> {
       Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius:
-              SmoothBorderRadius(cornerRadius: 15, cornerSmoothing: .8),
+          borderRadius: SmoothBorderRadius(
+            cornerRadius: 15,
+            cornerSmoothing: .8,
+          ),
           onTap: onTap,
           child: Ink(
             decoration: ShapeDecoration(
@@ -405,177 +448,311 @@ class _ContentScreenState extends State<ContentScreen> {
         ),
       );
 
-  contentBottomSheet(controller) => Container(
-        decoration: ShapeDecoration(
-          color: NexusColors.backgroundColor,
-          shape: const SmoothRectangleBorder(
-            borderRadius: SmoothBorderRadius.only(
-              topLeft: SmoothRadius(cornerRadius: 25, cornerSmoothing: .8),
-              topRight: SmoothRadius(cornerRadius: 25, cornerSmoothing: .8),
-            ),
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
-          child: Stack(
-            children: [
-              ListView(
-                key: UniqueKey(),
-                padding: const EdgeInsets.only(top: 95),
-                controller: controller,
-                children: [
-                  BlocBuilder<ContentScreenBloc, ContentScreenState>(
-                    builder: (context, state) {
-                      if (state is ContentScreenInitial) {
-                        bool isLeftSelected = state.isLeftSelected;
-                        return Column(
-                          children: [
-                            contentTile(
-                              onTap: () {
-                                contentScreenBloc.add(
-                                  ToggleContainerView(isOriginal: true),
-                                );
-                              },
-                              isOpen: state.isOriginal ? true : false,
-                              openTitle: 'Original',
-                              closeTitle: 'View original text',
-                              text: widget.content.extractedText,
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            // This one can help with both translation and summarization
-                            contentTile(
-                                onTap: () {
-                                  contentScreenBloc.add(
-                                      ToggleContainerView(isOriginal: false));
-                                },
-                                isTranslation: isLeftSelected,
-                                isOpen: state.isOriginal ? false : true,
-                                openTitle:
-                                    isLeftSelected ? 'Translation' : 'Summary',
-                                closeTitle: isLeftSelected
-                                    ? 'View Translation'
-                                    : 'View summary',
-                                text: isLeftSelected
-                                    ? widget.content.translation?.text ??
-                                        'کوئی ترجمہ دستیاب نہیں ہے۔'
-                                    : widget.content.summarization?.text ??
-                                        'No Summary available'),
+  Widget contentBottomSheet(controller) {
+    bool _isOptionsAvailable({
+      required ContentScreenInitial state,
+    }) {
+      if (state.isLeftSelected) {
+        return state.content.translation != null && state.isLeftSelected;
+      }
+      return state.content.summarization != null && !state.isLeftSelected;
+    }
 
-                            const SizedBox(height: 10),
-                            Row(
-                              children: [
-                                StyledIconButton(
-                                  icon: 'rotate-left',
-                                  onTap: () {},
-                                  backgroundColor: NexusColors.accentColor,
-                                  iconColor: NexusColors.isDark
-                                      ? Colors.white
-                                      : NexusColors.primaryColorLight,
-                                ),
-                                const SizedBox(width: 5),
-                                StyledIconButton(
-                                  icon: 'arrow-down',
-                                  onTap: () {},
-                                  backgroundColor: NexusColors.accentColor,
-                                  iconColor: NexusColors.isDark
-                                      ? Colors.white
-                                      : NexusColors.primaryColorLight,
-                                ),
-                                const SizedBox(width: 5),
-                                StyledIconButton(
-                                  icon: 'share',
-                                  onTap: () {},
-                                  backgroundColor: NexusColors.accentColor,
-                                  iconColor: NexusColors.isDark
-                                      ? Colors.white
-                                      : NexusColors.primaryColorLight,
-                                ),
-                                const SizedBox(width: 5),
-                                StyledIconButton(
-                                  icon: 'pencil',
-                                  onTap: () {},
-                                  height: 20,
-                                  backgroundColor: NexusColors.accentColor,
-                                  iconColor: NexusColors.isDark
-                                      ? Colors.white
-                                      : NexusColors.primaryColorLight,
-                                ),
-                                const Spacer(),
-                                StyledIconButton(
-                                  icon: state.isLiked ? 'like-filled' : 'like',
-                                  onTap: () {
-                                    contentScreenBloc
-                                        .add(ToggleLikeDislike(isLiked: true));
-                                  },
-                                  backgroundColor: NexusColors.accentColor,
-                                  iconColor: NexusColors.isDark
-                                      ? Colors.white
-                                      : NexusColors.primaryColorLight,
-                                ),
-                                const SizedBox(width: 5),
-                                StyledIconButton(
-                                  icon: state.isLiked
-                                      ? 'dislike'
-                                      : 'dislike-filled',
-                                  onTap: () {
-                                    contentScreenBloc.add(
-                                      ToggleLikeDislike(isLiked: false),
-                                    );
-                                  },
-                                  backgroundColor: NexusColors.accentColor,
-                                  // COLOR: FIX
-                                  iconColor: NexusColors.isDark
-                                      ? Colors.white
-                                      : NexusColors.primaryColorLight,
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 30),
-                          ],
-                        );
-                      }
-                      return const SizedBox();
-                    },
-                  )
-                ],
-              ),
-              // been put at the end to act as a sticky header
-              Container(
-                height: 95,
-                color: NexusColors.backgroundColor,
-                child: Column(
-                  children: [
-                    Center(
-                      child: Container(
-                        width: 60,
-                        height: 5,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: NexusColors.borderColor,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-                    StyledTabs(
-                      leftTabText: 'Translate',
-                      rightTabText: 'Summarize',
-                      changeState: toggleView,
-                      // isLeftSelected: false
-                    ),
-                    // const SizedBox(
-                    //   height: 15,
-                    // )
-                    // const Divider(
-                    //   height: 30,
-                    //   color: NexusColors.dividerColor,
-                    // ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+    String _getLikeIcon(ContentScreenInitial state) {
+      final status = state.isLeftSelected
+          ? state.content.translation?.status
+          : state.content.summarization?.status;
+
+      return status?.isLiked == true ? 'like-filled' : 'like';
+    }
+
+    String _getDislikeIcon(ContentScreenInitial state) {
+      final status = state.isLeftSelected
+          ? state.content.translation?.status
+          : state.content.summarization?.status;
+
+      return status?.isDisliked == true ? 'dislike-filled' : 'dislike';
+    }
+
+    void _updateUpvoteStatus(bool isLiked, bool isDisliked) {
+      contentScreenBloc.add(
+        UpdateUpVoteStatus(
+          likeStatus: isLiked,
+          dislikeStatus: isDisliked,
         ),
       );
+    }
+
+    void _updateDownvoteStatus(bool isLiked, bool isDisliked) {
+      contentScreenBloc.add(
+        UpdateDownVoteStatus(
+          likeStatus: isLiked,
+          dislikeStatus: isDisliked, // Toggle the dislike status
+        ),
+      );
+    }
+
+    return Container(
+      decoration: ShapeDecoration(
+        color: NexusColors.backgroundColor,
+        shape: const SmoothRectangleBorder(
+          borderRadius: SmoothBorderRadius.only(
+            topLeft: SmoothRadius(cornerRadius: 25, cornerSmoothing: .8),
+            topRight: SmoothRadius(cornerRadius: 25, cornerSmoothing: .8),
+          ),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
+        child: Stack(
+          children: [
+            ListView(
+              key: UniqueKey(),
+              padding: const EdgeInsets.only(top: 95),
+              controller: controller,
+              children: [
+                BlocBuilder<ContentScreenBloc, ContentScreenState>(
+                  builder: (context, state) {
+                    if (state is ContentScreenInitial) {
+                      bool isLeftSelected = state.isLeftSelected;
+                      return Column(
+                        children: [
+                          contentTile(
+                            onTap: () {
+                              contentScreenBloc.add(
+                                ToggleContainerView(isOriginal: true),
+                              );
+                            },
+                            isOpen: state.isOriginal ? true : false,
+                            openTitle: 'Original',
+                            closeTitle: 'View original text',
+                            text: widget.content.extractedText,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          // This one can help with both translation and summarization
+                          contentTile(
+                              onTap: () {
+                                contentScreenBloc.add(
+                                    ToggleContainerView(isOriginal: false));
+                              },
+                              isTranslation: isLeftSelected,
+                              isOpen: state.isOriginal ? false : true,
+                              openTitle:
+                                  isLeftSelected ? 'Translation' : 'Summary',
+                              closeTitle: isLeftSelected
+                                  ? 'View Translation'
+                                  : 'View summary',
+                              text: isLeftSelected
+                                  ? widget.content.translation?.text ??
+                                      'کوئی ترجمہ دستیاب نہیں ہے۔'
+                                  : widget.content.summarization?.text ??
+                                      'No Summary available'),
+
+                          const SizedBox(height: 10),
+                          _isOptionsAvailable(state: state)
+                              ? Row(
+                                  children: [
+                                    StyledIconButton(
+                                      icon: 'rotate-left',
+                                      onTap: () {},
+                                      backgroundColor: NexusColors.accentColor,
+                                      iconColor: NexusColors.isDark
+                                          ? Colors.white
+                                          : NexusColors.primaryColorLight,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    StyledIconButton(
+                                      icon: 'arrow-down',
+                                      onTap: () {},
+                                      backgroundColor: NexusColors.accentColor,
+                                      iconColor: NexusColors.isDark
+                                          ? Colors.white
+                                          : NexusColors.primaryColorLight,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    StyledIconButton(
+                                      icon: 'share',
+                                      onTap: () {},
+                                      backgroundColor: NexusColors.accentColor,
+                                      iconColor: NexusColors.isDark
+                                          ? Colors.white
+                                          : NexusColors.primaryColorLight,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    StyledIconButton(
+                                      icon: 'pencil',
+                                      onTap: () {},
+                                      height: 20,
+                                      backgroundColor: NexusColors.accentColor,
+                                      iconColor: NexusColors.isDark
+                                          ? Colors.white
+                                          : NexusColors.primaryColorLight,
+                                    ),
+                                    const Spacer(),
+                                    Row(
+                                      children: [
+                                        StyledIconButton(
+                                          icon: _getLikeIcon(state),
+                                          onTap: () {
+                                            final bool isTranslation =
+                                                state.isLeftSelected;
+                                            final Status status = isTranslation
+                                                ? state.content.translation!
+                                                    .status!
+                                                : state.content.summarization!
+                                                    .status!;
+
+                                            final bool isDisliked =
+                                                status.isDisliked ?? false;
+                                            final bool isLiked =
+                                                status.isLiked ?? false;
+
+                                            // Toggle the like status
+                                            final bool newLikeStatus = !isLiked;
+
+                                            // Trigger content like update
+                                            contentScreenBloc.add(
+                                              LikeContent(value: newLikeStatus),
+                                            );
+
+                                            // Update the upvote status
+                                            _updateUpvoteStatus(
+                                              newLikeStatus,
+                                              isDisliked,
+                                            );
+                                          },
+                                          backgroundColor:
+                                              NexusColors.accentColor,
+                                          iconColor: NexusColors.isDark
+                                              ? Colors.white
+                                              : NexusColors.primaryColorLight,
+                                        ),
+                                        const SizedBox(width: 5),
+                                        StyledIconButton(
+                                          icon: _getDislikeIcon(state),
+                                          onTap: () {
+                                            final bool isTranslation =
+                                                state.isLeftSelected;
+                                            final Status status = isTranslation
+                                                ? state.content.translation!
+                                                    .status!
+                                                : state.content.summarization!
+                                                    .status!;
+
+                                            final bool isDisliked =
+                                                status.isDisliked ?? false;
+                                            final bool isLiked =
+                                                status.isLiked ?? false;
+
+                                            // Toggle the dislike status
+                                            final bool newDislikeStatus =
+                                                !isDisliked;
+
+                                            // Trigger content dislike update
+                                            contentScreenBloc.add(
+                                              DislikeContent(
+                                                value: newDislikeStatus,
+                                              ),
+                                            );
+
+                                            // Update the downvote status
+                                            _updateDownvoteStatus(
+                                              isLiked,
+                                              newDislikeStatus,
+                                            );
+                                          },
+                                          backgroundColor:
+                                              NexusColors.accentColor,
+                                          // COLOR: FIX
+                                          iconColor: NexusColors.isDark
+                                              ? Colors.white
+                                              : NexusColors.primaryColorLight,
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                )
+                              : Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(12),
+                                    onTap: () {
+                                      print("Generate that thing!");
+                                    },
+                                    child: Ink(
+                                      width: double.infinity,
+                                      decoration: ShapeDecoration(
+                                        color: NexusColors.accentColor,
+                                        shape: SmoothRectangleBorder(
+                                          borderRadius: SmoothBorderRadius(
+                                            cornerRadius: 10,
+                                            cornerSmoothing: .8,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 10,
+                                        ),
+                                        child: Center(
+                                          child: StyledText(
+                                            text: 'Generate',
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            // color: NexusColors.primaryColor,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                          const SizedBox(height: 30),
+                        ],
+                      );
+                    }
+                    return const SizedBox();
+                  },
+                )
+              ],
+            ),
+            // been put at the end to act as a sticky header
+            Container(
+              height: 95,
+              color: NexusColors.backgroundColor,
+              child: Column(
+                children: [
+                  Center(
+                    child: Container(
+                      width: 60,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: NexusColors.borderColor,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  StyledTabs(
+                    leftTabText: 'Translate',
+                    rightTabText: 'Summarize',
+                    changeState: toggleView,
+                    // isLeftSelected: false
+                  ),
+                  // const SizedBox(
+                  //   height: 15,
+                  // )
+                  // const Divider(
+                  //   height: 30,
+                  //   color: NexusColors.dividerColor,
+                  // ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

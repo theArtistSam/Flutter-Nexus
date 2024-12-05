@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:nexus/models/chat_model.dart';
+import 'package:nexus/models/model_configs/summarization_config.dart';
 import 'package:nexus/repositories/chat_repository.dart';
 
 part 'summarization_config_event.dart';
@@ -20,7 +21,6 @@ class SummarizationConfigBloc
         )) {
     on<ChangeSummarizationLength>(changeSummarizationLength);
     on<ChangeSummarizationStyle>(changeSummarizationStyle);
-    on<UpdateSummarizationConfig>(updateSummarizationConfig);
 
     // initialize with current summarization config
     add(ChangeSummarizationStyle(
@@ -66,21 +66,5 @@ class SummarizationConfigBloc
         ),
       ),
     );
-  }
-
-  FutureOr<void> updateSummarizationConfig(
-    UpdateSummarizationConfig event,
-    Emitter<SummarizationConfigState> emit,
-  ) async {
-    final currentState = (state as SummarizationConfigInitial);
-
-    try {
-      await AIChatRepository().updateSummarizationConfig(
-        chatId: chatId,
-        summarizationConfig: currentState.summarizationConfig,
-      );
-    } catch (e) {
-      print("Some error occurred $e");
-    }
   }
 }

@@ -115,11 +115,11 @@ class _AIChatScreenState extends State<AIChatScreen> {
                 padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
                 child: BlocBuilder<AiChatBloc, AiChatState>(
                   builder: (context, state) {
-                    Stream<List<ChatModel>> issues =
+                    Stream<List<ChatModel>> chats =
                         (state as AiChatInitial).messages;
 
                     return StreamBuilder<List<ChatModel>>(
-                      stream: issues,
+                      stream: chats,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {

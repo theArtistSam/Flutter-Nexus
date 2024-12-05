@@ -1,3 +1,6 @@
+import 'package:nexus/models/model_configs/summarization_config.dart';
+import 'package:nexus/models/model_configs/translation_config.dart';
+
 class ContentModel {
   String? contentId;
   String? extractedText;
@@ -117,6 +120,18 @@ class Translation {
     }
     return data;
   }
+
+  Translation copyWith({
+    String? text,
+    Status? status,
+    TranslationConfig? translationConfig,
+  }) {
+    return Translation(
+      text: text ?? this.text,
+      status: status ?? this.status,
+      translationConfig: translationConfig ?? this.translationConfig,
+    );
+  }
 }
 
 class Status {
@@ -134,25 +149,6 @@ class Status {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['is_liked'] = isLiked;
     data['is_disliked'] = isDisliked;
-    return data;
-  }
-}
-
-class TranslationConfig {
-  String? sourceLanguage;
-  String? targetLanguage;
-
-  TranslationConfig({this.sourceLanguage, this.targetLanguage});
-
-  TranslationConfig.fromJson(Map<String, dynamic> json) {
-    sourceLanguage = json['source_language'];
-    targetLanguage = json['target_language'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['source_language'] = sourceLanguage;
-    data['target_language'] = targetLanguage;
     return data;
   }
 }
@@ -183,23 +179,16 @@ class Summarization {
     }
     return data;
   }
-}
 
-class SummarizationConfig {
-  String? type;
-  String? length;
-
-  SummarizationConfig({this.type, this.length});
-
-  SummarizationConfig.fromJson(Map<String, dynamic> json) {
-    type = json['type'];
-    length = json['length'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['type'] = type;
-    data['length'] = length;
-    return data;
+  Summarization copyWith({
+    String? text,
+    Status? status,
+    SummarizationConfig? summarizationConfig,
+  }) {
+    return Summarization(
+      text: text ?? this.text,
+      status: status ?? this.status,
+      summarizationConfig: summarizationConfig ?? this.summarizationConfig,
+    );
   }
 }

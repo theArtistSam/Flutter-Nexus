@@ -5,6 +5,8 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:nexus/models/content_model.dart';
+import 'package:nexus/models/model_configs/summarization_config.dart';
+import 'package:nexus/models/model_configs/translation_config.dart';
 import 'package:nexus/repositories/content_repository.dart';
 import 'package:nexus/services/extractive_model_service.dart';
 import 'package:nexus/utils/enums.dart';
@@ -26,7 +28,10 @@ class UploadBottomSheetBloc
     on<UploadFiles>(_uploadFiles);
   }
 
-  FutureOr<void> select(Select event, Emitter<UploadBottomSheetState> emit) {
+  FutureOr<void> select(
+    Select event,
+    Emitter<UploadBottomSheetState> emit,
+  ) {
     final currentState = state as UploadBottomSheetInitial;
 
     // Create a new list of files with all boolean values set to false
@@ -373,12 +378,21 @@ class UploadBottomSheetBloc
         translation: !isSummarization
             ? Translation(
                 text: responseText,
-                status: Status(isLiked: false, isDisliked: false))
+                status: Status(isLiked: false, isDisliked: false),
+                translationConfig: TranslationConfig(
+                  sourceLanguages: ['English'],
+                  targetLanguages: ['Urdu'],
+                ))
             : null,
         summarization: isSummarization
             ? Summarization(
                 text: responseText,
-                status: Status(isLiked: false, isDisliked: false))
+                status: Status(isLiked: false, isDisliked: false),
+                // TODO: if premium -> abstractive
+                summarizationConfig: SummarizationConfig(
+                  type: 'extractive',
+                  length: 'medium',
+                ))
             : null,
         type: type,
         title: fileName,
