@@ -315,4 +315,48 @@ class ContentRepository {
       print('Failed to update Summarization Config: $e');
     }
   }
+
+  Future<void> generateSummary({
+    required String userId,
+    required String contentId,
+    required Summarization summarization,
+  }) async {
+    try {
+      // Reference to the specific content document in Firestore
+      DocumentReference docRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('content')
+          .doc(contentId);
+
+      // Update Firestore with summarization config and text
+      await docRef.update({'summarization': summarization.toJson()});
+
+      print("Summary generated and updated successfully.");
+    } catch (e) {
+      print("Failed to generate summary: $e");
+    }
+  }
+
+  Future<void> generateTraslation({
+    required String userId,
+    required String contentId,
+    required Translation translation,
+  }) async {
+    try {
+      // Reference to the specific content document in Firestore
+      DocumentReference docRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('content')
+          .doc(contentId);
+
+      // Update Firestore with summarization config and text
+      await docRef.update({'translation': translation.toJson()});
+
+      print("Translation generated and updated successfully.");
+    } catch (e) {
+      print("Failed to generate translation: $e");
+    }
+  }
 }

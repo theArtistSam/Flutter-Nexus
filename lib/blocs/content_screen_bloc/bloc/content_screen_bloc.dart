@@ -10,9 +10,13 @@ import 'package:nexus/blocs/summarization_config_bloc/bloc/summarization_config_
 import 'package:nexus/models/content_model.dart';
 import 'package:nexus/models/folder_model.dart';
 import 'package:nexus/models/model_configs/summarization_config.dart';
+import 'package:nexus/models/model_configs/translation_config.dart';
 import 'package:nexus/repositories/content_repository.dart';
 import 'package:nexus/repositories/folder_repository.dart';
 import 'package:nexus/repositories/model_repository.dart';
+import 'package:nexus/services/abstractive_model_service.dart';
+import 'package:nexus/services/extractive_model_service.dart';
+import 'package:nexus/services/translation_model_service.dart';
 import 'package:path/path.dart';
 
 part 'content_screen_event.dart';
@@ -38,6 +42,8 @@ class ContentScreenBloc extends Bloc<ContentScreenEvent, ContentScreenState> {
     on<UpdateUpVoteStatus>(updateUpVoteStatus);
     on<UpdateDownVoteStatus>(updateDownVoteStatus);
     on<UpdateSummarizationConfig>(updateSummarizationConfig);
+    on<GenerateSummary>(generateSummary);
+    on<GenerateTranslation>(generateTranslation);
 
     // Add the start event to fetch all the folders
     add(FetchFolders());
@@ -392,6 +398,87 @@ class ContentScreenBloc extends Bloc<ContentScreenEvent, ContentScreenState> {
       );
     } catch (e) {
       print('Some error: $e');
+    }
+  }
+
+  FutureOr<void> generateSummary(
+    GenerateSummary event,
+    Emitter<ContentScreenState> emit,
+  ) async {
+    try {
+      final currentState = state as ContentScreenInitial;
+      final ContentModel content = currentState.content;
+
+      String response;
+
+      // TODO: check the user account status
+      response = await ExtractiveModelService().sendText(
+        text: content.extractedText!,
+        length: 'medium',
+      );
+      // if (summarizationConfig.type == 'extractive') {
+      // } else {
+      //   response = await AbstractiveModelService().sendText(
+      //     text: content.extractedText!,
+      //     length: summarizationConfig.length!,
+      //   );
+      // }
+
+      final Summarization summarization = Summarization(
+          text: response,
+          status: Status(isLiked: false, isDisliked: false),
+          summarizationConfig:
+              SummarizationConfig(type: 'extractive', length: 'medium'));
+      // Now update the summary configuration
+      await ContentRepository().generateSummary(
+          userId: 'Bd4umkyLqOLnMpdOLZ0E',
+          contentId: content.contentId!,
+          summarization: summarization);
+
+      // update the state
+      emit(
+        currentState.copyWith(
+          content: content.copyWith(summarization: summarization),
+        ),
+      );
+    } catch (e) {
+      print('Some error generating Summary: $e');
+    }
+  }
+
+  FutureOr<void> generateTranslation(
+    GenerateTranslation event,
+    Emitter<ContentScreenState> emit,
+  ) async {
+    try {
+      final currentState = state as ContentScreenInitial;
+      final ContentModel content = currentState.content;
+
+      String response = await TrasnlationModelService()
+          .sendText(text: content.extractedText!);
+
+      final Translation translation = Translation(
+        text: response,
+        status: Status(isLiked: false, isDisliked: false),
+        translationConfig: TranslationConfig(
+          sourceLanguages: ['English'],
+          targetLanguages: ['Urdu'],
+        ),
+      );
+      // Now update the summary configuration
+      await ContentRepository().generateTraslation(
+          userId: 'Bd4umkyLqOLnMpdOLZ0E',
+          contentId: content.contentId!,
+          translation: translation);
+
+      // update the state
+      emit(
+        currentState.copyWith(
+          content: content.copyWith(translation: translation),
+        ),
+      );
+    } catch (e) {
+      print('Some error generating Translation: $e');
     }
   }
 }

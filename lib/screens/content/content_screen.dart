@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,6 +13,8 @@ import 'package:nexus/models/content_model.dart';
 import 'package:nexus/models/model_configs/translation_config.dart';
 import 'package:nexus/screens/content/widgets/edit_bottom_sheet.dart';
 import 'package:nexus/utils/constants.dart';
+import 'package:nexus/utils/pdf_generator.dart';
+import 'package:nexus/utils/temp_directory.dart';
 import 'package:nexus/widgets/bottom_sheets/audio_bottom_sheet.dart';
 import 'package:nexus/widgets/bottom_sheets/image_slider_bottom_sheet.dart';
 import 'package:nexus/widgets/bottom_sheets/summarization_config/summarization_config_bottom_sheet.dart';
@@ -19,6 +24,9 @@ import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_snackbar.dart';
 import 'package:nexus/widgets/styled_widgets/styled_tabs.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 // ignore: must_be_immutable
 class ContentScreen extends StatefulWidget {
@@ -565,7 +573,32 @@ class _ContentScreenState extends State<ContentScreen> {
                                     const SizedBox(width: 5),
                                     StyledIconButton(
                                       icon: 'arrow-down',
-                                      onTap: () {},
+                                      onTap: () async {
+                                        try {
+                                          // Clear the temporary directory
+                                          await TempDirectory.emptyDirectory();
+
+                                          // Generate the PDF and get the file path
+                                          final String path = await PdfGenerator
+                                              .generateContentPdf(
+                                            contentModel:
+                                                state.content.toJson(),
+                                            isTranslation: state.isLeftSelected,
+                                          );
+
+                                          // Open the PDF file
+                                          final OpenResult result =
+                                              await OpenFile.open(path);
+
+                                          // Optional: Handle result
+                                          if (result.type != ResultType.done) {
+                                            print(
+                                                'Failed to open file: ${result.message}');
+                                          }
+                                        } catch (e) {
+                                          print('Error handling PDF: $e');
+                                        }
+                                      },
                                       backgroundColor: NexusColors.accentColor,
                                       iconColor: NexusColors.isDark
                                           ? Colors.white
@@ -679,7 +712,15 @@ class _ContentScreenState extends State<ContentScreen> {
                                   child: InkWell(
                                     borderRadius: BorderRadius.circular(12),
                                     onTap: () {
-                                      print("Generate that thing!");
+                                      if (state.isLeftSelected) {
+                                        contentScreenBloc.add(
+                                          GenerateTranslation(),
+                                        );
+                                      } else {
+                                        contentScreenBloc.add(
+                                          GenerateSummary(),
+                                        );
+                                      }
                                     },
                                     child: Ink(
                                       width: double.infinity,

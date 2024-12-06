@@ -5,8 +5,8 @@ class TranslationConfig {
   TranslationConfig({this.sourceLanguages, this.targetLanguages});
 
   TranslationConfig.fromJson(Map<String, dynamic> json) {
-    sourceLanguages = json['source_languages'];
-    targetLanguages = json['target_languages'];
+    sourceLanguages = json['source_languages'].cast<String>();
+    targetLanguages = json['target_languages'].cast<String>();
   }
   TranslationConfig copyWith({
     List<String>? sourceLanguages,

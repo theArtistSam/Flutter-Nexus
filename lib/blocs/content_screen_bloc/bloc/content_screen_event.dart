@@ -88,3 +88,7 @@ class UpdateSummarizationConfig extends ContentScreenEvent {
   final SummarizationConfig config;
   const UpdateSummarizationConfig({required this.config});
 }
+
+class GenerateSummary extends ContentScreenEvent {}
+
+class GenerateTranslation extends ContentScreenEvent {}
