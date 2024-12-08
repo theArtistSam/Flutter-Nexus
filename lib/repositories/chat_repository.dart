@@ -185,6 +185,7 @@ class AIChatRepository {
     required String documentId,
     required String text,
     required String messageType,
+    String? reponseMessageId,
   }) async {
     try {
       // Define the collection reference
@@ -198,6 +199,7 @@ class AIChatRepository {
         text: text,
         messageType: messageType,
         datetime: DateTime.now().toString(),
+        responseMessageId: reponseMessageId,
         responseStatus: messageType == 'response'
             ? ResponseStatus(isLiked: false, isDisliked: false)
             : null,

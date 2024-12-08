@@ -456,6 +456,7 @@ class _AIChatMessageScreenState extends State<AIChatMessageScreen> {
                                   // * Update upvote status
                                   aiChatMessageBloc.add(
                                     UpdateUpVoteStatus(
+                                      index: index,
                                       likeStatus: false,
                                       dislikeStatus: isDisliked,
                                     ),
@@ -472,6 +473,7 @@ class _AIChatMessageScreenState extends State<AIChatMessageScreen> {
                                   // * Update upvote status
                                   aiChatMessageBloc.add(
                                     UpdateUpVoteStatus(
+                                      index: index,
                                       likeStatus: true,
                                       dislikeStatus: isDisliked,
                                     ),
@@ -499,6 +501,7 @@ class _AIChatMessageScreenState extends State<AIChatMessageScreen> {
                                   // * Update downvote status
                                   aiChatMessageBloc.add(
                                     UpdateDownVoteStatus(
+                                      index: index,
                                       likeStatus: isLiked,
                                       dislikeStatus: false,
                                     ),
@@ -514,6 +517,7 @@ class _AIChatMessageScreenState extends State<AIChatMessageScreen> {
                                   // * Update downvote status
                                   aiChatMessageBloc.add(
                                     UpdateDownVoteStatus(
+                                      index: index,
                                       likeStatus: isLiked,
                                       dislikeStatus: true,
                                     ),

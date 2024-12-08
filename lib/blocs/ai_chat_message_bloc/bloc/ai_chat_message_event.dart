@@ -37,18 +37,22 @@ class ToggleDisike extends AiChatMessageEvent {
 class UpdateUpVoteStatus extends AiChatMessageEvent {
   final bool likeStatus;
   final bool dislikeStatus;
+  final int index;
   const UpdateUpVoteStatus({
     required this.likeStatus,
     required this.dislikeStatus,
+    required this.index,
   });
 }
 
 class UpdateDownVoteStatus extends AiChatMessageEvent {
   final bool likeStatus;
   final bool dislikeStatus;
+  final int index;
   const UpdateDownVoteStatus({
     required this.likeStatus,
     required this.dislikeStatus,
+    required this.index,
   });
 }
 

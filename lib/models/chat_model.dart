@@ -58,14 +58,22 @@ class Chat {
   String? text;
   String? messageType;
   String? datetime;
+  String? responseMessageId; // New attribute
   ResponseStatus? responseStatus;
 
-  Chat({this.text, this.messageType, this.datetime, this.responseStatus});
+  Chat({
+    this.text,
+    this.messageType,
+    this.datetime,
+    this.responseMessageId, // Initialize new attribute
+    this.responseStatus,
+  });
 
   Chat.fromJson(Map<String, dynamic> json) {
     text = json['text'];
     messageType = json['message_type'];
     datetime = json['datetime'];
+    responseMessageId = json['response_message_id']; // Map new attribute
     responseStatus = json['response_status'] != null
         ? ResponseStatus.fromJson(json['response_status'])
         : null;
@@ -76,6 +84,10 @@ class Chat {
     data['text'] = text;
     data['message_type'] = messageType;
     data['datetime'] = datetime;
+    // Only include responseMessageId if it's not null
+    if (responseMessageId != null) {
+      data['response_message_id'] = responseMessageId;
+    }
     if (responseStatus != null) {
       data['response_status'] = responseStatus!.toJson();
     }

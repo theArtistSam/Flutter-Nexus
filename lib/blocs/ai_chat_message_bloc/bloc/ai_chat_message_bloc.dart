@@ -88,20 +88,25 @@ class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
   ) async {
     try {
       final currentState = state as AiChatMessageInitial;
+      final Stream<List<Chat>> chatStream = currentState.conversation;
 
-      ModelRepository modelRepo;
+      // Convert the stream into a list to access individual chat messages
+      final List<Chat> chatList = await chatStream.first;
 
-      if (chat.chatType == 'Translation') {
-        // Translation model repository
-        modelRepo = ModelRepository(documentId: 'zkb0ysUiZpKSFcnoaoQD');
-      } else {
-        // Summarization model repository
-        if (currentState.summarizationConfig!.type! == 'extractive') {
-          modelRepo = ModelRepository(documentId: 'FNJAQivoRd7ouJOcQesX');
-        } else {
-          modelRepo = ModelRepository(documentId: 'FigG5uIMlUEw1IAlSsBr');
-        }
+      // Ensure the index is within bounds
+      if (event.index < 0 || event.index >= chatList.length) {
+        throw Exception("Invalid index: ${event.index}");
       }
+
+      // Get the single chat message response ID
+      final String? responseId = chatList[event.index].responseMessageId;
+
+      if (responseId == null || responseId.isEmpty) {
+        throw Exception(
+            "Response ID is null or empty for index: ${event.index}");
+      }
+
+      final ModelRepository modelRepo = ModelRepository(documentId: responseId);
 
       // Update upvote and downvote status
       if (event.dislikeStatus) {
@@ -109,52 +114,58 @@ class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
             .incrementUpVote(); // Increment upvote for dislike action
         await modelRepo
             .decrementDownVote(); // Decrement downvote for dislike action
+      } else if (event.likeStatus) {
+        await modelRepo.incrementUpVote(); // Increment upvote for like action
       } else {
-        if (event.likeStatus) {
-          await modelRepo.incrementUpVote(); // Increment upvote for like action
-        } else {
-          await modelRepo.decrementUpVote(); // Decrement upvote when no like
-        }
+        await modelRepo.decrementUpVote(); // Decrement upvote when no like
       }
+
+      print("UPVOTE STATUS UPDATED SUCCESSFULLY");
     } catch (e) {
       print("NOT ABLE TO UPDATE UPVOTE STATUS: $e");
     }
   }
 
   FutureOr<void> updateDownVoteStatus(
-      UpdateDownVoteStatus event, Emitter<AiChatMessageState> emit) async {
+    UpdateDownVoteStatus event,
+    Emitter<AiChatMessageState> emit,
+  ) async {
     try {
       final currentState = state as AiChatMessageInitial;
+      final Stream<List<Chat>> chatStream = currentState.conversation;
 
-      // Determine the correct ModelRepository based on the chat type and summarization type
-      ModelRepository modelRepo;
+      // Convert the stream into a list to access individual chat messages
+      final List<Chat> chatList = await chatStream.first;
 
-      if (chat.chatType == 'Translation') {
-        // Translation model repository
-        modelRepo = ModelRepository(documentId: 'zkb0ysUiZpKSFcnoaoQD');
-      } else {
-        // Summarization model repository
-        if (currentState.summarizationConfig!.type! == 'extractive') {
-          modelRepo = ModelRepository(documentId: 'FNJAQivoRd7ouJOcQesX');
-        } else {
-          modelRepo = ModelRepository(documentId: 'FigG5uIMlUEw1IAlSsBr');
-        }
+      // Ensure the index is within bounds
+      if (event.index < 0 || event.index >= chatList.length) {
+        throw Exception("Invalid index: ${event.index}");
       }
+
+      // Get the single chat message response ID
+      final String? responseId = chatList[event.index].responseMessageId;
+
+      if (responseId == null || responseId.isEmpty) {
+        throw Exception(
+            "Response ID is null or empty for index: ${event.index}");
+      }
+
+      ModelRepository modelRepo = ModelRepository(documentId: responseId);
 
       // Update downvote and upvote status
       if (event.likeStatus) {
         await modelRepo
             .incrementDownVote(); // Increment downvote for like action
         await modelRepo.decrementUpVote(); // Decrement upvote for like action
+      } else if (event.dislikeStatus) {
+        await modelRepo
+            .incrementDownVote(); // Increment downvote for dislike action
       } else {
-        if (event.dislikeStatus) {
-          await modelRepo
-              .incrementDownVote(); // Increment downvote for dislike action
-        } else {
-          await modelRepo
-              .decrementDownVote(); // Decrement downvote when neither like nor dislike
-        }
+        await modelRepo
+            .decrementDownVote(); // Decrement downvote when neither like nor dislike
       }
+
+      print("DOWNVOTE STATUS UPDATED SUCCESSFULLY");
     } catch (e) {
       print("NOT ABLE TO UPDATE DOWNVOTE STATUS: $e");
     }
@@ -195,13 +206,12 @@ class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
         print(responseMessage);
 // // * Change this to Extractive Model Service
         await AIChatRepository().addChatMessage(
-          userId: 'Bd4umkyLqOLnMpdOLZ0E',
-          documentId: event.documentId,
-          text: responseMessage.trim(),
-          messageType: 'response',
-        );
-
-        // TODO: Send request to the translation model
+            userId: 'Bd4umkyLqOLnMpdOLZ0E',
+            documentId: event.documentId,
+            text: responseMessage.trim(),
+            messageType: 'response',
+            reponseMessageId: 'zkb0ysUiZpKSFcnoaoQD' // translation model id
+            );
       } else {
         final SummarizationConfig config = currentState.summarizationConfig!;
         final String modelType = config.type!;
@@ -211,12 +221,12 @@ class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
           responseMessage = await ExtractiveModelService()
               .sendText(text: event.text, length: length);
 
-// * Change this to Extractive Model Service
           await AIChatRepository().addChatMessage(
             userId: 'Bd4umkyLqOLnMpdOLZ0E',
             documentId: event.documentId,
             text: responseMessage.trim(),
             messageType: 'response',
+            reponseMessageId: 'FNJAQivoRd7ouJOcQesX',
           );
         } else {
           responseMessage = await AbstractiveModelService()
@@ -228,6 +238,7 @@ class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
             documentId: event.documentId,
             text: responseMessage.trim(),
             messageType: 'response',
+            reponseMessageId: 'FigG5uIMlUEw1IAlSsBr',
           );
         }
       }
