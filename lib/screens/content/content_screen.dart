@@ -12,6 +12,7 @@ import 'package:nexus/blocs/content_screen_bloc/bloc/content_screen_bloc.dart';
 import 'package:nexus/models/content_model.dart';
 import 'package:nexus/models/model_configs/translation_config.dart';
 import 'package:nexus/screens/content/widgets/edit_bottom_sheet.dart';
+import 'package:nexus/urdu_stub.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/utils/pdf_generator.dart';
 import 'package:nexus/utils/temp_directory.dart';
@@ -571,18 +572,19 @@ class _ContentScreenState extends State<ContentScreen> {
                                   children: [
                                     StyledIconButton(
                                       icon: 'rotate-left',
-                                      onTap: () {
-                                        if (state.isLeftSelected) {
-                                          print('Generating translation');
-                                          contentScreenBloc.add(
-                                            GenerateTranslation(),
-                                          );
-                                        } else {
-                                          print('Generating summary');
-                                          contentScreenBloc.add(
-                                            GenerateSummary(),
-                                          );
-                                        }
+                                      onTap: () async {
+                                        await createSimpleUrduPdf();
+                                        // if (state.isLeftSelected) {
+                                        //   print('Generating translation');
+                                        //   contentScreenBloc.add(
+                                        //     GenerateTranslation(),
+                                        //   );
+                                        // } else {
+                                        //   print('Generating summary');
+                                        //   contentScreenBloc.add(
+                                        //     GenerateSummary(),
+                                        //   );
+                                        // }
                                       },
                                       backgroundColor: NexusColors.accentColor,
                                       iconColor: NexusColors.isDark

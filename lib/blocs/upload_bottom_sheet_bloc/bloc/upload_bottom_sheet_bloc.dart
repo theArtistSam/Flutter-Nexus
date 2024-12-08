@@ -9,6 +9,7 @@ import 'package:nexus/models/model_configs/summarization_config.dart';
 import 'package:nexus/models/model_configs/translation_config.dart';
 import 'package:nexus/repositories/content_repository.dart';
 import 'package:nexus/services/extractive_model_service.dart';
+import 'package:nexus/services/translation_model_service.dart';
 import 'package:nexus/utils/enums.dart';
 import 'package:nexus/utils/extraction.dart';
 import 'package:path/path.dart' as path;
@@ -108,7 +109,6 @@ class UploadBottomSheetBloc
     }
   }
 
-  // TODO: Separate the logic for translation
   Future<void> getResponse(
     GetResponse event,
     Emitter<UploadBottomSheetState> emit,
@@ -117,6 +117,7 @@ class UploadBottomSheetBloc
       final currentState = state as UploadBottomSheetInitial;
       final List<Map<File, bool>> pickedFiles = currentState.pickedFiles;
       List<ContentModel> contentList = currentState.content;
+      final String aiFeture = currentState.aiFeature;
       int processedCount = currentState.count;
 
       Future<void> handleFileProcessing(
@@ -143,28 +144,28 @@ class UploadBottomSheetBloc
         switch (fileExtension) {
           case 'docx':
           case 'doc':
-            await handleFileProcessing(
-                () => _processWord(file: file, content: contentList));
+            await handleFileProcessing(() => _processWord(
+                file: file, content: contentList, aiFeature: aiFeture));
             break;
           case 'pdf':
-            await handleFileProcessing(
-                () => _processPdf(file: file, content: contentList));
+            await handleFileProcessing(() => _processPdf(
+                file: file, content: contentList, aiFeature: aiFeture));
             break;
           case 'mp4':
           case 'mkv':
-            await handleFileProcessing(
-                () => _processVideo(file: file, content: contentList));
+            await handleFileProcessing(() => _processVideo(
+                file: file, content: contentList, aiFeature: aiFeture));
             break;
           case 'mp3':
           case 'aac':
           case 'm4a':
-            await handleFileProcessing(
-                () => _processAudio(file: file, content: contentList));
+            await handleFileProcessing(() => _processAudio(
+                file: file, content: contentList, aiFeature: aiFeture));
             break;
           case 'jpeg':
           case 'png':
-            await handleFileProcessing(
-                () => _processImage(file: file, content: contentList));
+            await handleFileProcessing(() => _processImage(
+                file: file, content: contentList, aiFeature: aiFeture));
             break;
           default:
             print('Unsupported file type: $fileExtension');
@@ -210,14 +211,15 @@ class UploadBottomSheetBloc
   Future<List<ContentModel>> _processWord({
     required File file,
     required List<ContentModel> content,
+    required String aiFeature,
   }) async {
     final String filename = file.path.split(path.separator).last;
 
     final extractedText = await Extraction.extractWordText(docxFile: file);
 
     // Send extracted text
-    final responseText = await ExtractiveModelService()
-        .sendText(text: extractedText.trim(), length: 'medium');
+    final responseText = await _getModelResponse(
+        aiFeature: aiFeature, text: extractedText.trim());
 
     // Update content list
     final updatedContent = List<ContentModel>.from(content)
@@ -226,6 +228,7 @@ class UploadBottomSheetBloc
         responseText: responseText.trim(),
         fileName: filename,
         type: 'document',
+        isSummarization: aiFeature == 'Summarization',
       ));
 
     return updatedContent;
@@ -234,6 +237,7 @@ class UploadBottomSheetBloc
   Future<List<ContentModel>> _processImage({
     required File file,
     required List<ContentModel> content,
+    required String aiFeature,
   }) async {
     final String filename = file.path.split(path.separator).last;
 
@@ -248,8 +252,10 @@ class UploadBottomSheetBloc
     String transcribedText = jsonResponse['output_text'].replaceAll('\\n', ' ');
 
     // Send extracted text
-    final responseText = await ExtractiveModelService()
-        .sendText(text: transcribedText.trim(), length: 'medium');
+    final responseText = await _getModelResponse(
+      aiFeature: aiFeature,
+      text: transcribedText.trim(),
+    );
 
     final updatedContent = List<ContentModel>.from(content)
       ..add(_getContent(
@@ -257,6 +263,7 @@ class UploadBottomSheetBloc
         responseText: responseText.trim(),
         fileName: filename,
         type: 'image',
+        isSummarization: aiFeature == 'Summarization',
       ));
 
     return updatedContent;
@@ -265,6 +272,7 @@ class UploadBottomSheetBloc
   Future<List<ContentModel>> _processPdf({
     required File file,
     required List<ContentModel> content,
+    required String aiFeature,
   }) async {
     final String filename = file.path.split(path.separator).last;
 
@@ -272,8 +280,10 @@ class UploadBottomSheetBloc
     final extractedText = await Extraction.extractPdfText(pdfFile: file);
 
     // Send extracted text
-    final responseText = await ExtractiveModelService()
-        .sendText(text: extractedText.trim(), length: 'medium');
+    final responseText = await _getModelResponse(
+      aiFeature: aiFeature,
+      text: extractedText.trim(),
+    );
 
     // Update content list
     final updatedContent = List<ContentModel>.from(content)
@@ -282,6 +292,7 @@ class UploadBottomSheetBloc
         responseText: responseText.trim(),
         fileName: filename,
         type: 'document',
+        isSummarization: aiFeature == 'Summarization',
       ));
 
     return updatedContent;
@@ -290,6 +301,7 @@ class UploadBottomSheetBloc
   Future<List<ContentModel>> _processVideo({
     required File file,
     required List<ContentModel> content,
+    required String aiFeature,
   }) async {
     final String filename = file.path.split(path.separator).last;
 
@@ -308,8 +320,10 @@ class UploadBottomSheetBloc
     String transcribedText = jsonResponse['output_text'].replaceAll('\\n', ' ');
 
     // Send extracted text
-    final responseText = await ExtractiveModelService()
-        .sendText(text: transcribedText.trim(), length: 'medium');
+    final responseText = await _getModelResponse(
+      aiFeature: aiFeature,
+      text: transcribedText.trim(),
+    );
 
     final updatedContent = List<ContentModel>.from(content)
       ..add(_getContent(
@@ -317,6 +331,7 @@ class UploadBottomSheetBloc
         responseText: responseText.trim(),
         fileName: filename,
         type: 'video',
+        isSummarization: aiFeature == 'Summarization',
       ));
     return updatedContent;
   }
@@ -324,6 +339,7 @@ class UploadBottomSheetBloc
   Future<List<ContentModel>> _processAudio({
     required File file,
     required List<ContentModel> content,
+    required String aiFeature,
   }) async {
     final String filename = file.path.split(path.separator).last;
 // Send audio files
@@ -342,12 +358,10 @@ class UploadBottomSheetBloc
     // Log before sending the extracted text
     print('Transcribed text: $transcribedText');
 
-    // Send extracted text
-    final responseText = await ExtractiveModelService().sendText(
+    final responseText = await _getModelResponse(
+      aiFeature: aiFeature,
       text: transcribedText.trim(),
-      length: 'medium',
     );
-
     // Log the received response
     print('Response from sendText: $responseText');
 
@@ -361,6 +375,7 @@ class UploadBottomSheetBloc
         responseText: responseText.trim(),
         fileName: filename,
         type: 'audio',
+        isSummarization: aiFeature == 'Summarization',
       ));
     return updatedContent;
   }
@@ -400,5 +415,17 @@ class UploadBottomSheetBloc
         // Mock Data for now
         thumbnail:
             'https://firebasestorage.googleapis.com/v0/b/nexus-ef4c1.appspot.com/o/mock_data%2Fcontent.png?alt=media&token=e4bbcb71-fa53-4f4f-8481-dde5c7a1e59b');
+  }
+
+  Future<String> _getModelResponse({
+    required String aiFeature,
+    required String text,
+  }) async {
+    if (aiFeature == 'Translation') {
+      return await TrasnlationModelService().sendText(text: text);
+    } else {
+      // TODO: Handle the isPremium User here!
+      return ExtractiveModelService().sendText(text: text, length: 'medium');
+    }
   }
 }

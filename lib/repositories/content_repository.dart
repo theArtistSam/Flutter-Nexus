@@ -57,7 +57,7 @@ class ContentRepository {
 
       // List all files in the folder (contentId)
       final ListResult result = await storageRef.listAll();
-
+      print(result.items.toString());
       // Loop through each file and delete it
       for (var fileRef in result.items) {
         try {

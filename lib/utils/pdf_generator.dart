@@ -22,6 +22,11 @@ class PdfGenerator {
     final PdfTrueTypeFont regularFont =
         PdfTrueTypeFont(regularFontData.buffer.asUint8List(), 12);
 
+    final ByteData urduFontData =
+        await rootBundle.load('assets/fonts/NotoNastaliqUrdu-Medium.ttf');
+    final PdfTrueTypeFont urduFont =
+        PdfTrueTypeFont(urduFontData.buffer.asUint8List(), 12);
+
     // Create PDF document
     final PdfDocument document = PdfDocument();
     PdfPage currentPage = document.pages.add();
@@ -118,7 +123,7 @@ class PdfGenerator {
 
     final PdfTextElement additionalTextElement = PdfTextElement(
       text: additionalText,
-      font: regularFont,
+      font: isTranslation ? urduFont : regularFont,
     );
 
     final PdfLayoutResult additionalTextResult = additionalTextElement.draw(
