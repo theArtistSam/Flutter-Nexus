@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:nexus/utils/endpoint.dart';
 
 class ExtractiveModelService {
   // * FOR NOW
@@ -13,11 +14,11 @@ class ExtractiveModelService {
     required String length,
   }) async {
     try {
-      // final endpoint =
-      //     await Endpoint(documentId: 'FNJAQivoRd7ouJOcQesX').getEndpoint();
+      final endpoint =
+          await Endpoint(documentId: 'FNJAQivoRd7ouJOcQesX').getEndpoint();
 
-      // https://0b24-111-68-99-41.ngrok-free.app
-      const endpoint = "https://a5fc-203-82-62-87.ngrok-free.app/get-response/";
+      // // https://0b24-111-68-99-41.ngrok-free.app
+      // const endpoint = "https://a5fc-203-82-62-87.ngrok-free.app/get-response/";
 
       final uri = Uri.parse(endpoint);
       final headers = {'Content-Type': 'application/json'};

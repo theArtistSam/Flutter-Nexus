@@ -20,7 +20,7 @@ class Endpoint {
       if (docSnapshot.exists) {
         Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
         String endpoint = data['endpoint'];
-        return endpoint;
+        return endpoint.trim();
       } else {
         throw Exception('Document does not exist');
       }

@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nexus/blocs/summarization_config_bloc/bloc/summarization_config_bloc.dart';
 import 'package:nexus/models/content_model.dart';
@@ -408,41 +409,53 @@ class ContentScreenBloc extends Bloc<ContentScreenEvent, ContentScreenState> {
     try {
       final currentState = state as ContentScreenInitial;
       final ContentModel content = currentState.content;
+      final Summarization? existingSummary = content.summarization;
 
-      String response;
+      // Determine summarization type and length
+      final String type =
+          existingSummary?.summarizationConfig?.type ?? 'extractive';
+      final String length =
+          existingSummary?.summarizationConfig?.length ?? 'medium';
 
-      // TODO: check the user account status
-      response = await ExtractiveModelService().sendText(
-        text: content.extractedText!,
-        length: 'medium',
+      // Choose appropriate service based on type
+      final String response = type == 'extractive'
+          ? await ExtractiveModelService().sendText(
+              text: content.extractedText!,
+              length: length,
+            )
+          : await AbstractiveModelService().sendText(
+              text: content.extractedText!,
+              length: length,
+            );
+
+      // Create the new summarization object
+      final Summarization newSummarization = Summarization(
+        text: response,
+        status: Status(
+          isLiked: false,
+          isDisliked: false,
+        ),
+        summarizationConfig: SummarizationConfig(
+          type: type,
+          length: length,
+        ),
       );
-      // if (summarizationConfig.type == 'extractive') {
-      // } else {
-      //   response = await AbstractiveModelService().sendText(
-      //     text: content.extractedText!,
-      //     length: summarizationConfig.length!,
-      //   );
-      // }
 
-      final Summarization summarization = Summarization(
-          text: response,
-          status: Status(isLiked: false, isDisliked: false),
-          summarizationConfig:
-              SummarizationConfig(type: 'extractive', length: 'medium'));
-      // Now update the summary configuration
+      // Update the summary in the repository
       await ContentRepository().generateSummary(
-          userId: 'Bd4umkyLqOLnMpdOLZ0E',
-          contentId: content.contentId!,
-          summarization: summarization);
+        userId: 'Bd4umkyLqOLnMpdOLZ0E',
+        contentId: content.contentId!,
+        summarization: newSummarization,
+      );
 
-      // update the state
+      // Emit the updated state
       emit(
         currentState.copyWith(
-          content: content.copyWith(summarization: summarization),
+          content: content.copyWith(summarization: newSummarization),
         ),
       );
     } catch (e) {
-      print('Some error generating Summary: $e');
+      print('Error generating summary: $e');
     }
   }
 
@@ -457,6 +470,7 @@ class ContentScreenBloc extends Bloc<ContentScreenEvent, ContentScreenState> {
       String response = await TrasnlationModelService()
           .sendText(text: content.extractedText!);
 
+      // TODO: Fix the state update translation
       final Translation translation = Translation(
         text: response,
         status: Status(isLiked: false, isDisliked: false),

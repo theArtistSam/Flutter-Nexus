@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:nexus/utils/endpoint.dart';
 
 class AbstractiveModelService {
   // * FOR NOW
@@ -13,12 +14,12 @@ class AbstractiveModelService {
     required String length,
   }) async {
     try {
-      // final endpoint =
-      //     await Endpoint(documentId: 'FNJAQivoRd7ouJOcQesX').getEndpoint();
+      final endpoint =
+          await Endpoint(documentId: 'FigG5uIMlUEw1IAlSsBr').getEndpoint();
 
       // https://0b24-111-68-99-41.ngrok-free.app
-      const endpoint =
-          "https://e372-115-186-169-16.ngrok-free.app/get-summary/";
+      // const endpoint =
+      //     "https://e372-115-186-169-16.ngrok-free.app/get-summary/";
 
       final uri = Uri.parse(endpoint);
       final headers = {'Content-Type': 'application/json'};

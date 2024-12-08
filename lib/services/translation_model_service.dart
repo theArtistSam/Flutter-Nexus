@@ -2,14 +2,18 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:nexus/utils/endpoint.dart';
 
 class TrasnlationModelService {
   Future<String> sendText({
     required String text,
   }) async {
     try {
-      const endpoint =
-          "https://e372-115-186-169-16.ngrok-free.app/get-translation/";
+      final endpoint =
+          await Endpoint(documentId: 'zkb0ysUiZpKSFcnoaoQD').getEndpoint();
+
+      // const endpoint =
+      //     "https://e372-115-186-169-16.ngrok-free.app/get-translation/";
 
       final uri = Uri.parse(endpoint);
       final headers = {'Content-Type': 'application/json'};

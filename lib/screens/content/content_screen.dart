@@ -193,28 +193,34 @@ class _ContentScreenState extends State<ContentScreen> {
                                   ),
                                 );
                               } else {
-                                showModalBottomSheet(
-                                  isScrollControlled: true,
-                                  context: context,
-                                  builder: (context) =>
-                                      SummarizationConfigBottomSheet(
-                                    onConfirm: (
-                                        {required summarizationConfig}) {
-                                      contentScreenBloc.add(
-                                        UpdateSummarizationConfig(
-                                          config: summarizationConfig,
-                                        ),
-                                      );
+                                if (state.content.summarization != null) {
+                                  showModalBottomSheet(
+                                    isScrollControlled: true,
+                                    context: context,
+                                    builder: (context) =>
+                                        SummarizationConfigBottomSheet(
+                                      onConfirm: (
+                                          {required summarizationConfig}) {
+                                        contentScreenBloc.add(
+                                          UpdateSummarizationConfig(
+                                            config: summarizationConfig,
+                                          ),
+                                        );
 
-                                      StyledSnackbar.show(
-                                          context: context,
-                                          message: "Content Updated!");
-                                    },
-                                    docId: content.contentId!,
-                                    summarizationConfig: content
-                                        .summarization!.summarizationConfig!,
-                                  ),
-                                );
+                                        StyledSnackbar.show(
+                                            context: context,
+                                            message: "Content Updated!");
+                                      },
+                                      docId: content.contentId!,
+                                      summarizationConfig: content
+                                          .summarization!.summarizationConfig!,
+                                    ),
+                                  );
+                                } else {
+                                  StyledSnackbar.show(
+                                      context: context,
+                                      message: 'Summarization not available!');
+                                }
                               }
                             },
                             backgroundColor: Colors.black26,
@@ -522,7 +528,8 @@ class _ContentScreenState extends State<ContentScreen> {
                 BlocBuilder<ContentScreenBloc, ContentScreenState>(
                   builder: (context, state) {
                     if (state is ContentScreenInitial) {
-                      bool isLeftSelected = state.isLeftSelected;
+                      final bool isLeftSelected = state.isLeftSelected;
+                      final ContentModel content = state.content;
                       return Column(
                         children: [
                           contentTile(
@@ -534,7 +541,7 @@ class _ContentScreenState extends State<ContentScreen> {
                             isOpen: state.isOriginal ? true : false,
                             openTitle: 'Original',
                             closeTitle: 'View original text',
-                            text: widget.content.extractedText,
+                            text: content.extractedText,
                           ),
                           const SizedBox(
                             height: 10,
@@ -553,9 +560,9 @@ class _ContentScreenState extends State<ContentScreen> {
                                   ? 'View Translation'
                                   : 'View summary',
                               text: isLeftSelected
-                                  ? widget.content.translation?.text ??
+                                  ? content.translation?.text ??
                                       'کوئی ترجمہ دستیاب نہیں ہے۔'
-                                  : widget.content.summarization?.text ??
+                                  : content.summarization?.text ??
                                       'No Summary available'),
 
                           const SizedBox(height: 10),
@@ -564,7 +571,19 @@ class _ContentScreenState extends State<ContentScreen> {
                                   children: [
                                     StyledIconButton(
                                       icon: 'rotate-left',
-                                      onTap: () {},
+                                      onTap: () {
+                                        if (state.isLeftSelected) {
+                                          print('Generating translation');
+                                          contentScreenBloc.add(
+                                            GenerateTranslation(),
+                                          );
+                                        } else {
+                                          print('Generating summary');
+                                          contentScreenBloc.add(
+                                            GenerateSummary(),
+                                          );
+                                        }
+                                      },
                                       backgroundColor: NexusColors.accentColor,
                                       iconColor: NexusColors.isDark
                                           ? Colors.white
@@ -713,10 +732,12 @@ class _ContentScreenState extends State<ContentScreen> {
                                     borderRadius: BorderRadius.circular(12),
                                     onTap: () {
                                       if (state.isLeftSelected) {
+                                        print('Generating translation');
                                         contentScreenBloc.add(
                                           GenerateTranslation(),
                                         );
                                       } else {
+                                        print('Generating summary');
                                         contentScreenBloc.add(
                                           GenerateSummary(),
                                         );
