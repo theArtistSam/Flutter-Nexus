@@ -16,7 +16,9 @@ class AudioBottomSheetBloc
   }
 
   FutureOr<void> updateCurrentPosition(
-      UpdateCurrentPosition event, Emitter<AudioBottomSheetState> emit) {
+    UpdateCurrentPosition event,
+    Emitter<AudioBottomSheetState> emit,
+  ) {
     final currentState = state as AudioBottomSheetInitial;
     emit(currentState.copyWith(
       isPlaying: true,
@@ -25,16 +27,26 @@ class AudioBottomSheetBloc
   }
 
   FutureOr<void> pauseAudio(
-      PauseAudio event, Emitter<AudioBottomSheetState> emit) {
+    PauseAudio event,
+    Emitter<AudioBottomSheetState> emit,
+  ) {
     final currentState = state as AudioBottomSheetInitial;
     emit(currentState.copyWith(
-        currentPosition: currentState.currentPosition, isPlaying: false));
+      currentPosition: currentState.currentPosition,
+      isPlaying: false,
+    ));
+
+    print("Yes does reach here! ${currentState.isPlaying}");
   }
 
   FutureOr<void> playAudio(
-      PlayAudio event, Emitter<AudioBottomSheetState> emit) {
+    PlayAudio event,
+    Emitter<AudioBottomSheetState> emit,
+  ) {
     final currentState = state as AudioBottomSheetInitial;
     emit(currentState.copyWith(
-        currentPosition: currentState.currentPosition, isPlaying: true));
+      currentPosition: currentState.currentPosition,
+      isPlaying: true,
+    ));
   }
 }

@@ -9,6 +9,10 @@ import 'package:nexus/models/model_configs/translation_config.dart';
 class AIChatRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  // create a global hive box for user preference/caching
+  // all of them require user_id
+  final String userId = 'Bd4umkyLqOLnMpdOLZ0E';
+
   Stream<List<ChatModel>> getAllChats({
     Query Function(Query)? queryBuilder,
     required String userId,
@@ -31,7 +35,6 @@ class AIChatRepository {
   Future<void> toggleLike({
     required int index,
     required bool value,
-    required String userId,
     required String documentId,
   }) async {
     try {
@@ -73,7 +76,6 @@ class AIChatRepository {
   Future<void> toggleDislike({
     required int index,
     required bool value,
-    required String userId,
     required String documentId,
   }) async {
     try {
@@ -116,7 +118,7 @@ class AIChatRepository {
     // Access the specific document in the 'support' collection using the documentId
     DocumentReference docRef = _firestore
         .collection('users')
-        .doc('Bd4umkyLqOLnMpdOLZ0E')
+        .doc(userId)
         .collection('chat')
         .doc(documentId);
 
@@ -140,10 +142,8 @@ class AIChatRepository {
   Future<void> addAIChat({required String chatType}) async {
     try {
       // Define the collection reference
-      final collection = _firestore
-          .collection('users')
-          .doc("Bd4umkyLqOLnMpdOLZ0E")
-          .collection('chat');
+      final collection =
+          _firestore.collection('users').doc(userId).collection('chat');
 
       String text = chatType == "Summarization"
           ? 'Here to help you with summarization😊'
@@ -181,7 +181,6 @@ class AIChatRepository {
   }
 
   Future<void> addChatMessage({
-    required String userId,
     required String documentId,
     required String text,
     required String messageType,
@@ -221,7 +220,7 @@ class AIChatRepository {
       // Define the collection reference
       final DocumentReference docRef = FirebaseFirestore.instance
           .collection('users')
-          .doc('Bd4umkyLqOLnMpdOLZ0E')
+          .doc(userId)
           .collection('chat')
           .doc(chatId);
 
@@ -235,10 +234,8 @@ class AIChatRepository {
   Future<void> addChatWithMessages() async {
     try {
       // Define the collection reference
-      final collection = _firestore
-          .collection('users')
-          .doc("Bd4umkyLqOLnMpdOLZ0E")
-          .collection('chat');
+      final collection =
+          _firestore.collection('users').doc(userId).collection('chat');
 
       // Create a list of 20 conversations
       List<Chat> conversations = List.generate(20, (index) {
@@ -289,7 +286,7 @@ class AIChatRepository {
     try {
       DocumentReference docRef = _firestore
           .collection('users')
-          .doc('Bd4umkyLqOLnMpdOLZ0E') // Consider making the user ID dynamic
+          .doc(userId) // Consider making the user ID dynamic
           .collection('chat')
           .doc(chatId);
 
@@ -310,7 +307,7 @@ class AIChatRepository {
     try {
       DocumentReference docRef = _firestore
           .collection('users')
-          .doc('Bd4umkyLqOLnMpdOLZ0E') // Consider making the user ID dynamic
+          .doc(userId) // Consider making the user ID dynamic
           .collection('chat')
           .doc(chatId);
 

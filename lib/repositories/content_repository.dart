@@ -11,15 +11,13 @@ import 'package:workmanager/workmanager.dart';
 
 class ContentRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
+  final String userId = 'Bd4umkyLqOLnMpdOLZ0E';
   //  Now the function also takes a query as a parameter
   Stream<List<ContentModel>> getAllContents({
     Query Function(Query)? queryBuilder,
   }) {
-    Query query = _firestore
-        .collection('users')
-        .doc('Bd4umkyLqOLnMpdOLZ0E')
-        .collection('content');
+    Query query =
+        _firestore.collection('users').doc(userId).collection('content');
 
     // Apply the optional query builder if provided
     if (queryBuilder != null) {
@@ -39,7 +37,7 @@ class ContentRepository {
       // Firestore reference to the content document
       final docRef = _firestore
           .collection('users')
-          .doc('Bd4umkyLqOLnMpdOLZ0E') // Use actual userId
+          .doc(userId) // Use actual userId
           .collection('content')
           .doc(contentId);
 
@@ -51,7 +49,7 @@ class ContentRepository {
       final storageRef = FirebaseStorage.instance
           .ref()
           .child('users')
-          .child('Bd4umkyLqOLnMpdOLZ0E') // Use actual userId
+          .child(userId) // Use actual userId
           .child('content')
           .child(contentId);
 
@@ -94,7 +92,7 @@ class ContentRepository {
         final ref = FirebaseStorage.instance
             .ref()
             .child('users')
-            .child('Bd4umkyLqOLnMpdOLZ0E') // Replace with user ID
+            .child(userId) // Replace with user ID
             .child('content')
             .child(content.contentId!)
             .child('image.jpg');
@@ -117,7 +115,7 @@ class ContentRepository {
       // Update the Firestore document with the content data
       await FirebaseFirestore.instance
           .collection('users')
-          .doc('Bd4umkyLqOLnMpdOLZ0E') // Replace with user ID
+          .doc(userId) // Replace with user ID
           .collection('content')
           .doc(content.contentId)
           .update(content.toJson());
@@ -127,7 +125,6 @@ class ContentRepository {
   }
 
   Future<void> uploadContentList({
-    required String userId,
     required List<ContentModel> contentList,
     required List<File> files,
   }) async {
@@ -175,7 +172,6 @@ class ContentRepository {
   }
 
   Future<ContentModel> getContentById({
-    required String userId,
     required String contentId,
   }) async {
     try {
@@ -200,7 +196,6 @@ class ContentRepository {
   Future<void> toggleLike({
     required bool isTranslation,
     required bool value,
-    required String userId,
     required String documentId,
   }) async {
     try {
@@ -238,7 +233,6 @@ class ContentRepository {
   Future<void> toggleDislike({
     required bool isTranslation,
     required bool value,
-    required String userId,
     required String documentId,
   }) async {
     try {
@@ -280,7 +274,7 @@ class ContentRepository {
     try {
       DocumentReference docRef = _firestore
           .collection('users')
-          .doc('Bd4umkyLqOLnMpdOLZ0E') // Consider making the user ID dynamic
+          .doc(userId) // Consider making the user ID dynamic
           .collection('content')
           .doc(contentId);
 
@@ -302,7 +296,7 @@ class ContentRepository {
     try {
       DocumentReference docRef = _firestore
           .collection('users')
-          .doc('Bd4umkyLqOLnMpdOLZ0E') // Consider making the user ID dynamic
+          .doc(userId) // Consider making the user ID dynamic
           .collection('chat')
           .doc(contentId);
 
@@ -317,7 +311,6 @@ class ContentRepository {
   }
 
   Future<void> generateSummary({
-    required String userId,
     required String contentId,
     required Summarization summarization,
   }) async {
@@ -339,7 +332,6 @@ class ContentRepository {
   }
 
   Future<void> generateTraslation({
-    required String userId,
     required String contentId,
     required Translation translation,
   }) async {

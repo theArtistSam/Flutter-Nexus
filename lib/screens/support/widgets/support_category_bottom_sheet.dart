@@ -126,14 +126,13 @@ class _SupportCategoryBottomSheetState
 
                       // * Push to support chat screen
                       // * PROVIDE THE USER ID HERE *
-                      bool issueStatus = await SupportRepository()
-                          .checkIssueStatus(userId: 'Bd4umkyLqOLnMpdOLZ0E');
+                      bool issueStatus =
+                          await SupportRepository().checkIssueStatus();
                       // ignore: use_build_context_synchronously
                       if (!issueStatus) {
                         supportCategoryBottomSheetBloc.add(
                           AddIssue(
                             issueCategory: issues[index].type!,
-                            userId: 'Bd4umkyLqOLnMpdOLZ0E',
                           ),
                         );
                         Navigator.pop(context);

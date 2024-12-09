@@ -21,7 +21,9 @@ class FolderBottomSheetBloc
   }
 
   FutureOr<void> selectFolderIcon(
-      SelectFolderIcon event, Emitter<FolderBottomSheetState> emit) {
+    SelectFolderIcon event,
+    Emitter<FolderBottomSheetState> emit,
+  ) {
     final currentState = (state as FolderBottomSheetInitial);
     emit(
       currentState.copyWith(
@@ -31,7 +33,9 @@ class FolderBottomSheetBloc
   }
 
   FutureOr<void> updateFolder(
-      UpdateFolder event, Emitter<FolderBottomSheetState> emit) async {
+    UpdateFolder event,
+    Emitter<FolderBottomSheetState> emit,
+  ) async {
     final currentState = (state as FolderBottomSheetInitial);
     try {
       final FolderModel folder = currentState.folder.copyWith(
@@ -39,7 +43,6 @@ class FolderBottomSheetBloc
         dateUpdated: DateTime.now().toString(),
       );
       await FolderRepository().updateFolder(
-        userId: 'Bd4umkyLqOLnMpdOLZ0E',
         folder: folder,
       );
 
@@ -50,7 +53,9 @@ class FolderBottomSheetBloc
   }
 
   FutureOr<void> createFolder(
-      CreateFolder event, Emitter<FolderBottomSheetState> emit) async {
+    CreateFolder event,
+    Emitter<FolderBottomSheetState> emit,
+  ) async {
     final currentState = (state as FolderBottomSheetInitial);
     try {
       final FolderModel folder = currentState.folder.copyWith(
@@ -59,7 +64,6 @@ class FolderBottomSheetBloc
         contents: [],
       );
       await FolderRepository().addFolder(
-        userId: 'Bd4umkyLqOLnMpdOLZ0E',
         folder: folder,
       );
       print("ADDED FOLDER");
@@ -70,10 +74,11 @@ class FolderBottomSheetBloc
   }
 
   FutureOr<void> deleteFolder(
-      DeleteFolder event, Emitter<FolderBottomSheetState> emit) async {
+    DeleteFolder event,
+    Emitter<FolderBottomSheetState> emit,
+  ) async {
     try {
       await FolderRepository().deleteFolder(
-        userId: 'Bd4umkyLqOLnMpdOLZ0E',
         folderId: event.folderId,
       );
     } catch (e) {

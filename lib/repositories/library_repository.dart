@@ -5,9 +5,9 @@ import 'package:nexus/utils/constants.dart';
 
 class LibraryRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final String userId = 'Bd4umkyLqOLnMpdOLZ0E';
 
   Stream<List<ContentModel>> searchContent({
-    required String userId,
     required String searchQuery,
   }) {
     // Reference to the user's content collection
@@ -46,7 +46,6 @@ class LibraryRepository {
   }
 
   Stream<List<FolderModel>> searchFolder({
-    required String userId,
     required String searchQuery,
   }) {
     // Reference to the user's content collection

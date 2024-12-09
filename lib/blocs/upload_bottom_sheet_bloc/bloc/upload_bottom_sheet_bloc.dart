@@ -195,7 +195,6 @@ class UploadBottomSheetBloc
       }).toList();
 
       await ContentRepository().uploadContentList(
-        userId: 'Bd4umkyLqOLnMpdOLZ0E',
         contentList: contentList,
         files: files,
       );

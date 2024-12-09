@@ -17,7 +17,9 @@ class ChatCategoryBottomSheetBloc
   }
 
   FutureOr<void> fetchModelCategories(
-      FetchModelCategories event, Emitter<ChatCategoryBottomSheetState> emit) {
+    FetchModelCategories event,
+    Emitter<ChatCategoryBottomSheetState> emit,
+  ) {
     final currentState = state as ChatCategoryBottomSheetInitial;
 
     List<CategoryModel> models = [
@@ -25,26 +27,30 @@ class ChatCategoryBottomSheetBloc
         icon: 'sparkle',
         type: 'AI Summarizer ',
         tagline:
-            "Discover AI Summarizer for precise text summarization. Choose your preferred length and style for a custom summary.",
+            "Effortlessly summarize text with AI for concise and accurate results.",
       ),
       CategoryModel(
         icon: 'sparkle',
         type: 'AI Translator',
         tagline:
-            "Discover AI Translator to effortlessly translate text across a wide variety of languages.",
+            "Seamlessly translate text into multiple languages with AI precision.",
       ),
     ];
     emit(currentState.copyWith(models: models));
   }
 
   FutureOr<void> selectModelCategory(
-      SelectModelCategory event, Emitter<ChatCategoryBottomSheetState> emit) {
+    SelectModelCategory event,
+    Emitter<ChatCategoryBottomSheetState> emit,
+  ) {
     final currentState = state as ChatCategoryBottomSheetInitial;
     emit(currentState.copyWith(selectedIndex: event.index));
   }
 
   FutureOr<void> addAIChat(
-      AddAIChat event, Emitter<ChatCategoryBottomSheetState> emit) async {
+    AddAIChat event,
+    Emitter<ChatCategoryBottomSheetState> emit,
+  ) async {
     try {
       AIChatRepository().addAIChat(chatType: event.chatType);
       print("HELL YEAH..  ADDED!!");

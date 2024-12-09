@@ -253,14 +253,12 @@ class PostTile extends StatelessWidget {
                                     postBloc.add(
                                       DislikePost(
                                         postId: post.postId!,
-                                        userId: 'Bd4umkyLqOLnMpdOLZ0E',
                                       ),
                                     );
                                   } else {
                                     postBloc.add(
                                       LikePost(
                                         postId: post.postId!,
-                                        userId: 'Bd4umkyLqOLnMpdOLZ0E',
                                       ),
                                     );
                                   }
@@ -346,14 +344,12 @@ class PostTile extends StatelessWidget {
                                     postBloc.add(
                                       UnsavePost(
                                         postId: post.postId!,
-                                        userId: 'Bd4umkyLqOLnMpdOLZ0E',
                                       ),
                                     );
                                   } else {
                                     postBloc.add(
                                       SavePost(
                                         postId: post.postId!,
-                                        userId: 'Bd4umkyLqOLnMpdOLZ0E',
                                       ),
                                     );
                                   }

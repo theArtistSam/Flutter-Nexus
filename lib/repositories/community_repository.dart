@@ -10,6 +10,8 @@ import 'package:uuid/uuid.dart';
 class CommunityRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  final String userId = 'Bd4umkyLqOLnMpdOLZ0E';
+
   Stream<List<PostModel>> getAllPosts({Query Function(Query)? queryBuilder}) {
     Query query = _firestore.collection('posts');
     // * use this for the profile section or smth like that
@@ -29,7 +31,6 @@ class CommunityRepository {
 
   Future<void> likePost({
     required String postId,
-    required String userId,
   }) async {
     try {
       // Get a reference to the Firestore document
@@ -50,7 +51,6 @@ class CommunityRepository {
 
   Future<void> dislikePost({
     required String postId,
-    required String userId,
   }) async {
     try {
       // Get a reference to the Firestore document
@@ -71,7 +71,6 @@ class CommunityRepository {
 
   Future<void> savePost({
     required String postId,
-    required String userId,
   }) async {
     try {
       // Get a reference to the Firestore document
@@ -91,7 +90,6 @@ class CommunityRepository {
 
   Future<void> unsavePost({
     required String postId,
-    required String userId,
   }) async {
     try {
       // Get a reference to the Firestore document
@@ -166,7 +164,7 @@ class CommunityRepository {
       DocumentReference docRef = await collection.add(post.toJson());
       await docRef.update({
         'post_id': docRef.id,
-        'user_id': 'Bd4umkyLqOLnMpdOLZ0E',
+        'user_id': userId,
       });
 
       if (images.isNotEmpty) {
@@ -297,7 +295,7 @@ class CommunityRepository {
 
       // Update the document, adding the userId to the liked_by array
       await postRef.update({
-        'liked_by': FieldValue.arrayUnion(['Bd4umkyLqOLnMpdOLZ0E']),
+        'liked_by': FieldValue.arrayUnion([userId]),
         'total_likes': FieldValue.increment(1),
       });
 
@@ -317,7 +315,7 @@ class CommunityRepository {
 
       // Update the document, removing the userId from the liked_by array
       await postRef.update({
-        'liked_by': FieldValue.arrayRemove(["Bd4umkyLqOLnMpdOLZ0E"]),
+        'liked_by': FieldValue.arrayRemove([userId]),
         'total_likes': FieldValue.increment(-1),
       });
 

@@ -209,7 +209,6 @@ class ContentScreenBloc extends Bloc<ContentScreenEvent, ContentScreenState> {
     final currentState = state as ContentScreenInitial;
     try {
       final ContentModel content = await ContentRepository().getContentById(
-        userId: 'Bd4umkyLqOLnMpdOLZ0E',
         contentId: currentState.content.contentId!,
       );
       emit(currentState.copyWith(content: content));
@@ -247,7 +246,6 @@ class ContentScreenBloc extends Bloc<ContentScreenEvent, ContentScreenState> {
       await ContentRepository().toggleLike(
         isTranslation: isTranslation,
         value: event.value,
-        userId: 'Bd4umkyLqOLnMpdOLZ0E',
         documentId: content.contentId!,
       );
     } catch (e) {
@@ -284,7 +282,6 @@ class ContentScreenBloc extends Bloc<ContentScreenEvent, ContentScreenState> {
       await ContentRepository().toggleDislike(
         isTranslation: isTranslation,
         value: event.value,
-        userId: 'Bd4umkyLqOLnMpdOLZ0E',
         documentId: content.contentId!,
       );
     } catch (e) {
@@ -443,7 +440,6 @@ class ContentScreenBloc extends Bloc<ContentScreenEvent, ContentScreenState> {
 
       // Update the summary in the repository
       await ContentRepository().generateSummary(
-        userId: 'Bd4umkyLqOLnMpdOLZ0E',
         contentId: content.contentId!,
         summarization: newSummarization,
       );
@@ -481,9 +477,7 @@ class ContentScreenBloc extends Bloc<ContentScreenEvent, ContentScreenState> {
       );
       // Now update the summary configuration
       await ContentRepository().generateTraslation(
-          userId: 'Bd4umkyLqOLnMpdOLZ0E',
-          contentId: content.contentId!,
-          translation: translation);
+          contentId: content.contentId!, translation: translation);
 
       // update the state
       emit(

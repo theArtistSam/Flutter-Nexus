@@ -15,7 +15,6 @@ class SelectIssueCategory extends SupportCategoryBottomSheetEvent {
 }
 
 class AddIssue extends SupportCategoryBottomSheetEvent {
-  final String userId;
   final String issueCategory;
-  const AddIssue({required this.userId, required this.issueCategory});
+  const AddIssue({required this.issueCategory});
 }

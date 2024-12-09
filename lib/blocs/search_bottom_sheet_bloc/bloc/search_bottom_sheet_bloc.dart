@@ -21,12 +21,13 @@ class SearchBottomSheetBloc
   }
 
   FutureOr<void> searchContent(
-      SearchContent event, Emitter<SearchBottomSheetState> emit) async {
+    SearchContent event,
+    Emitter<SearchBottomSheetState> emit,
+  ) async {
     final currentState = state as SearchBottomSheetInitial;
     try {
       // Perform the search using the FirebaseSearchService
       final searchedContentsStream = _searchService.searchContent(
-        userId: 'Bd4umkyLqOLnMpdOLZ0E',
         searchQuery: event.query,
       );
 
@@ -40,12 +41,14 @@ class SearchBottomSheetBloc
     }
   }
 
-  FutureOr<void> searchFolder(event, Emitter<SearchBottomSheetState> emit) {
+  FutureOr<void> searchFolder(
+    event,
+    Emitter<SearchBottomSheetState> emit,
+  ) {
     final currentState = state as SearchBottomSheetInitial;
     try {
       // Perform the search using the FirebaseSearchService
       final searchedFoldersStream = _searchService.searchFolder(
-        userId: 'Bd4umkyLqOLnMpdOLZ0E',
         searchQuery: event.query,
       );
 

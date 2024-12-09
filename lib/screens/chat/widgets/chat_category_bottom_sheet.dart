@@ -80,7 +80,7 @@ class _ChatCategoryBottomSheetState extends State<ChatCategoryBottomSheet> {
                     height: 10,
                   ),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height - 210,
+                    height: MediaQuery.of(context).size.height - 600,
                     child: BlocBuilder<ChatCategoryBottomSheetBloc,
                         ChatCategoryBottomSheetState>(
                       builder: (context, state) {
@@ -123,8 +123,9 @@ class _ChatCategoryBottomSheetState extends State<ChatCategoryBottomSheet> {
                         0: "Summarization",
                         1: "Translation",
                       };
-                      chatCategoryBottomSheetBloc
-                          .add(AddAIChat(chatType: chatType[index]!));
+                      chatCategoryBottomSheetBloc.add(
+                        AddAIChat(chatType: chatType[index]!),
+                      );
                       Navigator.pop(context);
                     },
                   ),

@@ -1,12 +1,13 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nexus/models/comment_model.dart';
 
 class CommentRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Stream<List<CommentModel>> getAllComments(
-      {Query Function(Query)? queryBuilder, required String documentId}) {
+  Stream<List<CommentModel>> getAllComments({
+    Query Function(Query)? queryBuilder,
+    required String documentId,
+  }) {
     Query query =
         _firestore.collection('posts').doc(documentId).collection('comments');
 
@@ -108,6 +109,7 @@ class CommentRepository {
     }
   }
 
+// * This is bullshit -> remove later *
   Future<void> addCommments() async {
     List<CommentModel> comments = [
       CommentModel(

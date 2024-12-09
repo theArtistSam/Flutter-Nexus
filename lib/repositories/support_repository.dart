@@ -9,14 +9,13 @@ import 'package:uuid/uuid.dart';
 
 class SupportRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final String userId = 'Bd4umkyLqOLnMpdOLZ0E';
 
   Stream<List<SupportModel>> getAllIssues({
     Query Function(Query)? queryBuilder,
   }) {
-    // TODO: Change the user_id afterwards for dynamic system
-    Query query = _firestore
-        .collection('support')
-        .where('user_id', isEqualTo: "Bd4umkyLqOLnMpdOLZ0E");
+    Query query =
+        _firestore.collection('support').where('user_id', isEqualTo: userId);
 
     // Apply the optional query builder if provided
     if (queryBuilder != null) {
@@ -122,7 +121,7 @@ class SupportRepository {
     }
   }
 
-  Future<bool> checkIssueStatus({required String userId}) async {
+  Future<bool> checkIssueStatus() async {
     try {
       // Reference the 'support' collection
       final collection = _firestore.collection('support');
@@ -143,7 +142,6 @@ class SupportRepository {
   }
 
   Future<void> addIssue({
-    required String userId,
     required String issueCategory,
   }) async {
     try {

@@ -60,7 +60,6 @@ class SupportCategoryBottomSheetBloc extends Bloc<
       AddIssue event, Emitter<SupportCategoryBottomSheetState> emit) async {
     try {
       await SupportRepository().addIssue(
-        userId: event.userId,
         issueCategory: event.issueCategory,
       );
 

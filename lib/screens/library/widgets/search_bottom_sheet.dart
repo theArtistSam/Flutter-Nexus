@@ -150,11 +150,13 @@ class _SearchBottomSheetState extends State<SearchBottomSheet> {
 
                               return Expanded(
                                 child: ListView.separated(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
+                                  // shrinkWrap: true,
+                                  // physics: const NeverScrollableScrollPhysics(),
                                   itemCount: contentList.length,
-                                  separatorBuilder:
-                                      (BuildContext context, int index) {
+                                  separatorBuilder: (
+                                    BuildContext context,
+                                    int index,
+                                  ) {
                                     return const SizedBox(height: 15);
                                   },
                                   itemBuilder:

@@ -18,8 +18,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   FutureOr<void> likePost(LikePost event, Emitter<PostState> emit) async {
     try {
-      await CommunityRepository()
-          .likePost(postId: event.postId, userId: event.userId);
+      await CommunityRepository().likePost(
+        postId: event.postId,
+      );
 
       print('LIKED THE POST ... ');
     } catch (e) {
@@ -29,8 +30,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   FutureOr<void> dislikePost(DislikePost event, Emitter<PostState> emit) async {
     try {
-      await CommunityRepository()
-          .dislikePost(postId: event.postId, userId: event.userId);
+      await CommunityRepository().dislikePost(
+        postId: event.postId,
+      );
 
       print('DISLIKED THE POST ... ');
     } catch (e) {
@@ -41,8 +43,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   FutureOr<void> savePost(SavePost event, Emitter<PostState> emit) async {
     try {
-      await CommunityRepository()
-          .savePost(postId: event.postId, userId: event.userId);
+      await CommunityRepository().savePost(
+        postId: event.postId,
+      );
       print('SAVED THE POST ... ');
     } catch (e) {
       print("SHIT FAILED TO SAVE THE POST...");
@@ -52,8 +55,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   FutureOr<void> unsavePost(UnsavePost event, Emitter<PostState> emit) async {
     try {
-      await CommunityRepository()
-          .unsavePost(postId: event.postId, userId: event.userId);
+      await CommunityRepository().unsavePost(
+        postId: event.postId,
+      );
       print('UNSAVED THE POST ... ');
     } catch (e) {
       print("SHIT FAILED TO UNSAVE THE POST...");

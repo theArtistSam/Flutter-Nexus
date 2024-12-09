@@ -18,8 +18,6 @@ final class AudioBottomSheetInitial extends AudioBottomSheetState {
   AudioBottomSheetInitial copyWith({
     bool? isPlaying,
     Duration? currentPosition,
-    Duration? totalDuration,
-    String? url,
   }) {
     return AudioBottomSheetInitial(
       isPlaying: isPlaying ?? this.isPlaying,

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:nexus/blocs/audio_bottom_sheet_bloc/bloc/audio_bottom_sheet_bloc.dart';
@@ -28,6 +29,8 @@ class _AudioBottomSheetState extends State<AudioBottomSheet> {
   StreamSubscription<int>? _currentDurationSubscription;
   late AudioBottomSheetBloc audioBottomSheetBloc;
 
+// TODO: Now idea why the pause and play is not working!
+// Perhaps we need to work with better state management
   @override
   void initState() {
     super.initState();

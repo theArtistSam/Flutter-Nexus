@@ -36,11 +36,12 @@ class FolderScreenBloc extends Bloc<FolderScreenEvent, FolderScreenState> {
   }
 
   FutureOr<void> fetchFolder(
-      FetchFolder event, Emitter<FolderScreenState> emit) async {
+    FetchFolder event,
+    Emitter<FolderScreenState> emit,
+  ) async {
     final currentState = state as FolderScreenInitial;
     try {
       final FolderModel folder = await FolderRepository().getFolderById(
-        userId: 'Bd4umkyLqOLnMpdOLZ0E',
         folderId: event.folderId,
       );
       emit(currentState.copyWith(folder: folder));

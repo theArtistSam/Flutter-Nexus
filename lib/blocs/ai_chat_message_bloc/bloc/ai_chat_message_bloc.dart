@@ -36,7 +36,9 @@ class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
   }
 
   FutureOr<void> fetchMessages(
-      FetchMessages event, Emitter<AiChatMessageState> emit) {
+    FetchMessages event,
+    Emitter<AiChatMessageState> emit,
+  ) {
     final currentState = state as AiChatMessageInitial;
 
     try {
@@ -60,7 +62,6 @@ class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
       await AIChatRepository().toggleLike(
         index: event.index,
         value: event.value,
-        userId: 'Bd4umkyLqOLnMpdOLZ0E',
         documentId: event.documentId,
       );
     } catch (e) {
@@ -74,7 +75,6 @@ class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
       await AIChatRepository().toggleDislike(
         index: event.index,
         value: event.value,
-        userId: 'Bd4umkyLqOLnMpdOLZ0E',
         documentId: event.documentId,
       );
     } catch (e) {
@@ -172,10 +172,11 @@ class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
   }
 
   FutureOr<void> addOriginalMessage(
-      AddOriginalMessage event, Emitter<AiChatMessageState> emit) async {
+    AddOriginalMessage event,
+    Emitter<AiChatMessageState> emit,
+  ) async {
     try {
       await AIChatRepository().addChatMessage(
-        userId: 'Bd4umkyLqOLnMpdOLZ0E',
         documentId: event.documentId,
         text: event.text,
         messageType: event.messageType,
@@ -206,7 +207,6 @@ class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
         print(responseMessage);
 // // * Change this to Extractive Model Service
         await AIChatRepository().addChatMessage(
-            userId: 'Bd4umkyLqOLnMpdOLZ0E',
             documentId: event.documentId,
             text: responseMessage.trim(),
             messageType: 'response',
@@ -222,7 +222,6 @@ class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
               .sendText(text: event.text, length: length);
 
           await AIChatRepository().addChatMessage(
-            userId: 'Bd4umkyLqOLnMpdOLZ0E',
             documentId: event.documentId,
             text: responseMessage.trim(),
             messageType: 'response',
@@ -234,7 +233,6 @@ class AiChatMessageBloc extends Bloc<AiChatMessageEvent, AiChatMessageState> {
 
           // * Change this to Abstractive Model Service
           await AIChatRepository().addChatMessage(
-            userId: 'Bd4umkyLqOLnMpdOLZ0E',
             documentId: event.documentId,
             text: responseMessage.trim(),
             messageType: 'response',

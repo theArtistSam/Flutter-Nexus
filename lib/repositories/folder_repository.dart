@@ -5,14 +5,13 @@ import 'package:nexus/repositories/content_repository.dart';
 
 class FolderRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final String userId = 'Bd4umkyLqOLnMpdOLZ0E';
 
   Stream<List<FolderModel>> getAllFolders({
     Query Function(Query)? queryBuilder,
   }) {
-    Query query = _firestore
-        .collection('users')
-        .doc('Bd4umkyLqOLnMpdOLZ0E')
-        .collection('folder');
+    Query query =
+        _firestore.collection('users').doc(userId).collection('folder');
     // * use this for the profile section or smth like that
 
     // Apply the optional query builder if provided
@@ -44,7 +43,6 @@ class FolderRepository {
   }
 
   Future<void> addFolder({
-    required String userId,
     required FolderModel folder,
   }) async {
     try {
@@ -67,7 +65,6 @@ class FolderRepository {
   }
 
   Future<void> deleteFolder({
-    required String userId,
     required String folderId,
   }) async {
     try {
@@ -103,7 +100,6 @@ class FolderRepository {
   }
 
   Future<void> updateFolder({
-    required String userId,
     required FolderModel folder,
   }) async {
     try {
@@ -124,7 +120,6 @@ class FolderRepository {
   }
 
   Future<FolderModel> getFolderById({
-    required String userId,
     required String folderId,
   }) async {
     try {
