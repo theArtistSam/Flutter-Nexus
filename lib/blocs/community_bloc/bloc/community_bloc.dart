@@ -4,7 +4,10 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:nexus/models/guide_model.dart';
 import 'package:nexus/models/post_model.dart';
+import 'package:nexus/models/user_model.dart';
 import 'package:nexus/repositories/community_repository.dart';
+import 'package:nexus/repositories/local_storage_repository.dart';
+import 'package:nexus/repositories/user_repository.dart';
 
 part 'community_event.dart';
 part 'community_state.dart';

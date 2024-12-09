@@ -48,7 +48,7 @@ class ExtractiveModelService {
     required File audioFile,
     required String fileExtension,
   }) async {
-    const endpoint = "https://7130-101-50-109-66.ngrok-free.app/audio-to-text/";
+    const endpoint = "https://bf6a-203-82-53-189.ngrok-free.app/audio-to-text/";
 
     var request = http.MultipartRequest('POST', Uri.parse(endpoint));
     request.files.add(
@@ -77,7 +77,7 @@ class ExtractiveModelService {
     required File imageFile,
     required String fileExtension,
   }) async {
-    const endpoint = "https://7130-101-50-109-66.ngrok-free.app/image-to-text/";
+    const endpoint = "https://bf6a-203-82-53-189.ngrok-free.app/image-to-text/";
 
     var request = http.MultipartRequest(
       // 'POST', Uri.parse('http://192.168.32.35:8000/image-to-text/'));

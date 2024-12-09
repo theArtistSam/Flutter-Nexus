@@ -5,17 +5,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nexus/models/chat_model.dart';
 import 'package:nexus/models/model_configs/summarization_config.dart';
 import 'package:nexus/models/model_configs/translation_config.dart';
+import 'package:nexus/repositories/local_storage_repository.dart';
 
 class AIChatRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // create a global hive box for user preference/caching
   // all of them require user_id
-  final String userId = 'Bd4umkyLqOLnMpdOLZ0E';
+  // final String userId = 'Bd4umkyLqOLnMpdOLZ0E';
+
+  final String userId = LocalStorageRepository().getUserId()!;
+
+  // get usedId from the box
 
   Stream<List<ChatModel>> getAllChats({
     Query Function(Query)? queryBuilder,
-    required String userId,
   }) {
     Query query = _firestore.collection('users').doc(userId).collection('chat');
 

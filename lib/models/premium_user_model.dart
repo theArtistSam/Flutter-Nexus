@@ -8,7 +8,6 @@ class PremiumUserModel extends UserModel {
   PremiumUserModel({
     super.userId,
     super.email,
-    super.password,
     super.firstName,
     super.lastName,
     super.accountStatus,

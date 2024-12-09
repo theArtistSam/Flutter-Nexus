@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nexus/models/content_model.dart';
 import 'package:nexus/models/folder_model.dart';
+import 'package:nexus/repositories/local_storage_repository.dart';
 import 'package:nexus/utils/constants.dart';
 
 class LibraryRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final String userId = 'Bd4umkyLqOLnMpdOLZ0E';
+  // final String userId = 'Bd4umkyLqOLnMpdOLZ0E';
+  final String userId = LocalStorageRepository().getUserId()!;
 
   Stream<List<ContentModel>> searchContent({
     required String searchQuery,

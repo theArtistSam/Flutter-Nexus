@@ -1,6 +1,9 @@
 import 'package:figma_squircle/figma_squircle.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:nexus/repositories/local_storage_repository.dart';
+import 'package:nexus/screens/onboarding/onboarding_screen.dart';
 import 'package:nexus/screens/profile/profile_screen.dart';
 import 'package:nexus/screens/support/support_screen.dart';
 import 'package:nexus/utils/constants.dart';
@@ -54,18 +57,47 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             actions: [
               StyledIconButton(
-                isBordered: true,
-                backgroundColor: NexusColors.isDark
-                    ? const Color(0XFF0A0A0A)
-                    : NexusColors.accentColor,
-                // COLOR: FIX
-                iconColor: NexusColors.isDark
-                    ? Colors.white
-                    : NexusColors.primaryColor,
-                padding: 6,
-                icon: 'logout',
-                onTap: () {},
-              ),
+                  isBordered: true,
+                  backgroundColor: NexusColors.isDark
+                      ? const Color(0XFF0A0A0A)
+                      : NexusColors.accentColor,
+                  // COLOR: FIX
+                  iconColor: NexusColors.isDark
+                      ? Colors.white
+                      : NexusColors.primaryColor,
+                  padding: 6,
+                  icon: 'logout',
+                  onTap: () async {
+                    try {
+                      // Get the current user
+                      User? currentUser = FirebaseAuth.instance.currentUser;
+
+                      if (currentUser != null) {
+                        // Revoke all refresh tokens for the currently logged-in user
+                        await currentUser.getIdTokenResult(true);
+
+                        // Sign out the user
+                        await FirebaseAuth.instance.signOut();
+
+                        // Print message
+                        print("User logged out successfully.");
+
+                        // Navigate to the home screen (you can adjust this based on your app's navigation structure)
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => OnboardingScreen()),
+                        );
+                      } else {
+                        print("No user is currently signed in.");
+                      }
+
+                      // empty the box!
+                      LocalStorageRepository().clearBox();
+                    } catch (e) {
+                      print("Error logging out: $e");
+                    }
+                  }),
             ],
           ),
         ),
@@ -93,11 +125,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () {
+                      final userId = LocalStorageRepository().getUserId()!;
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (builder) => const ProfileScreen(
-                            userId: 'Bd4umkyLqOLnMpdOLZ0E',
+                          builder: (builder) => ProfileScreen(
+                            userId: userId,
                           ),
                         ),
                       );

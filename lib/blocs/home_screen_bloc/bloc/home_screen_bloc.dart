@@ -4,8 +4,11 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:nexus/models/content_model.dart';
 import 'package:nexus/models/guide_model.dart';
+import 'package:nexus/models/user_model.dart';
 import 'package:nexus/repositories/community_repository.dart';
 import 'package:nexus/repositories/content_repository.dart';
+import 'package:nexus/repositories/local_storage_repository.dart';
+import 'package:nexus/repositories/user_repository.dart';
 import 'package:nexus/utils/enums.dart';
 
 part 'home_screen_event.dart';
@@ -15,10 +18,15 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
   HomeScreenBloc() : super(HomeScreenInitial()) {
     on<FetchContent>(fetchContent);
     on<FetchGuides>(fetchGuides);
+    on<FetchUserDetails>(fetchUserDetails);
+
+    add(FetchUserDetails());
   }
 
   FutureOr<void> fetchContent(
-      FetchContent event, Emitter<HomeScreenState> emit) async {
+    FetchContent event,
+    Emitter<HomeScreenState> emit,
+  ) async {
     // Check if the current state is HomeScreenLoadContent
     final currentState = state as HomeScreenInitial;
 
@@ -53,5 +61,17 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
     } catch (e) {
       emit(currentState.copyWith(status: ContentStatus.failure));
     }
+  }
+
+  FutureOr<void> fetchUserDetails(
+    FetchUserDetails event,
+    Emitter<HomeScreenState> emit,
+  ) async {
+    final String userId = LocalStorageRepository().getUserId()!;
+    final UserModel? user = await UserRepository().getUserById(id: userId);
+
+    emit((state as HomeScreenInitial).copyWith(
+        profilePicture: user!.profilePic,
+        userName: "${user.firstName} ${user.lastName}"));
   }
 }

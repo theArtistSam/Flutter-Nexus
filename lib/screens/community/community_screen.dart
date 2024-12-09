@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:nexus/blocs/community_bloc/bloc/community_bloc.dart';
 import 'package:nexus/models/guide_model.dart';
 import 'package:nexus/models/post_model.dart';
+import 'package:nexus/repositories/local_storage_repository.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/bottom_sheets/guide_bottom_sheet.dart';
 import 'package:nexus/widgets/bottom_sheets/post_bottom_sheet.dart';
@@ -272,8 +273,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
               const SizedBox(height: 10),
               BlocBuilder<CommunityBloc, CommunityState>(
                 builder: (context, state) {
-                  Stream<List<PostModel>> posts =
-                      (state as CommunityInitial).posts;
+                  final currentState = state as CommunityInitial;
+                  Stream<List<PostModel>> posts = currentState.posts;
 
                   return StreamBuilder<List<PostModel>>(
                     stream: posts,
@@ -301,13 +302,14 @@ class _CommunityScreenState extends State<CommunityScreen> {
                             const SizedBox(height: 10),
                         itemBuilder: (BuildContext context, int index) {
                           PostModel postModel = postList[index];
+                          final userId = LocalStorageRepository().getUserId()!;
 
                           // TODO: Find a better way to fix the post id null
                           return postModel.postId == null
                               ? SizedBox()
                               : PostTile(
                                   post: postModel,
-                                  userId: 'Bd4umkyLqOLnMpdOLZ0E',
+                                  userId: userId,
                                 );
                         },
                       );

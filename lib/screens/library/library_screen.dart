@@ -163,8 +163,28 @@ class _LibraryScreenState extends State<LibraryScreen> {
                                 );
                               } else if (!snapshot.hasData ||
                                   snapshot.data!.isEmpty) {
-                                return const Center(
-                                  child: Text('No content available'),
+                                return Expanded(
+                                  child: MasonryGridView.count(
+                                    controller: widget.controller,
+                                    crossAxisCount: gridCount(),
+                                    crossAxisSpacing: 15,
+                                    mainAxisSpacing: 15,
+                                    itemCount: 1, // Only the Create Folder tile
+                                    itemBuilder: (context, index) {
+                                      return StyledIconTile(
+                                        icon: 'add-folder-filled',
+                                        text: 'Create Folder',
+                                        onTap: () => {
+                                          showModalBottomSheet(
+                                            isScrollControlled: true,
+                                            context: context,
+                                            builder: (context) =>
+                                                const FolderBottomSheet(),
+                                          ),
+                                        },
+                                      );
+                                    },
+                                  ),
                                 );
                               }
 

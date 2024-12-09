@@ -115,4 +115,44 @@ class UserRepository {
       print('Error updating user with id ${user.userId}: $e');
     }
   }
+
+  Future<void> addNewUser({
+    required String userId,
+    required String email,
+    required String firstName,
+    required String lastName,
+  }) async {
+    try {
+      // Create a new user model
+      UserModel user = UserModel(
+        userId: userId,
+        email: email,
+        biography: 'Add a biography',
+        firstName: firstName,
+        lastName: lastName,
+        startDate: DateTime.now().toString(),
+        accountStatus: AccountStatus(isPremium: false, isDeactivated: false),
+        profilePic:
+            'https://firebasestorage.googleapis.com/v0/b/nexus-ef4c1.appspot.com/o/mock_data%2Fprofile-picture.png?alt=media&token=adb6095a-cbcf-4885-aa77-eb80732eadb1',
+        backgroundPic:
+            'https://firebasestorage.googleapis.com/v0/b/nexus-ef4c1.appspot.com/o/mock_data%2Fcontent.png?alt=media&token=e4bbcb71-fa53-4f4f-8481-dde5c7a1e59b',
+        guides: Guides(viewedGuides: []),
+        appCustomization: AppCustomization(
+          isDark: false,
+          notificationSettings: NotificationSettings(
+            communityNotisEnabled: false,
+            appNotisEnabled: false,
+          ),
+        ),
+      );
+
+      // Add the user to Firestore
+      await _firestore.collection('users').doc(userId).set(user.toJson());
+      print('New user with id $userId added successfully to Firestore');
+    } catch (e) {
+      print('Error adding new user with id $userId: $e');
+      // Optionally rethrow or show a Snackbar here for feedback
+      // throw Exception('Failed to add user: $e');
+    }
+  }
 }

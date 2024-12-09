@@ -19,6 +19,8 @@ final class CommunityInitial extends CommunityState {
   CommunityInitial copyWith({
     Stream<List<PostModel>>? posts,
     Stream<List<GuideModel>>? guides,
+    String? userName,
+    String? profilePicture,
   }) {
     return CommunityInitial(
       posts: posts ?? this.posts,
@@ -27,5 +29,8 @@ final class CommunityInitial extends CommunityState {
   }
 
   @override
-  List<Object> get props => [posts, guides];
+  List<Object> get props => [
+        posts,
+        guides,
+      ];
 }

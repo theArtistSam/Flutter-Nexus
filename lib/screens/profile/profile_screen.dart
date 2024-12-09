@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:nexus/blocs/profile_screen_bloc/bloc/profile_screen_bloc.dart';
 import 'package:nexus/models/post_model.dart';
 import 'package:nexus/models/user_model.dart';
+import 'package:nexus/repositories/local_storage_repository.dart';
 import 'package:nexus/screens/profile/widgets/profile_edit_bottom_sheet.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:nexus/widgets/bottom_sheets/post_bottom_sheet.dart';
@@ -220,99 +221,98 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   );
                 },
               ),
-              // Container(
-              //   color: NexusColors.backgroundColor,
-              //   child: Padding(
-              //     padding: const EdgeInsets.symmetric(
-              //       horizontal: 25,
-              //       vertical: 10,
-              //     ),
-              //     child: StyledTabs(
-              //       leftTabText: 'Community',
-              //       rightTabText: 'Content',
-              //     ),
-              //   ),
-              // ),
               const SizedBox(
                 height: 10,
               ),
-              Container(
-                color: NexusColors.backgroundColor,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 15,
-                  ),
-                  child: Row(
-                    children: [
-                      ClipOval(
-                        child: Image.asset(
-                          'assets/images/profile-picture.png',
-                          fit: BoxFit.cover,
-                          width: 50,
-                          height: 50,
-                        ),
+              BlocBuilder<ProfileScreenBloc, ProfileScreenState>(
+                builder: (context, state) {
+                  final currentState = state as ProfileScreenInitial;
+                  final UserModel? user = currentState.user;
+
+                  return Container(
+                    color: NexusColors.backgroundColor,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 15,
                       ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            showModalBottomSheet(
-                              isScrollControlled: true,
-                              context: context,
-                              builder: (context) => const PostBottomSheet(),
-                            );
-                          },
-                          child: Container(
-                            decoration: ShapeDecoration(
-                              shape: SmoothRectangleBorder(
-                                side: BorderSide(
-                                  width: 2,
-                                  color: NexusColors.borderColor,
-                                ),
-                                borderRadius: SmoothBorderRadius(
-                                  cornerRadius: 15,
-                                  cornerSmoothing: .8,
-                                ),
-                              ),
+                      child: Row(
+                        children: [
+                          ClipOval(
+                            child: CachedNetworkImage(
+                              fit: BoxFit.cover,
+                              width: 50,
+                              height: 50,
+                              imageUrl: user?.profilePic ?? '',
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 10),
-                              child: Row(
-                                children: [
-                                  StyledText(
-                                    text: 'Share your thoughts ...',
-                                    // COLOR: FIX
-                                    color: NexusColors.isDark
-                                        ? Colors.white
-                                        : NexusColors.primaryColor,
-                                    fontWeight: FontWeight.w500,
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                showModalBottomSheet(
+                                  isScrollControlled: true,
+                                  context: context,
+                                  builder: (context) => const PostBottomSheet(),
+                                );
+                              },
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: SmoothRectangleBorder(
+                                    side: BorderSide(
+                                      width: 2,
+                                      color: NexusColors.borderColor,
+                                    ),
+                                    borderRadius: SmoothBorderRadius(
+                                      cornerRadius: 15,
+                                      cornerSmoothing: .8,
+                                    ),
                                   ),
-                                  const Spacer(),
-                                  SvgPicture.asset(
-                                    'assets/icons/gallery-add.svg',
-                                    color: NexusColors.isDark
-                                        ? Colors.white
-                                        : NexusColors.primaryColor,
-                                  )
-                                ],
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 10,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      StyledText(
+                                        text: 'Share your thoughts ...',
+                                        // COLOR: FIX
+                                        color: NexusColors.isDark
+                                            ? Colors.white
+                                            : NexusColors.primaryColor,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      const Spacer(),
+                                      SvgPicture.asset(
+                                        'assets/icons/gallery-add.svg',
+                                        color: NexusColors.isDark
+                                            ? Colors.white
+                                            : NexusColors.primaryColor,
+                                      )
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 10),
               BlocBuilder<ProfileScreenBloc, ProfileScreenState>(
                 builder: (context, state) {
-                  Stream<List<PostModel>> posts =
-                      (state as ProfileScreenInitial).posts;
+                  final currentState = state as ProfileScreenInitial;
+                  Stream<List<PostModel>> posts = currentState.posts;
+                  final UserModel? user = currentState.user;
 
                   return StreamBuilder<List<PostModel>>(
                     stream: posts,
@@ -342,10 +342,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         itemBuilder: (BuildContext context, int index) {
                           PostModel postModel = postList[index];
 
-                          // TODO: Find a better way to fix the post id null
                           return PostTile(
                             post: postModel,
-                            userId: 'Bd4umkyLqOLnMpdOLZ0E',
+                            userId: user?.userId ?? '',
                           );
                         },
                       );

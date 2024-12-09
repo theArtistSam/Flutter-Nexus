@@ -1,6 +1,7 @@
 // ignore: file_names
 // ignore_for_file: deprecated_member_use
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus/blocs/home_screen_bloc/bloc/home_screen_bloc.dart';
 import 'package:nexus/models/content_model.dart';
 import 'package:nexus/models/guide_model.dart';
+import 'package:nexus/repositories/local_storage_repository.dart';
 import 'package:nexus/screens/content/content_screen.dart';
 import 'package:nexus/screens/settings/settings_screen.dart';
 import 'package:nexus/widgets/bottom_sheets/guide_bottom_sheet.dart';
@@ -70,70 +72,81 @@ class _HomeScreenState extends State<HomeScreen> {
           preferredSize: const Size.fromHeight(kToolbarHeight + 5),
           child: Padding(
             padding: const EdgeInsets.only(left: 5.0, right: 20),
-            child: AppBar(
-              surfaceTintColor: Colors.transparent,
-              backgroundColor: NexusColors.isDark
-                  ? const Color(0XFF0A0A0A)
-                  : NexusColors.accentColorLight,
-              title: Row(
-                children: [
-                  ClipOval(
-                    child: Image.asset(
-                      'assets/images/profile-picture.png',
-                      fit: BoxFit.cover,
-                      width: 50,
-                      height: 50,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            child: BlocBuilder<HomeScreenBloc, HomeScreenState>(
+              builder: (context, state) {
+                final currentState = state as HomeScreenInitial;
+                final String profilePicture = currentState.profilePicture;
+                final String userName = currentState.userName;
+                return AppBar(
+                  surfaceTintColor: Colors.transparent,
+                  backgroundColor: NexusColors.isDark
+                      ? const Color(0XFF0A0A0A)
+                      : NexusColors.accentColorLight,
+                  title: Row(
                     children: [
-                      StyledText(
-                        text: 'Welcome,',
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: NexusColors.secondaryTextColor,
+                      ClipOval(
+                        child: CachedNetworkImage(
+                          fit: BoxFit.cover,
+                          width: 50,
+                          height: 50,
+                          imageUrl: profilePicture,
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                        ),
                       ),
-                      StyledText(
-                        text: 'Dunn Oliver 👋',
-                        fontSize: 18,
-                        color: NexusColors.textColor,
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          StyledText(
+                            text: 'Welcome,',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: NexusColors.secondaryTextColor,
+                          ),
+                          StyledText(
+                            text: '$userName 👋',
+                            fontSize: 18,
+                            color: NexusColors.textColor,
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-              actions: [
-                StyledIconButton(
-                  isBordered: true,
-                  backgroundColor: NexusColors.isDark
-                      ? const Color(0XFF0A0A0A)
-                      : NexusColors.accentColor,
-                  // COLOR: FIX
-                  iconColor: NexusColors.isDark
-                      ? Colors.white
-                      : NexusColors.primaryColor,
-                  padding: 6,
-                  icon: 'notification',
-                  onTap: () {},
-                ),
-                const SizedBox(width: 10),
-                StyledIconButton(
-                  icon: 'menu',
-                  backgroundColor: NexusColors.primaryColor,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (builder) => const SettingsScreen(),
-                      ),
-                    );
-                  },
-                ),
-              ],
+                  actions: [
+                    StyledIconButton(
+                      isBordered: true,
+                      backgroundColor: NexusColors.isDark
+                          ? const Color(0XFF0A0A0A)
+                          : NexusColors.accentColor,
+                      // COLOR: FIX
+                      iconColor: NexusColors.isDark
+                          ? Colors.white
+                          : NexusColors.primaryColor,
+                      padding: 6,
+                      icon: 'notification',
+                      onTap: () {
+                        LocalStorageRepository().printAllData();
+                      },
+                    ),
+                    const SizedBox(width: 10),
+                    StyledIconButton(
+                      icon: 'menu',
+                      backgroundColor: NexusColors.primaryColor,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (builder) => const SettingsScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),

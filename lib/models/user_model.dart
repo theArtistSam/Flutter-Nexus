@@ -1,7 +1,6 @@
 class UserModel {
   String? userId;
   String? email;
-  String? password;
   String? firstName;
   String? lastName;
   String? startDate;
@@ -15,7 +14,6 @@ class UserModel {
   UserModel({
     this.userId,
     this.email,
-    this.password,
     this.firstName,
     this.lastName,
     this.accountStatus,
@@ -31,7 +29,7 @@ class UserModel {
     startDate = json["start_date"];
     userId = json['user_id'];
     email = json['email'];
-    password = json['password'];
+
     firstName = json['first_name'];
     lastName = json['last_name'];
     accountStatus = json['account_status'] != null
@@ -51,7 +49,7 @@ class UserModel {
     data["start_date"] = startDate;
     data['user_id'] = userId;
     data['email'] = email;
-    data['password'] = password;
+
     data['first_name'] = firstName;
     data['last_name'] = lastName;
     if (accountStatus != null) {

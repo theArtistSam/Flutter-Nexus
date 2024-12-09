@@ -17,8 +17,7 @@ class AiChatBloc extends Bloc<AiChatEvent, AiChatState> {
     final currentState = state as AiChatInitial;
 
     try {
-      Stream<List<ChatModel>> messageList =
-          AIChatRepository().getAllChats(userId: 'Bd4umkyLqOLnMpdOLZ0E');
+      Stream<List<ChatModel>> messageList = AIChatRepository().getAllChats();
 
       // print(await messageList.length);
       emit(currentState.copyWith(messages: messageList));

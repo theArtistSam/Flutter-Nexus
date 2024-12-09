@@ -6,12 +6,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:nexus/models/content_model.dart';
 import 'package:nexus/models/model_configs/summarization_config.dart';
 import 'package:nexus/models/model_configs/translation_config.dart';
+import 'package:nexus/repositories/local_storage_repository.dart';
 import 'package:workmanager/workmanager.dart';
 // import 'package:workmanager/workmanager.dart';
 
 class ContentRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final String userId = 'Bd4umkyLqOLnMpdOLZ0E';
+  // final String userId = 'Bd4umkyLqOLnMpdOLZ0E';
+  final String userId = LocalStorageRepository().getUserId()!;
+
   //  Now the function also takes a query as a parameter
   Stream<List<ContentModel>> getAllContents({
     Query Function(Query)? queryBuilder,

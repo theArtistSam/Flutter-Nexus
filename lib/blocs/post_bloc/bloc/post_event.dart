@@ -7,37 +7,14 @@ sealed class PostEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LikePost extends PostEvent {
-  final String postId;
+class LikePost extends PostEvent {}
 
-  const LikePost({required this.postId});
-}
+class DislikePost extends PostEvent {}
 
-class DislikePost extends PostEvent {
-  final String postId;
+class SavePost extends PostEvent {}
 
-  const DislikePost({
-    required this.postId,
-  });
-}
+class UnsavePost extends PostEvent {}
 
-class SavePost extends PostEvent {
-  final String postId;
+class DeletePost extends PostEvent {}
 
-  const SavePost({
-    required this.postId,
-  });
-}
-
-class UnsavePost extends PostEvent {
-  final String postId;
-
-  const UnsavePost({
-    required this.postId,
-  });
-}
-
-class DeletePost extends PostEvent {
-  final String postId;
-  const DeletePost({required this.postId});
-}
+class FetchUserCredientials extends PostEvent {}

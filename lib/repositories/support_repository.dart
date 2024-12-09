@@ -5,11 +5,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nexus/models/support_model.dart';
+import 'package:nexus/repositories/local_storage_repository.dart';
 import 'package:uuid/uuid.dart';
 
 class SupportRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final String userId = 'Bd4umkyLqOLnMpdOLZ0E';
+  // final String userId = 'Bd4umkyLqOLnMpdOLZ0E';
+  final String userId = LocalStorageRepository().getUserId()!;
 
   Stream<List<SupportModel>> getAllIssues({
     Query Function(Query)? queryBuilder,

@@ -14,7 +14,7 @@ import 'package:nexus/widgets/styled_widgets/styled_icon_button.dart';
 import 'package:nexus/widgets/styled_widgets/styled_snackbar.dart';
 import 'package:nexus/widgets/styled_widgets/styled_text.dart';
 
-class PostTile extends StatelessWidget {
+class PostTile extends StatefulWidget {
   PostTile({
     super.key,
     required this.post,
@@ -23,17 +23,32 @@ class PostTile extends StatelessWidget {
 
   final PostModel post;
   final String userId;
-  final PostBloc postBloc = PostBloc();
+
+  @override
+  State<PostTile> createState() => _PostTileState();
+}
+
+class _PostTileState extends State<PostTile> {
+  late PostBloc postBloc;
+
+  @override
+  void initState() {
+    postBloc = PostBloc(widget.post);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    postBloc.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    final isLiked = post.likedBy!.contains(userId);
-    final isSaved = post.savedBy!.contains(userId);
-    final isSelfPost = post.userId! == userId;
-
-    print(post.postId);
-    print(isSelfPost);
+    final isLiked = widget.post.likedBy!.contains(widget.userId);
+    final isSaved = widget.post.savedBy!.contains(widget.userId);
+    final isSelfPost = widget.post.userId! == widget.userId;
 
     return BlocProvider(
       create: (context) => postBloc,
@@ -63,74 +78,86 @@ class PostTile extends StatelessWidget {
                     isSelfPost ? 7 : 20,
                     isSelfPost ? 5 : 15,
                   ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      ClipOval(
-                        child: Image.asset(
-                          'assets/images/profile-picture.png',
-                          width: 30,
-                          height: 30,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      StyledText(
-                        text: 'Dunn Oliver',
-                        fontSize: 16,
-                        color: NexusColors.textColor,
-                      ),
-                      const Spacer(),
-                      StyledText(
-                        text: DateTimeConversion.formattedDate(
-                          datetime: post.dateCreated!,
-                        ),
-                        fontSize: 12,
-                        color: NexusColors.textColor.withOpacity(.5),
-                        fontWeight: FontWeight.w500,
-                      ),
-                      isSelfPost
-                          ? PopupMenu(
-                              onSelected: (value) {
-                                switch (value) {
-                                  case 'Edit':
-                                    showModalBottomSheet(
-                                      isScrollControlled: true,
-                                      context: context,
-                                      builder: (context) => PostBottomSheet(
-                                        post: post,
-                                      ),
-                                    );
-                                    break;
-                                  case 'Delete':
-                                    showModalBottomSheet(
-                                      isScrollControlled: true,
-                                      context: context,
-                                      builder: (context) => DeleteBottomSheet(
-                                        title: 'Delete Post',
-                                        message:
-                                            'Are you certain you want to delete this post?',
-                                        onDelete: () {
-                                          postBloc.add(
-                                            DeletePost(postId: post.postId!),
-                                          );
-                                          // Bottom sheet
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                    );
-                                    break;
-                                  default:
-                                }
-                              },
-                              items: const [
-                                PopupItem(name: "Edit"),
-                                PopupItem(name: 'Delete')
-                              ],
-                              icon: "dots-circle",
-                            )
-                          : const SizedBox(),
-                    ],
+                  child: BlocBuilder<PostBloc, PostState>(
+                    builder: (context, state) {
+                      final currentState = state as PostInitial;
+                      final String userName = currentState.userName;
+                      final String profilePicture = currentState.profilePicture;
+                      print(userName);
+                      print(profilePicture);
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ClipOval(
+                            child: CachedNetworkImage(
+                              width: 30,
+                              height: 30,
+                              fit: BoxFit.cover,
+                              imageUrl: profilePicture,
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          StyledText(
+                            text: userName,
+                            fontSize: 16,
+                            color: NexusColors.textColor,
+                          ),
+                          const Spacer(),
+                          StyledText(
+                            text: DateTimeConversion.formattedDate(
+                              datetime: widget.post.dateCreated!,
+                            ),
+                            fontSize: 12,
+                            color: NexusColors.textColor.withOpacity(.5),
+                            fontWeight: FontWeight.w500,
+                          ),
+                          isSelfPost
+                              ? PopupMenu(
+                                  onSelected: (value) {
+                                    switch (value) {
+                                      case 'Edit':
+                                        showModalBottomSheet(
+                                          isScrollControlled: true,
+                                          context: context,
+                                          builder: (context) => PostBottomSheet(
+                                            post: widget.post,
+                                          ),
+                                        );
+                                        break;
+                                      case 'Delete':
+                                        showModalBottomSheet(
+                                          isScrollControlled: true,
+                                          context: context,
+                                          builder: (context) =>
+                                              DeleteBottomSheet(
+                                            title: 'Delete Post',
+                                            message:
+                                                'Are you certain you want to delete this post?',
+                                            onDelete: () {
+                                              postBloc.add(
+                                                DeletePost(),
+                                              );
+                                              // Bottom sheet
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        );
+                                        break;
+                                      default:
+                                    }
+                                  },
+                                  items: const [
+                                    PopupItem(name: "Edit"),
+                                    PopupItem(name: 'Delete')
+                                  ],
+                                  icon: "dots-circle",
+                                )
+                              : const SizedBox(),
+                        ],
+                      );
+                    },
                   ),
                 ),
                 Padding(
@@ -146,11 +173,11 @@ class PostTile extends StatelessWidget {
                                 isScrollControlled: true,
                                 context: context,
                                 builder: (context) => ImageSliderBottomSheet(
-                                  images: post.images!,
+                                  images: widget.post.images!,
                                 ),
                               );
                             },
-                            child: post.images!.isNotEmpty
+                            child: widget.post.images!.isNotEmpty
                                 ? ClipSmoothRect(
                                     radius: SmoothBorderRadius(
                                       cornerRadius: 15,
@@ -159,7 +186,7 @@ class PostTile extends StatelessWidget {
                                     child: AspectRatio(
                                       aspectRatio: 4 / 5,
                                       child: CachedNetworkImage(
-                                        imageUrl: post.images?[0] ?? '',
+                                        imageUrl: widget.post.images?[0] ?? '',
                                         fit: BoxFit.cover,
                                         width: double.infinity,
                                         progressIndicatorBuilder:
@@ -179,7 +206,7 @@ class PostTile extends StatelessWidget {
                                   )
                                 : const SizedBox(),
                           ),
-                          post.images!.length > 1
+                          widget.post.images!.length > 1
                               ? Positioned(
                                   top: 10,
                                   right: 10,
@@ -202,7 +229,7 @@ class PostTile extends StatelessWidget {
                                       ),
                                       child: StyledText(
                                         text:
-                                            '+${post.images!.length - 1} More',
+                                            '+${widget.post.images!.length - 1} More',
                                         color: NexusColors.primaryColor,
                                         fontSize: 12,
                                       ),
@@ -214,7 +241,7 @@ class PostTile extends StatelessWidget {
                       ),
                       const SizedBox(height: 10),
                       StyledText(
-                        text: post.description ?? '',
+                        text: widget.post.description ?? '',
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                         color: NexusColors.textColor,
@@ -251,22 +278,18 @@ class PostTile extends StatelessWidget {
                                   // * USE HARDCORE USER ID FOR NOW!!
                                   if (isLiked) {
                                     postBloc.add(
-                                      DislikePost(
-                                        postId: post.postId!,
-                                      ),
+                                      DislikePost(),
                                     );
                                   } else {
                                     postBloc.add(
-                                      LikePost(
-                                        postId: post.postId!,
-                                      ),
+                                      LikePost(),
                                     );
                                   }
                                 },
                               ),
                               StyledText(
-                                text: post.permissions!.likeAllowed!
-                                    ? '${post.totalLikes}'
+                                text: widget.post.permissions!.likeAllowed!
+                                    ? '${widget.post.totalLikes}'
                                     : 'Like',
                                 fontSize: 14,
                                 color: _postIconColor(isActive: isLiked),
@@ -280,7 +303,8 @@ class PostTile extends StatelessWidget {
                                 iconColor:
                                     NexusColors.textColor.withOpacity(.5),
                                 onTap: () {
-                                  if (post.permissions!.commentAllowed!) {
+                                  if (widget
+                                      .post.permissions!.commentAllowed!) {
                                     showModalBottomSheet(
                                       isScrollControlled: true,
                                       context: context,
@@ -293,7 +317,7 @@ class PostTile extends StatelessWidget {
                                               .bottom,
                                         ),
                                         child: CommentBottomSheet(
-                                          postId: post.postId!,
+                                          postId: widget.post.postId!,
                                           height: height,
                                           context: context,
                                         ),
@@ -308,8 +332,8 @@ class PostTile extends StatelessWidget {
                                 },
                               ),
                               StyledText(
-                                text: post.permissions!.commentAllowed!
-                                    ? '${post.totalComments}'
+                                text: widget.post.permissions!.commentAllowed!
+                                    ? '${widget.post.totalComments}'
                                     : 'Comment',
                                 fontSize: 14,
                                 color: NexusColors.textColor.withOpacity(.5),
@@ -326,8 +350,8 @@ class PostTile extends StatelessWidget {
                                 onTap: () {},
                               ),
                               StyledText(
-                                text: post.permissions!.shareAllowed!
-                                    ? '${post.totalShares}'
+                                text: widget.post.permissions!.shareAllowed!
+                                    ? '${widget.post.totalShares}'
                                     : 'Share',
                                 fontSize: 14,
                                 color: NexusColors.textColor.withOpacity(.5),
@@ -342,15 +366,11 @@ class PostTile extends StatelessWidget {
                                   // ! USE HARDCORE USER ID FOR NOW!!
                                   if (isSaved) {
                                     postBloc.add(
-                                      UnsavePost(
-                                        postId: post.postId!,
-                                      ),
+                                      UnsavePost(),
                                     );
                                   } else {
                                     postBloc.add(
-                                      SavePost(
-                                        postId: post.postId!,
-                                      ),
+                                      SavePost(),
                                     );
                                   }
                                 },

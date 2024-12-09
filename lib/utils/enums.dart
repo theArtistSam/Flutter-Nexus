@@ -7,3 +7,7 @@ enum LibraryStatus { loading, failure, success }
 enum TagsStatus { loading, failure, success, alreadyExists }
 
 enum ReturnResponseStatus { processing, failure, initial, success }
+
+enum ValidInfoStatus { initial, valid, invalid }
+
+enum CreateUserStatus { initial, success, error, alreadyExists }

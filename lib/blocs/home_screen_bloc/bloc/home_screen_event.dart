@@ -11,3 +11,5 @@ sealed class HomeScreenEvent extends Equatable {
 class FetchContent extends HomeScreenEvent {}
 
 class FetchGuides extends HomeScreenEvent {}
+
+class FetchUserDetails extends HomeScreenEvent {}
